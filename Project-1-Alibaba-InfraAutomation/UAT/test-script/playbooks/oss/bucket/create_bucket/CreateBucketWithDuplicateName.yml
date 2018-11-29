@@ -1,0 +1,77 @@
+#Ansible Module Name -- oss.py
+#Test Case : create bucket with bucket parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: create bucket with bucket parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+  tasks:
+   - block:
+     - name: Scenario 1 - create a bucket 
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+        minutes: 1
+        
+   - block:
+     - name: Scenario 2 - create bucket with duplicate name
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}' 
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+     rescue:
+       - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+         when: no  
+  
+  
+  
+   - block:
+      - name: Scenario 3 - Delete bucket with all parameters
+        oss: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         region: '{{ region }}'
+         bucket: '{{ bucketName }}' 
+        register: result_del_scn2
+      - debug: var=result_del_scn2
+     rescue: 
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+ 
+     always:
+      - assert:
+         that:     
+
+            - "'failed' not in result_scn1"
+
+            - "'failed' in result_scn2"
+            - "'Error, Bucket with same name already exist.' in result_scn2.msg[0]"
+            
+            - "'failed' not in result_del_scn2"
+            
+         msg: 'Test pass FAILED !!!'
+          

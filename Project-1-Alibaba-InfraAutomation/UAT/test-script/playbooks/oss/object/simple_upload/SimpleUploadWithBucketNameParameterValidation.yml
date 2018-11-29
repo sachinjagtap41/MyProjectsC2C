@@ -1,0 +1,103 @@
+#Ansible Module Name -- oss.py
+#Test Case : Simple upload with bucket parameter
+#Ansible Playbook created by - Sachin J
+---
+- name: Simple upload with bucket parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks: 
+  
+  # Task : 1
+   - block:
+     - name: Scenario 1 - create bucket
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: bucketname-11
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+         
+       register: result_scn1
+     - debug: var=result_scn1
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+
+
+ # Task : 2
+   - block: 
+     - name: Scenario 2 - Upload the file without bucket parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         #bucket: bucketname-11
+         expiration: '{{ expiration }}'
+         headers:
+           Key1: value1
+           Key2: value2
+        
+         metadata: 
+          tag_key1: tag_value1
+          tag_key2: tag_value2 
+        
+         src: '../../../oss_uploading_files/commands.txt'
+         file_name: 'commands.txt'
+         region: '{{ region }}'
+         
+       register: result_scn2
+     - debug: var=result_scn2
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+   
+  
+       
+   # Task : 3
+   - block:
+     - name: Scenario 3 - Delete bucket
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: bucketname-11 
+         region: '{{ region }}'
+         
+       register: result_scn3
+     - debug: var=result_scn3
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' in result_scn2"
+            - "'failed' not in result_scn3"
+         msg: 
+           'Test Pass Failed !!!'
+                            
+         
+            
+         
+       

@@ -1,0 +1,63 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : create server load balancer for a single zone region
+#Ansible Playbook created by - Abha H
+---
+- name: create server load balancer for a single zone region
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+   - pause: 
+       seconds: 20
+   - block:
+     - name: create server load balancer for a single zone region
+       ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: '{{ status }}'
+         load_balancer_name: '{{ SLBName }}'
+         address_type: '{{ addressType }}'
+         bandwidth: '{{ bandwidth }}'
+         listeners: '{{ listeners }}'
+         internet_charge_type: '{{ internetChargeType }}'
+         validate_certs: '{{ validateCerts }}'
+         tags: '{{ tags }}'
+         wait: '{{ wait }}'
+         wait_timeout: '{{ waitTimeout }}'
+
+       register: create_slb_result
+     - debug: var=create_slb_result
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in create_slb_result"
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values. 
+               REASON: {{ create_slb_result}}'
+         #when:
+         #   - "create_slb_result.changed ==  false"
+   - pause:
+       seconds: 20
+       
+   - block:    
+     - name: Delete load balancer with all parameters
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: absent
+        load_balancer_id: '{{ create_slb_result.result[0].LoadBalancerId }}'
+       when:
+        - "'failed' not in create_slb_result"

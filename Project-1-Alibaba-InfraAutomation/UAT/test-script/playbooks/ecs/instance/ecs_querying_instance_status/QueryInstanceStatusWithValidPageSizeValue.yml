@@ -1,0 +1,43 @@
+# Ansible Module Name - ECS
+# Interface - QueryingInstancestatusPresent
+# Test Case : Verify playbook is not generating an error when valid page size parameter is provided
+# Ansible Playbook created by - Sachin J
+
+
+
+- name: Verify querying instance interface with valid page size parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+    
+    
+  tasks: 
+   - block: 
+     - name: Verify querying instance interface with valid page size parameter
+       ecs: 
+        ecs_access_key: '{{ aliyun_acs_access_key }}'
+        ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+        pagesize: '{{ pageSizeValid }}'  
+        state: '{{ queryingInstanceStatus }}'
+        
+       register: result
+     - debug: var=result 
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+     - assert:
+        that:
+           - "'failed' not in result"
+
+
+        msg: 'Test pass FAILED !!!'

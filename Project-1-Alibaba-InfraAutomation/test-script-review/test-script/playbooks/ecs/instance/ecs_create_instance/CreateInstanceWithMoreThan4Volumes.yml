@@ -1,0 +1,43 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Volume parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: Validatnig volume parameter
+  hosts: localhost
+  connection: local
+
+
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+    
+- block: 
+  
+    - name: Validating - Volume parameter with invalid volume count
+       
+      ecs:
+      
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        volumes: '{{ InvalidVolume }}'                    # Invalid volume count
+        
+        
+      register: result
+    - debug: var=result
+        
+  rescue:
+  - debug: msg="Failure Expected - We can not create more than 4 volumes"
+    

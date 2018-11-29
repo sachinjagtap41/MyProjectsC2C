@@ -1,0 +1,47 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case :  Verify that Playbook is throwing an error when user is trying attached Security Group  to the Invalid VPC Id
+#Ansible Playbook created by - Jogesh N
+
+- name: Attach Security Group  to the Invalid VPC Id
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+  
+   - block:
+   
+     - name: Scenario - 1 Attach Security Group to the Invalid VPC Id
+     
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+         security_group_name: '{{SGName}}'
+         description: '{{SGDescription}}'
+         vpc_id: '{{ invalidSGVPC }}'
+         state: '{{ status }}'
+         
+         
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     ### End3 
+     
+     always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+          # - "'Specified VPC does not exist' in result1.msg[2]" 
+           

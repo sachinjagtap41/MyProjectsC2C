@@ -1,0 +1,188 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Instance Tag parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml 
+    
+          
+  tasks:
+  
+  # Task : 1
+  
+  - block:
+     - name: Validating - Valid Tag-Key and Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ instance_tagsValid }}'
+        state: '{{ StateValid }}'
+                
+       register: result
+     - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success "
+  
+  # Task : 2
+  
+  - block:
+     - name: Validating - Valid Tag-Key and Invalid Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ instance_tagsInvalidTagValue }}'
+        state: '{{ StateValid }}'
+        
+        
+       register: result
+     - debug: var=result
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ instance_tagsInvalidTagValue }}' is not a valid parameter "
+ 
+ # Task : 3
+ 
+  - block:
+     - name: Validating - Valid Tag-Key and Null Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ instance_tagsInvalidNullTagValue }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - Tag key can not be null, when tag value is not null "
+ 
+ # Task : 4
+ 
+  - block:
+     - name: Validating - Null Tag-Key and Valid Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ instance_tagsInvalidNullTagKey }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task : 5
+ 
+  - block:
+     - name: Validating - Null Tag-Key and Null Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ instance_tagsInvalidTagKeyAndTagValueNull }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success "
+ 
+ # Task : 6
+ 
+  - block:
+     - name: Validating - Invalid Tag-Key and Valid Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ instance_tagsInvalidTagKeyValidValue }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ instance_tagsInvalidTagKeyValidValue }}' is not a valid parameter"
+ 
+ # Task : 7
+ 
+  - block:
+     - name: Validating - Invalid Tag-Key and Invalid Tag-Value
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_tags: '{{ Instance_tagsInvalidTagKeyAndTagValue }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ Instance_tagsInvalidTagKeyAndTagValue }}' is not a valid parameter "

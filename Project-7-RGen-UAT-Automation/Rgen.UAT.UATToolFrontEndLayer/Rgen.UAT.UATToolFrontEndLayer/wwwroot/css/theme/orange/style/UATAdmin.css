@@ -1,0 +1,200 @@
+﻿/* Copyright © 2012 RGen Solutions . All Rights Reserved.
+   Contact : support@rgensolutions.com */
+
+
+
+@charset "utf-8";
+/* CSS Document */
+
+/* css for modified left pane */
+
+#LeftPanel{ float:left;width:20%;padding:0 10px 0 0 }
+#RightPanel{ float:right;width:77%;padding:0 10px 0 10px }
+#navHeading td img{ float:left; padding:0 10px 0 10px; }
+
+.navHead{ height:55px;background-color:rgb(248,200,102); }
+.navHead div{font-size:10pt;padding-top:7px }
+.navHead span{ font-size:10pt}
+.navHead p{ font-size:8pt; color:#262626; }
+.navHead:hover{ background-color:#fbe9c1; cursor:pointer }
+.navtdSeq{ background-color:rgb(233,160,12);color:white;text-align:center;font-size:14pt;height:88px; }
+
+.bgLeftDiv{	float:left;background-color:rgb(233,160,12);height:10px;width:15% }
+.bgRightDiv{ background-color:rgb(248,200,102);height:10px;width:100% }
+
+.activeNav{ height:55px;background-color:#FFFFFF;cursor:auto!important }
+.activeNav div{ font-size:10pt; padding-top:7px;cursor:auto!important }
+.activeNav p{ font-size:8pt; color:#FF6600; }
+
+.navTabs { margin-top:10px }
+.navTabs h2{ color:#7F7F7F;font-size:12px;cursor:pointer;float:left;text-transform:uppercase;padding:10px 30px 10px 0 }
+
+.pgHead{ color:#444;font-size:28px; }
+.prjHead{ color:#FF6600;font-size:20px;margin-top:8px }
+.tpHead{ color:#FF9900;font-size:16px; }
+
+/* style for table grid of all test mgnt pages */
+.tableGrid{ font-size:12px;width:100%;text-align:left;margin-top:0px;table-layout:fixed;word-wrap:word-break; }
+.tableGrid tbody td {padding:5px 0 0 10px;}
+.tableGrid tbody tr:hover{ background-color:#fbe9c1}/*Modified by Mohini for bug 10475*/
+.gridHeadingRow{ background-color:rgb(248,200,102); }
+.griDetails td{ border-right:2px rgb(248,200,102) solid;padding:0 0 5px 10px;text-transform:uppercase }
+.tableGrid tbody tr:hover{ background-color:rgb(253,243,223) }
+.rowSelected { background-color:rgb(249,213,138) !important }
+/**/
+
+.showTC{ border:1px #ccc solid;padding:0 5px 5px 5px;display:none;position:absolute;margin-left:295px;background-color:rgb(219,219,219)}
+
+.btnNewStyle{ background-color:rgb(248,200,102);border:1px black solid;color:black;height:25px;width:80px;cursor:pointer }
+/*.btnNew1{ display:inline; cursor:pointer; background-color:#f3f3f3; color:#ff6600; border:3px #ffc40d solid;padding:3px 5px 3px 5px; }*/
+
+.selTD{ background-color:rgb(252,234,197); }
+
+/*Added by Mohini for AD/DL DT:26-03-2014*/
+/*#rowTlb tr:nth-child(even){background-color:#f3f3f3;}
+#rowTlb tr:hover{background-color:#CDCDCD}*/
+#rowTlb tr:nth-child(even){background-color:#fdf3dd;}
+#rowTlb tr:hover{background-color:#fceac5}
+
+/***********/
+/* from Project page */
+.textBox{width:390px;border:solid 1px #ccc;height:20px;margin-bottom:35px}
+.textArea{width:390px;border:solid 1px #ccc;height:80px;margin-bottom:45px}
+.dropDown{width:378px;margin-bottom:12px;margin-top:3px;border:solid 1px #ccc;height:20px}
+.dropDown2{border:1px solid #ccc;width:400px;margin-bottom:23px;height:23px}
+.dynTd{background-color:rgb(248,200,102);}
+.style1 { text-align: right;}
+.addNew{
+	color:#ff6600 !important;
+	background-image:none;
+	padding:0px;
+	padding-right: 60px;
+	margin-left:5px;
+	cursor:pointer;
+}
+.addNew1{
+	background-image:none;
+	padding:0px;
+	cursor:pointer;
+}
+
+/*** From Test pass page **/
+.textBoxTP{width:400px;border:solid 1px #ccc;height:20px;margin-bottom:35px}
+.textAreaTP{width:400px;border:solid 1px #ccc;height:53px;margin-bottom:35px}
+.dropDown2TP{border:1px solid #ccc;width:395px;margin-bottom:45px;height:23px}
+
+.boxPortfolio1{
+	 width: 170px;height: 50px;float:left;margin-right:10px;
+	 padding:5px;font-size:14px;word-break:break-all;
+}
+.boxName{ font-size: 12px;color:#ff6600;display:none; }
+
+.rgTableBread tbody tr td { width:190px !important; }
+.rgTableBread{border-collapse:collapse;white-space-collapse:collapse; margin-top:15px;display:none;}
+.rgTableBread td{border-right:solid 10px #fff;}
+.rgTableBread label.rgBCTitle{display:block;padding:5px 5px;font-size:14px;}
+.rgTableBread label.rgBCHead{background-color:#fff;display:block;padding:2px 5px;font-size:11px;border-top:solid 3px #ffce4f;color:#eb3d01;}
+
+/**** From Tester page ****/
+.button{background-color:#F8C866;color:#000000;float:right;border:solid 1px gray;cursor:pointer;font-size:12px;margin-right:1em; width:70px; height:25px;padding-bottom:10px;padding-top:1px;padding-bottom :0.1em}
+.actionEdit{height:25px;width:25px;padding-right:7px }
+.actionDel{height:25px;width:25px}
+a.edit{background-image:url('../SiteAssets/theme/Orange/images/Admin/Edit.png');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.delete{background-image:url('../SiteAssets/theme/Orange/images/Admin/Garbage.png');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+
+.prjHead, .tpHead{ display:none !important; }
+
+/**** From test case page ***/
+#testCaseContents label{ margin:5px 0px 2px 0px; }
+#testCaseContents input[type='text']{
+	margin:0px 0px 20px 0px;
+	width:395px;
+	height:20px;
+	border:solid 1px #ccc;
+}
+#testCaseContents textarea{
+	margin-bottom:6px;width:395px;height:100px;
+	border:solid 1px #ccc;
+}
+.arrow-up
+{
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 15px solid #fddc8a;
+    margin-left: 45px;
+    margin-top: -10px;
+    position: relative;
+}
+
+/*** From Attachment page ***/
+.ms-ButtonHeightWidth {
+	/*margin-left:600px;*/
+  	background-color: #ffbb05;
+	color: #000;
+	border: solid 1px gray;
+	cursor: pointer;
+	font-size: 12px;
+	margin-right: 1em;
+	width: 70px;
+	height: 25px;
+	padding-bottom: 10px;
+	padding-top: 1px;
+	padding-bottom : 0.1em;
+}
+.ms-WPBorder { border: none; }
+.ms-formtable tr { display: none; }
+.ms-toolbar { display: none; }
+.ms-WPHeader { display: none; }
+.ms-formtoolbar { display: none; }
+.ms-formbody {
+	font-family: "Lucida Sans Unicode", "Lucida Grande","sans-serif";
+	font-size: 12px;
+	color: #1f1f1f;
+	font-weight: normal;
+}
+.frm .Mediumddl { width: 299px; }
+p b ,#attachmentsOnClient b{ font-weight:normal !important; }
+.ms-wpContentDivSpace{ margin-left: 0px !important; }
+/*End of Style added by Ejaz Waquif DT:12/6/2013*/ 
+
+/*** css for pop-up ***/
+.clonePopUp{ background-color:#fddc8a; }
+
+
+/*Porfolio Style :Ejaz DT:1/22/2014*/
+.boxPortfolio{
+	 width: 170px;height: 50px;float:left;margin-right:10px;
+	 padding:5px;font-size:14px;word-break:break-all;
+}
+.boxName{
+	font-size: 12px;color:#ff6600;display:none
+}
+
+.rgTableBread tbody tr td {
+	width:190px !important;
+}
+
+
+.rgTableBread{border-collapse:collapse;white-space-collapse:collapse; margin-top:15px;display:none;}
+.rgTableBread td{border-right:solid 10px #fff;}
+.rgTableBread label.rgBCTitle{display:block;padding:5px 5px;font-size:14px;}
+.rgTableBread label.rgBCHead{background-color:#fff;display:block;padding:2px 5px;font-size:11px;border-top:solid 3px #ffce4f;color:#eb3d01;}
+
+.headDD{
+	display:none;width:190px;background:#faebc4;border:none;position:absolute
+}
+.headul li:hover{
+	background-color:#d4d0c8
+}
+.headul li{
+	padding:3px;
+}
+.liselected{
+	padding:3px;background-color:#f8d488;
+}
+
+
+/*End of Porfolio Style :Ejaz DT:1/22/2014*/
+

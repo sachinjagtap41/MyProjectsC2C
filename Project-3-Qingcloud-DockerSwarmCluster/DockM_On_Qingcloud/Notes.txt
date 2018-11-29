@@ -1,0 +1,26 @@
+Qingcloud conosle link:- 
+
+https://console.qingcloud.com/login
+
+-----------------------------------------------------
+
+Login Credentails for cloud :
+Username : rupal.shirpurkar@click2cloud.net
+Password : RgenSoftIndia@123
+
+------------------------------------------------------------------
+
+qy_access_key_id:   SQHGZOPZSUBJMNMEGXVJ
+qy_secret_access_key:   2zKIpqRebckMZqVtKCDfJ6PQbwsLkV0Sdys8KnRY
+
+------------------------------------------------------------------
+
+User guide document is present at below location: 
+https://github.com/QingCloudAppcenter/DockM/blob/master/docs/README-en-US.md
+
+------------------------------------------------------------------
+
+Basic TestCases are present at below location (Visual studio)
+
+http://srvtfs17:8080/tfs/click2cloud-china/Qing-Cloud-App-Center/Qing-Cloud-App-Center%20Team/_git/dockm-docs
+------------------------------------------------------------------

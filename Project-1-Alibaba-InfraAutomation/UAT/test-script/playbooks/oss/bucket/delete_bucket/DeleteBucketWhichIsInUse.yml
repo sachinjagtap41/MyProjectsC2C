@@ -1,0 +1,35 @@
+#Ansible Module Name -- oss.py
+#Test Case : Delete bucket which is in use
+#Ansible Playbook created by - Abha H
+---
+- name: Delete bucket which is in use
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Delete bucket which is in use
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: '{{ bucketNameInUse }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in result_scn1"
+#            - "'value of status must be one of: present,absent,getinfo_vroute,getinfo_vswitch, got: shghshsg' in result_scn1.msg"
+
+         msg: 'Test pass FAILED !!!'

@@ -1,0 +1,141 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Allocate Public Ip parameter
+# Playbook created by : Sachin Jagtap
+
+- name: Validating allocate public ip parameter
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+    
+  
+  tasks:
+  
+  # Task : 1
+  
+  - block: 
+     - name: Validating - Valid AllocatePublicIp Parameter As True
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        allocate_public_ip: '{{ AllocatePublicIpTrue }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+        
+    rescue: 
+    - debug: msg=" Expected - Success"
+  
+    # Task : 2
+  
+  - block: 
+     - name: Validating - Valid AllocatePublicIp Parameter As False
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        allocate_public_ip: '{{ AllocatePublicIpFalse }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+        
+    rescue: 
+    - debug: msg=" Expected - Success"
+ 
+   # Task : 3
+ 
+  - block: 
+     - name: Validating - Valid AllocatePublicIp Parameter As Null
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        allocate_public_ip: '{{ AllocatePublicIpNull }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+     
+    rescue: 
+    - debug: msg=" Failed - Expected - Success "
+ 
+   # Task : 4
+ 
+  - block: 
+     - name: Validating - Invalid AllocatePublicIp Parameter As Yes
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        allocate_public_ip: '{{ AllocatePublicIpInvalid }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+     
+    rescue: 
+    - debug: msg=" Failure Expected - '{{ AllocatePublicIpInvalid }}' is not a valid parameter"
+ 
+   # Task : 5
+   # By default allocate public ip parameter sets true
+  - block: 
+     - name: Validating - Instance Is Created Without AllocatePublicIp Parameter (Valid Test - Case)
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+       # allocate_public_ip: '{{ AllocatePublicIpTrue }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+     
+    rescue: 
+    - debug: msg=" Expected - Success"
+      
+      
+      
+      
+   

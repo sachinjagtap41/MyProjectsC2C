@@ -1,0 +1,37 @@
+region: cn-beijing
+regionInvalid: cn-india 
+
+##### Create Database ######
+instanceId: rm-dj1lb4wfc69oy1y5e
+instanceIdSuperAcc: rm-dj1azgy14zcm053f2
+instanceIdPostgre: rm-dj1m0697l8m9983uj
+instanceIdPPAS: rm-dj1ka6gv0uc28951p
+
+#### Delete DB ####
+dbNamePresent: demo_database_uat
+dbNamePresentReadOnly: database1
+instanceIdDiff: rm-dj15376wcwsdgno7a
+
+### Switching Database #####
+nodeId: 2622929    # Specify Slave Node Id 
+zone: cn-beijing-b
+
+instanceIdToDelete: rdsinstaceid
+
+dbEngineMysql: MySQL
+dbEngineSqlServer: SQLServer
+dbEnginePostgre: PostgreSQL
+dbEnginePpas: PPAS
+dbEngineInvalid: myslspa
+
+engineVersion: 5.6
+engineVersionInvalid: 5.9
+
+dbInstanceClass: rds.mysql.s2.xlarge
+dbInstanceClassInvalid: dfsdfsdeqwe
+
+
+dbInstanceClassModify:
+dbInstanceClassModifyInvalid: 
+
+

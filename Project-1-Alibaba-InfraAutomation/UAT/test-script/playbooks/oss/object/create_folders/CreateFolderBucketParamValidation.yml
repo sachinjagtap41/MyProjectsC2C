@@ -1,0 +1,94 @@
+#Ansible Module Name -- oss.py
+#Test Case : Create folder bucket parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create folder bucket parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - Create folder bucket parameter validation with invalid value
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}'
+         bucket: '{{ invalidBucket }}'
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - Create folder with blank bucket parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}'
+         bucket: 
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 3 - Create folder without bucket parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}' 
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - Create folder with bucket parameter as 'Bucket'
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         Mode: '{{ modePutFolder }}' 
+         Bucket: bucket-name1 
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+
+            - "'failed' in result_scn1"
+            - "'The specified bucket is not valid.' in result_scn1.msg"
+            
+            - "'failed' in result_scn2"
+            - "'bucket name is required' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'missing required arguments: bucket' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Bucket' in result_scn4.msg"
+            
+         msg:  'Test pass FAILED !!!'
+           

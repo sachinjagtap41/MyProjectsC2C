@@ -1,0 +1,111 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating validate Certs Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating validate Certs Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+    # Task 1 : Validating Invalid validate Certs
+    - block:
+      - name: Scenario 1 - Validating Invalid validate Certs
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone}}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCertsInvalid }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_sc1
+      - debug: var=create_slb_result_sc1
+
+      rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+    # Task 2 : Validating validate Certs by keeping blank
+    - pause: 
+       seconds: 20
+    - block:
+      - name: Scenario 2 - Validating validate Certs by keeping blank
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCertsBlank }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_sc2
+      - debug: var=create_slb_result_sc2
+
+      rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+          
+    - pause: 
+       seconds: 20
+          
+    - block:
+      - name: Delete load balancer with all parameters
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_sc2.result[0].LoadBalancerId }}'
+        when:
+         - "create_slb_result_sc2.changed ==  True"
+
+
+    # Task 3 : Validating validate_certs as Validate_certs
+    - block:
+      - name: Scenario 3 - Validating validate_certs as Validate_certs
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone}}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          Validate_certs: '{{ validateCerts }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_sc3
+      - debug: var=create_slb_result_sc3
+
+      rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+      always:
+      - assert:
+          that:
+            - "'failed' in create_slb_result_sc1"
+            -  "'Boolean sdfjhdh not in either boolean list' in create_slb_result_sc1.msg"
+
+            - "'failed' not in create_slb_result_sc2"
+
+            - "'failed' in create_slb_result_sc3"
+            -  "'unsupported parameter for module: Validate_certs' in create_slb_result_sc3.msg"
+          msg: 'Test pass FAILED !!!'
+

@@ -1,0 +1,85 @@
+# Ansible Module Name - ECS_Disk
+# Interface : CreateDisk
+# Playbook Contains Test-Cases for create disk parameter
+# Playbook created by : Sachin J
+
+
+- name: create disk when disk category is not provided
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../../vars/alicloud-creds.yml
+      
+     
+          
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+
+    - name: Scenario 1 - create disk when disk category is not provided
+
+      ecs_disk:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+       #disk_name: '{{ disk_name }}'
+        #disk_category: '{{ diskCategoryCloud }}'  # Disk category is not provided
+        #description: '{{ description }}'
+        size: '{{ size }}'
+        #status: '{{ status }}'
+        disk_tags: '{{ diskTagsValueNull }}' 
+
+      register: result1
+    - debug: var=result1
+  
+    rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    always:
+     - assert:
+        that: 
+           - "'failed' in result1"   
+           
+#  post_tasks: 
+#   - block:
+#     - name: Scenario - 2 Deleteting the created disk
+#       ecs_disk:
+#        access_key: '{{ aliyun_acs_access_key }}'
+#        secret_key: '{{ aliyun_acs_secret_access_key }}'
+#        acs_region: '{{ region }}'
+#        id: '{{ result1.disk_id }}'  # Disk is in use state
+#        status: '{{ diskStatusDel }}'
+#        
+#       register: result2
+#     - debug: var=result2 
+#     
+#     rescue:
+#      - fail:
+#         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+#        
+#     when:
+#      - "result1.changed ==  True"
+#      
+#    
+#     always:
+#     - assert:
+#        that: 
+#          - "'failed' not in result1" 
+#          - "'failed' not in result2" 
+#
+
+    
+
+
+  

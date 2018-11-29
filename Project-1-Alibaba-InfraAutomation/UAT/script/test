@@ -1,0 +1,120 @@
+#!/bin/bash
+
+MODULE_NAME=$1
+
+date_time="$(date +%Y-%m-%d-%H-%M-%S)"
+
+declare -A modules
+modules=(
+["ecs_instance_create"]="test-script/playbooks/ecs/instance/ecs_create_instance"
+["ecs_instance_status_query"]="test-script/playbooks/ecs/instance/ecs_querying_instance_status"
+["ecs_instance_attribute_modify"]="test-script/playbooks/ecs/instance/ecs_modify_instance_attributes"
+["ecs_instance_add_security_group"]="test-script/playbooks/ecs/instance/ecs_add_ecs_instance_to_sec_group"
+["ecs_instance_remove_security_group"]="test-script/playbooks/ecs/instance/ecs_remove_ecs_instance_from_sec_group"
+["ecs_instance"]="test-script/playbooks/ecs/instance"
+["ecs_disk_create"]="test-script/playbooks/ecs/disks/ecs_create_disk"
+["ecs_disk_attach"]="test-script/playbooks/ecs/disks/ecs_attach_disk"
+["ecs_disk_detach"]="test-script/playbooks/ecs/disks/ecs_detach_disk"
+["ecs_disk_delete"]="test-script/playbooks/ecs/disks/ecs_delete_disk"
+["ecs_disk"]="test-script/playbooks/ecs/disks"
+["ecs_security_group_create"]="test-script/playbooks/ecs/groups/securitygroup_create_sec_group"
+["ecs_security_group_authorize"]="test-script/playbooks/ecs/groups/securitygroup_authorize_sec_group"
+["ecs_security_group_query"]="test-script/playbooks/ecs/groups/securitygroup_query_sec_group_list"
+["ecs_security_group_delete"]="test-script/playbooks/ecs/groups/securitygroup_delete_sec_group"
+["ecs_security_group"]="test-script/playbooks/ecs/groups"
+["ecs_image_create"]="test-script/playbooks/ecs/images/ecs_create_custom_image"
+["ecs_image_delete"]="test-script/playbooks/ecs/images/ecs_delete_custom_image"
+["ecs_image"]="test-script/playbooks/ecs/images"
+["slb_lb_add_backend_servers"]="test-script/playbooks/slb/add_backend_servers"
+["slb_lb_add_vserver_group_backend_servers"]="test-script/playbooks/slb/vserver_group_backend_servers"
+["slb_lb_create_load_balancer"]="test-script/playbooks/slb/create_load_balancer"
+["slb_lb_create_vserver_group"]="test-script/playbooks/slb/create_vserver_group"
+["slb_lb_delete_load_balancer"]="test-script/playbooks/slb/delete_load_balancer"
+["slb_lb_delete_vserver_group"]="test-script/playbooks/slb/delete_vserver_group"
+["slb_lb_describe_health_status_of_backend_server"]="test-script/playbooks/slb/describe_health_status_of_backend_server"
+["slb_lb_listener"]="test-script/playbooks/slb/listener"
+["slb_lb_modify_load_balancer_internet_spec"]="test-script/playbooks/slb/modify_load_balancer_internet_spec"
+["slb_lb_modify_vserver_group_backend_server"]="test-script/playbooks/slb/modify_vserver_group_backend_server"
+["slb_lb_remove_backend_servers"]="test-script/playbooks/slb/remove_backend_servers"
+["slb_lb_remove_vserver_group_backend_servers"]="test-script/playbooks/slb/remove_vserver_group_backend_servers"
+["slb_lb_set_backend_servers"]="test-script/playbooks/slb/backend_servers"
+["slb_lb_set_load_balancer_name"]="test-script/playbooks/slb/set_load_balancer_name"
+["slb_lb_set_load_balancer_status"]="test-script/playbooks/slb/set_load_balancer_status"
+["slb_lb_set_vserver_group_attribute"]="test-script/playbooks/slb/set_vserver_group_attribute"
+["slb"]="test-script/playbooks/slb"
+["vpc_binding_eip"]="test-script/playbooks/vpc/binding_eip"
+["vpc_create_vpc"]="test-script/playbooks/vpc/create_vpc"
+["vpc_create_vswitch"]="test-script/playbooks/vpc/create_vswitch"
+["vpc_creating_custom_route"]="test-script/playbooks/vpc/creating_custom_route"
+["vpc_delete_vpc"]="test-script/playbooks/vpc/delete_vpc"
+["vpc_delete_vswitch"]="test-script/playbooks/vpc/delete_vswitch"
+["vpc_deleting_custom_route"]="test-script/playbooks/vpc/deleting_custom_route"
+["vpc_modifying_eip"]="test-script/playbooks/vpc/modifying_eip"
+["vpc_querying_vrouter_list"]="test-script/playbooks/vpc/querying_vrouter_list"
+["vpc_querying_vswitch_list"]="test-script/playbooks/vpc/querying_vswitch_list"
+["vpc_releasing_eip"]="test-script/playbooks/vpc/releasing_eip"
+["vpc_request_eip"]="test-script/playbooks/vpc/request_eip"
+["vpc_unbinding_eip"]="test-script/playbooks/vpc/unbinding_eip"
+["vpc"]="test-script/playbooks/vpc"
+["oss_create_bucket"]="test-script/playbooks/oss/bucket/create_bucket"
+["oss_delete_bucket"]="test-script/playbooks/oss/bucket/delete_bucket"
+["oss_create_folder"]="test-script/playbooks/oss/object/create_folders"
+["oss_ delete_object"]="test-script/playbooks/oss/object/delete_object"
+["oss_ list_bucket_objects"]="test-script/playbooks/oss/object/list_bucket_objects"
+["oss_ simple_upload"]="test-script/playbooks/oss/object/simple_upload"
+["oss "]="test-script/playbooks/oss"
+["rds_create_account"]="test-script/playbooks/rds/account_management/create_account"
+["rds_delete_account"]="test-script/playbooks/rds/account_management/delete_account"
+["rds_grant_account_permissions"]="test-script/playbooks/rds/account_management/grant_account_permissions"
+["rds_resetting_an_account"]="test-script/playbooks/rds/account_management/resetting_an_account"
+["rds_resetting_instance_password"]="test-script/playbooks/rds/account_management/resetting_instance_password"
+["rds_revoke_account_permissions"]="test-script/playbooks/rds/account_management/revoke_account_permissions"
+["rds_create_database"]="test-script/playbooks/rds/database/create_database"
+["rds_delete_database"]="test-script/playbooks/rds/database/delete_database"
+["rds_changing_the_rds_instance_type"]="test-script/playbooks/rds/instance/changing_the_rds_instance_type"
+["rds_switching_between_primary_and_standby_databases"]="test-script/playbooks/rds/instance/switching_between_primary_and_standby_databases"
+["rds_create_rds_instance"]="test-script/playbooks/rds/instance/create_rds_instance"   
+["rds_modifying_rds_instance"]="test-script/playbooks/rds/instance/modifying_rds_instance" 
+["rds_release_rds_instance"]="test-script/playbooks/rds/instance/release_rds_instance" 
+["rds_restarting_rds_instance"]="test-script/playbooks/rds/instance/restarting_rds_instance" 
+["rds "]="test-script/playbooks/rds"
+
+
+)
+
+
+moduleDir="$(pwd)""/test-script/modules"
+
+info() {
+  echo -e $'\r'"\n\e[1m[INFO] $@...\e[0m\n"$'\r' 2>&1 | tee -a "test-output/$MODULE_NAME $date_time.txt"
+}
+
+run_module_playbooks() {
+	info "Running module ${modules[$MODULE_NAME]}"
+	for f in $(find ${modules[$MODULE_NAME]} -name '*.yml')
+	do
+		if [[ ( "${f}" != */vars/* ) ]]
+	    then
+		   info "Running playbook $f"
+		   ansible-playbook -i hosts -M $moduleDir $f 2>&1 | tee -a  "test-output/$MODULE_NAME $date_time.txt"
+	    fi
+	done
+}
+
+run_all_module_playbooks() {
+   for f in $(find test-script -name '*.yml')
+   do
+       if [[ ( "${f}" != */vars/* ) ]]
+	   then
+		  info "Running playbook $f"
+		  ansible-playbook -i hosts -M $moduleDir $f 2>&1 | tee -a  "test-output/$MODULE_NAME $date_time.txt"
+	   fi
+   done
+}
+
+if [ -z "$MODULE_NAME" ]
+then
+   run_all_module_playbooks
+else
+   run_module_playbooks
+fi

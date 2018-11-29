@@ -1,0 +1,45 @@
+docker load < click2cloud-dockm-new.tar
+
+docker load -i dockm-image.tar
+
+command for windows
+
+docker run -d -p 9000:9000 -v %cd%/userdata:/click2cloud-dockm/data -v /var/run/docker.sock:/var/run/docker.sock:z --name click2cloud-dockm click2cloud/dockm:new
+
+command for linux systems
+
+docker run -d -p 9000:9000 -v $(pwd)/userdata:/click2cloud-dockm/data -v /var/run/docker.sock:/var/run/docker.sock:z --name click2cloud-dockm click2cloud/dockm:new
+
+
+To access container running portainer and s2i, use following command:
+
+docker exec -it <containerid> /bin/bash
+
+
+docker service create \
+    --name click2cloud-dockm \
+    --publish 9000:9000 \
+    --constraint 'node.role == manager' \
+    --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+    --mount type=bind,src=$(pwd)/userdata,dst=/click2cloud-dockm/data \
+     click2cloud/dockm:new \
+    -H unix:///var/run/docker.sock \
+	-l name="Click2Cloud DockM"
+
+	
+	docker service create \
+    --name click2cloud-dockm \
+    --publish 9000:9000 \
+    --constraint 'node.role == manager' \
+    --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+    --mount type=bind,src=$(pwd)/userdata,dst=/click2cloud-dockm/data \
+    click2cloud/dockm:new \
+    -H unix:///var/run/docker.sock 
+	
+
+To hide Dockm container
+
+docker run -d -p 9000:9000 -v $(pwd)/userdata:/click2cloud-dockm/data -v /var/run/docker.sock:/var/run/docker.sock:z --name click2cloud-dockm click2cloud/dockm:new -l name="Click2Cloud DockM"
+
+docker run -d -p 9000:9000 -v %cd%/userdata:/click2cloud-dockm/data -v /var/run/docker.sock:/var/run/docker.sock:z --name click2cloud-dockm click2cloud/dockm:new -l name="Click2Cloud DockM"
+

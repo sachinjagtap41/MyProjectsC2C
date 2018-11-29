@@ -1,0 +1,42 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Add listener with different protocol but same port no
+#Ansible Playbook created by - Abha H
+---
+- name: Add listener with different protocol but same port no
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+     
+  tasks:
+  # Task 1 -  Add listener with different protocol but same port no
+   - block: 
+      - name: Add listener that are already attached to SLB
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerWithPortNoSameAndDiffProtocol }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result
+      - debug: var=create_slb_result
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+          
+     always:
+      - assert:
+         that:
+            - "'failed' in create_slb_result"
+            
+           
+            
+         msg: 'Test pass FAILED !!!'

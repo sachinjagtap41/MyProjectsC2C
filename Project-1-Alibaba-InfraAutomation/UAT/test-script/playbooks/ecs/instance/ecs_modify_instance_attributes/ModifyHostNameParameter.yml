@@ -1,0 +1,224 @@
+# Ansible Module Name - ECS
+# Playbook Contains Test-Cases for Modify Instance's host_name Parameter
+# Playbook created by : Sachin J
+
+
+- name: Validating host_name Parameter
+  hosts: localhost
+  connection: local
+  
+  
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+   
+   
+  # Tasks for host_name parameter
+  
+  tasks:
+  
+  
+    # Task : 1
+    
+   - block:
+     - name: Scenario 1 - Verifying host name parameter is created with less than 30 characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameLessThan30CharModify }}'
+        state: '{{ state }}'
+        
+        
+       register: result_scn1
+     - debug: var=result_scn1
+        
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 2
+      
+   - block:
+     - name: Scenario 2 - Verifying host name parameter is created with more than 30 characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameMoreThan30CharModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn2
+     - debug: var=result_scn2
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 3
+      
+   - block:
+     - name: Scenario 3 - Verifying host name parameter is created with alpha-numeric characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameAlphanumericCharModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn3
+     - debug: var=result_scn3
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 4
+      
+   - block: 
+     - name: Scenario 4 - Verifying host name parameter is created with alpha-betic characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameAlphabeticModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn4
+     - debug: var=result_scn4
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 5
+      
+   - block:
+     - name: Scenario 5 - Verifying host name parameter is accepting special characters _ or .
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameDotOrUnderscoreModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn5
+     - debug: var=result_scn5
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 6
+      
+   - block:
+     - name: Scenario 6 - Verifying host name parameter is not accepting other special characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameOtherSpecialCharModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn6
+     - debug: var=result_scn6
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+       
+       
+      # Task : 7
+      
+   - block:
+     - name: Scenario 7 - Verifying host name parameter accepts default characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameDefaultModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn7
+     - debug: var=result_scn7
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 8
+      
+   - block:
+     - name: Scenario 8 - Verifying host name parameter accepts null characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameNullModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn8
+     - debug: var=result_scn8
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      # Task : 9
+      
+   - block:
+     - name: Scenario 9 - Verifying host name parameter is not modified when attribute contains invalid id parameter
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ host_nameWithInvalidIdModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn9
+     - debug: var=result_scn9
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+     always:
+     - assert:
+        that:
+           - "'failed' not in result_scn1"
+
+           - "'failed' in result_scn2"
+           - "'The specified parameter \"HostName\" is not valid.' in result_scn2.msg[0]['Error Message']"
+
+           - "'failed' not in result_scn3"
+
+           - "'failed' not in result_scn4"
+
+           - "'failed' in result_scn5"
+           - "'The specified parameter \"HostName\" is not valid.' in result_scn5.msg[0]['Error Message']"
+
+           - "'failed' in result_scn6"
+           - "'The specified parameter \"HostName\" is not valid.' in result_scn6.msg[0]['Error Message']"
+
+           - "'failed' not in result_scn7"
+
+           - "'failed' not in result_scn8"
+           
+           - "'failed' in result_scn9"
+           - "'The specified parameter \"HostName\" is not valid.' in result_scn9.msg[0]['Error Message']"
+
+
+        msg: 'EXPECTED - SUCCESS!!! 
+              Playbook FAILED due to improper input values. 
+              REASON: {{ result_scn9 }}'

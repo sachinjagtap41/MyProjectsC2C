@@ -1,0 +1,232 @@
+# Ansible Module Name - ECS
+# Playbook Contains Test-Cases for Modify Instance's InstanceId Parameter
+# Playbook created by : Sachin J
+
+- name: Validating InstanceName Parameter
+  hosts: localhost
+  connection: local
+
+  
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+      
+  tasks:
+  
+  # Task : 1
+  
+  - block:
+    - name: Scenario 1 - Verifying name parameter is not accepting less than 2 characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameLessThan2CharModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn1
+    - debug: var=result_scn1
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 2
+    
+  - block:
+    - name: Scenario 2 - Verifying name parameter is accepting 128 characters only
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceName128CharOnlyModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn2
+    - debug: var=result_scn2
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 3
+    
+  - block:
+    - name: Scenario 3 - Verifying name parameter is not accepting more than 128 characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameMoreThan128CharModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn3
+    - debug: var=result_scn3
+    
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 4
+    
+  - block:
+    - name: Scenario 4 - Verifying name parameter is not accepting default characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameDefaultModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn4
+    - debug: var=result_scn4
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 5
+    
+  - block:
+    - name: Scenario 5 - Verifying name parameter is accepting special characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameSpecialCharModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn5
+    - debug: var=result_scn5
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 6
+    
+  - block:
+    - name: Scenario 6 - Verifying name parameter is not accepting other special characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameOtherSpecialCharModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn6
+    - debug: var=result_scn6
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 7
+    
+  - block:
+    - name: Scenario 7 - Verifying name parameter is not accepting http at begining
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameHttpAtBeginingModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn7
+    - debug: var=result_scn7
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 8
+    
+  - block:
+    - name: Scenario 8 - Verifying name parameter is accepting alphanumeric characetrs
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameAlphanumericModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn8
+    - debug: var=result_scn8
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 9
+    
+  - block:
+    - name: Scenario 9 - Verifying name parameter is accepting alphabetic characetrs
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameAlphabeticModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn9
+    - debug: var=result_scn9
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+    
+    # Task : 10
+    
+  - block:
+    - name: Scenario 10 - Verifying name parameter is accepting null characetrs
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ instanceNameNullCharModify }}'
+        state: '{{ state }}'
+        
+      register: result_scn10
+    - debug: var=result_scn10
+     
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+    always:
+     - assert:
+        that:
+           - "'failed' in result_scn1"
+
+           - "'failed' not in result_scn2"
+
+           - "'failed' in result_scn3"
+
+           - "'failed' not in result_scn4"
+
+           - "'failed' not in result_scn5"
+
+           - "'failed' in result_scn6"
+
+           - "'failed' in result_scn7"
+
+           - "'failed' not in result_scn8"
+           
+           - "'failed' not in result_scn9"
+           
+           - "'failed' not in result_scn10"
+           
+        msg: 'EXPECTED - SUCCESS!!! 
+              Playbook FAILED due to improper input values. 
+              REASON: {{ result_scn10 }} '

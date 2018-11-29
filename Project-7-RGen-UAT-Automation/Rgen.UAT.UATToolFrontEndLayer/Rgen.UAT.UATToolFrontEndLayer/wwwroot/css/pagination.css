@@ -1,0 +1,38 @@
+﻿/* Copyright Â© 2012 RGen Solutions . All Rights Reserved.
+   Contact : support@rgensolutions.com */
+
+
+
+.pagination {
+            font-size: 80%;
+        }
+        
+.pagination a {
+    text-decoration: none;
+	border: solid 1px #AAE;
+	color: #15B;
+}
+
+.pagination a, .pagination span {
+    display: block;
+    float: left;
+    padding: 0.3em 0.5em;
+    margin-right: 5px;
+	margin-bottom: 5px;
+	min-width:1em;
+	text-align:center;
+}
+
+.pagination .current {
+    background: #e0e0e0; /*#f8d03d;*/
+    /*background:#cae581;*/
+    /*background:#F60;*/
+    color: #909090; /*#fff;*/
+	border: solid 1px #AAE;
+}
+
+.pagination .current.prev, .pagination .current.next{
+	color:#999;
+	border-color:#999;
+	background:#fff;
+}

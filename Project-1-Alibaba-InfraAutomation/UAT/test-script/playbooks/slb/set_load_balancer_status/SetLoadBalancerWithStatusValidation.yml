@@ -1,0 +1,54 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Status parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Status parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Set load balancer status with invalid status
+   - block: 
+     - name: Set load balancer status with invalid status
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusInvalid }}'
+        load_balancer_id: '{{ SLBId }}'
+       register: set_slb_status_1
+     - debug: var=set_slb_status_1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    # Task 2 - set load balancer status with blank status
+   - block: 
+     - name: Set load balancer status with blank status
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: 
+        load_balancer_id: '{{ SLBId }}'
+       register: set_slb_status_2
+     - debug: var=set_slb_status_2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' in set_slb_status_1"
+            - "'value of status must be one of: present,modify_spec,absent,modify_status,modify_name,active,inactive, got: create' in set_slb_status_1.msg"
+
+            - "'failed' in set_slb_status_2"
+            - "'value of status must be one of: present,modify_spec,absent,modify_status,modify_name,active,inactive, got: None' in set_slb_status_2.msg"
+         msg: 'Test pass FAILED !!!'

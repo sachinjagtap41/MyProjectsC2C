@@ -1,0 +1,162 @@
+
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+
+}
+
+@{
+    ViewBag.Title = " UAT Project Management: Report";
+}
+
+<!--Start-->
+<div class="box details" style="float:left">
+    <h1><span style="font-weight:bold;font-size:14px;">Query</span></h1>
+    <p style="padding-top: 7px">
+        &nbsp;<label style="font-weight:bold ; color:#616161">
+            Project
+            - Version:
+        </label>
+        <select id="projSelect" class="ddl" style="width:200px ; height:25px">
+            <option value="Select Project">
+                Select Project
+            </option>
+        </select>
+    </p>
+
+    <p class="clear"></p>
+
+    <div class="proj-desc filter DivlblWithNoColon">
+        <table id="queryPanelTab">
+            <tr>
+                <td><label id="crit">Criteria</label></td>
+                <td><label id="opt">Operator</label></td>
+                <td><label id="val">Value</label></td>
+                <td><label id="clau">Clause</label></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <select class="ddl selectCriteria0" id="changeCriteriaDrDo" onchange="Query.changeCriteriaDrDo();">
+                        <option id="selCrit" value="Select Criteria">
+                            Select Criteria
+                        </option>
+                        <option id="TP" value="TestPasses">
+                            Test Passes
+                        </option>
+                        <option id="TC" value="TestCases">
+                            Test Cases
+                        </option>
+                        <option id="TS" value="TestSteps">
+                            Test Steps
+                        </option>
+
+                        <option value="UATItems">UAT Items</option>
+                        <!--<option value="Name" >Free Text </option>-->
+                        <option value="ID">ID</option>
+                        <option value="AssignedTo">Assigned to</option>
+                        <option value="status">Status</option>
+                        <!--<option value="SavedQueries">Saved Queries</option>-->
+
+                    </select>
+                </td>
+                <td>
+                    <div id="operatorDrDo">
+                        <select class="ddl-small selectOperator0" id="ddlOp">
+                            <option selected="selected" id="selOpt">
+                                Select Operator
+                            </option>
+                        </select>
+                    </div>
+                </td>
+
+                <!--<td><input type="text" class="ddl-large inputValue0" style="display:none; "/>-->
+                <td>
+                    <input type="text" class="ddl inputValue0" style="display:none; width:400px" />
+
+
+                    <select id="selectValue" class="ddl selectValue0" name="D1" style="width:400px">
+                        <option value="Select Value" selected="selected">
+                            Select Value
+                        </option>
+                    </select>
+                </td>
+
+                <td>
+                    <select class="ddl-small selectClause0">
+                        <!--option>OR</option-->
+                        <option>AND</option>
+                    </select>
+                </td>
+                <td id="addQuery">
+                    <div style="border:thin;cursor:pointer">
+                        <input type="button" id="btnAddQuery" value="Add Query" class="btnNew1" style="width:100px;margin:0px" />
+                        &nbsp;
+                        <!--[Add Query]-->
+                    </div>
+                </td>
+                <td id="removeQuery"><input id="btnremoveQuery" type="button" value="Remove Query" class="btnNew1" style="width:120px;margin:0px" /></td>
+            </tr>
+
+            <!--tr>
+                <td colspan="5">&nbsp;</td>
+            </tr-->
+
+        </table>
+
+        <table>
+            <tr>
+                <td colspan="5"><input type="button" id="runQ" value="Find" class="btnNew1" style="width:100px" onclick="Main.showLoading();setTimeout('Query.runQ();',200);" /> <input id="clear" type="button" value="Clear All" class="btnNew1" style="width:100px" /> <input type="button" id="saveQ" value="Save Query" class="btnNew1" style="width:100px ; display:none" /> <!--<input id="exportResult" type="button" value="Export To Excel" class="submit"/>--></td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <p class="clear">&nbsp;</p>
+
+    <div id="queryResults" style="margin-top:10px;">
+
+        <p class="clear">&nbsp;</p>
+
+    </div>
+
+    <div id="pagingDiv" style="text-align:right;  padding-right :2px;padding-top:5px"> </div>
+
+</div>
+<div id="divAlert"></div>
+<p class="box-ft" style="display:inline-block"></p>
+<!--End-->
+<head>
+    <script type="text/javascript"  src="~/js/Query/pagingQuery.js"></script>
+    <script type="text/javascript"  src="~/js/Query/query.js"></script>
+    <script type="text/javascript"  src="~/js/Query/resultFields.js"></script>
+    <script type="text/javascript"  src="~/js/Query/resultView.js"></script>
+    <script type="text/javascript"  src="~/js/Query/search.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+	        Main.showLoading();
+	        Query.getUserProjectsandRoles();
+            Query.init();
+            Main.hideLoading();
+        });
+    </script>
+</head>
+<style type="text/css">
+    .filter .ddl {
+        width: 145px;
+    }
+
+    .filter .ddl-small {
+        width: 110px;
+    }
+
+    /* shilpa 16 apr */
+    #queryResults a {
+        color: blue;
+        text-decoration: underline;
+    }
+</style>
+
+
+

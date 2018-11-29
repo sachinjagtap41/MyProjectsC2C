@@ -1,0 +1,14 @@
+ ############ Create bucket ###############
+
+bucketName: uat-bucket-for-testing
+region: cn-beijing  
+
+############ Delete Bucket #########
+bucketNameInUse: bucketinuse
+regionDiff: cn-hongkong 
+
+######### Delete Bucket / List #######
+bucketForList: bucketforlist    # Change while running automation script
+deleteBucket: bucket-for-deletion
+bucketForFolder: bucketforfolder
+

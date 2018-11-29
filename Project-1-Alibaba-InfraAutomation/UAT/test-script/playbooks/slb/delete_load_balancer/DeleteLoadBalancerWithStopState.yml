@@ -1,0 +1,36 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Delete load balancer which is stopped
+#Ansible Playbook created by - Abha H
+---
+- name: Delete load balancer which is stopped
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Delete load balancer which is stopped
+   - block: 
+     - name: Delete load balancer which is stopped
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        load_balancer_id: '{{ deleteLoadBalancerIdWithStopState }}'
+       register: delete_slb_result
+     - debug: var=delete_slb_result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in delete_slb_result"
+         msg: 'Test pass FAILED !!!
+               Playbook FAILED due to improper input values.
+               REASON: {{ delete_slb_result}}'

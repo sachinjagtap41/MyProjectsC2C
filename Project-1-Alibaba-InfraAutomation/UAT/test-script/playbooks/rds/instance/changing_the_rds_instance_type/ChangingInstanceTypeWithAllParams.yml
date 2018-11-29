@@ -1,0 +1,41 @@
+#Ansible Module Name -- rds.py
+#Test Case : changing rds instance type with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: changing rds instance type with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - pause:
+        minutes: 3  
+   - block: 
+      - name: changing rds instance type
+        rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandModify }}'
+         instance_id: '{{ instanceId }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         pay_type: '{{ payType }}'
+        register: result
+      - debug: var=result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result"
+ 
+         msg: 'Test pass FAILED !!!'
+               

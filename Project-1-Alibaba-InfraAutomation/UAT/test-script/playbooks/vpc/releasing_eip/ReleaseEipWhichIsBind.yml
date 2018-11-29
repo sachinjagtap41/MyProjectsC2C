@@ -1,0 +1,35 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Release Eip which is already bind to some instance
+#Ansible Playbook created by - Abha H
+---
+- name: Release Eip which is already bind to some instance
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - Release Eip which is already bind to some instance
+   - block: 
+     - name: Release Eip which is already bind to some instance
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        bandwidth: '{{ bandwidth }}'
+        allocation_id: '{{ allocationIdInUse }}'
+       register: req_eip
+     - debug: var=req_eip
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in req_eip"
+
+         msg: 'Test pass FAILED !!!'

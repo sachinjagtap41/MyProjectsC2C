@@ -1,0 +1,114 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Wait Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Wait Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+ # Task 1 : Validating Invalid Wait
+    - block:
+      - name: Validating Invalid Wait
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts}}'
+          wait: '{{ waitInvalid }}'
+          wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_task1
+      - debug: var=create_slb_result_task1
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+ 
+ # Task 2 : Validating Wait by keeping blank\
+    - pause: 
+       seconds: 20
+    - block:
+      - name: Validating Wait by keeping blank
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts }}'
+          wait: '{{ waitBlank }}'
+          wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_task2
+      - debug: var=create_slb_result_task2    
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    - pause: 
+       seconds: 20
+
+    - block:   
+      - name: Delete load balancer with all parameters
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: absent
+          load_balancer_id: '{{ create_slb_result_task2.result[0].LoadBalancerId }}'
+        when:
+          - "create_slb_result_task2.changed ==  True"
+
+  
+ # Task 3 : Validating wait as Wait
+    - block:
+      - name: Validating wait as Wait
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts}}'
+          Wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_task3
+      - debug: var=create_slb_result_task3
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+      always:
+      - assert:  
+         that:
+            - "create_slb_result_task1.changed ==  false"
+            - "'Boolean ahghgd not in either boolean list' in create_slb_result_task1.msg"
+            
+            
+            - "create_slb_result_task3.changed ==  false"
+            - "'unsupported parameter for module: Wait' in create_slb_result_task3.msg"
+            
+            
+            - "'failed' not in create_slb_result_task2"
+            
+               
+                           
+         msg: 'Test pass FAILED !!!'
+         

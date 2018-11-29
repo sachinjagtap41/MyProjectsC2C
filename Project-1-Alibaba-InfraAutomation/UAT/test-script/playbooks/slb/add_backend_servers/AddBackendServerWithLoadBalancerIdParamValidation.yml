@@ -1,0 +1,91 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Add Backend Server
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Add Backend Servers LoadBalancerId Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 :
+  
+  - block:
+    - name: Add backend servers without providing loadBalancerId
+      ecs_slb: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'       
+       #region: '{{ region }}'                                 
+      #load_balancer_id: '{{ loadBalancerId }}'                 # Without loadBalancerId parameter           
+       backend_servers: '{{ backendServers }}'                     
+       status: '{{ status }}'
+                                            
+      register: AddBackendServerResult1
+    - debug: var=AddBackendServerResult1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+   
+  - block:
+   # Task 2 :
+    - name: Add backend servers with loadBalancerId parameter which is already deleted
+      ecs_slb: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'       
+       #region: '{{ region }}'                                 
+       load_balancer_id: '{{ loadBalancerIdAlreadyDeleted }}'                     # Already deleted backend server       
+       backend_servers: '{{ backendServers }}'                     
+       status: '{{ status }}'      
+                                      
+      register: AddBackendServerResult2
+    - debug: var=AddBackendServerResult2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+
+    
+  - block:
+   # Task 3 :
+    - name: Add backend servers with loadBalancerId parameter which is invalid
+      ecs_slb: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'       
+       #region: '{{ region }}'                                 
+       load_balancer_id: '{{ loadBalancerIdInvalid }}'                           # Invalid loadBalancerId 
+       backend_servers: '{{ backendServers }}'                    
+       status: '{{ status }}'      
+                                      
+      register: AddBackendServerResult3
+    - debug: var=AddBackendServerResult3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+            
+    always:
+     - assert:  
+         that:
+            - "'failed'  in AddBackendServerResult1"
+            - "'missing required arguments' in AddBackendServerResult1.msg"
+            
+            - "'failed'  in AddBackendServerResult2"
+            - "'Could not find provided load balancer instance' in AddBackendServerResult2.msg"
+            
+            - "'failed'  in AddBackendServerResult3"
+            - "'Could not find provided load balancer instance' in AddBackendServerResult3.msg"
+         
+         msg: 'Test pass FAILED !!!'         
+            
+            

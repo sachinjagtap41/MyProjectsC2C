@@ -1,0 +1,231 @@
+#Ansible Module Name -- oss.py
+#Test Case : create bucket with bucket parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: create bucket with bucket parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Senario1 - create bucket with bucket parameter having Upper-Case letters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketNameWithUpperCase }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - create bucket with bucket param having special characs
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketNameWithSplChars }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - block:
+     - name: Scenario 3 - create bucket with bucket param having less than 3 chars
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketNameWithLessThan3Chars }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - pause:
+       minutes: 1
+        
+   - block:
+     - name: Scenario 4 - create bucket with bucket param having exact 63 chars
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketNameWithExact63Chars }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 1
+        
+   - block:
+     - name: Scenario 4.1 - Delete bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         region: '{{ region }}'         
+         bucket: '{{ bucketNameWithExact63Chars }}'
+       register: result_del_scn4
+     - debug: var=result_del_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 5 - create bucket with bucket param having more than 63 chars
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketNameWithMoreThan63Chars }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn5
+     - debug: var=result_scn5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 1
+        
+   - block: 
+     - name: Scenario 6 - create bucket with bucket param having exact 8 chars
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketNameWithExact8Chars }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn6
+     - debug: var=result_scn6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+   - pause:
+       minutes: 1
+ 
+   - block: 
+     - name: Scenario 6.1 - Delete bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         region: '{{ region }}'         
+         bucket: '{{ bucketNameWithExact8Chars }}'
+       register: result_del_scn6
+     - debug: var=result_del_scn6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+       
+   - block:
+     - name: Scenario 7 - create bucket with bucket param blank
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: 
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn7
+     - debug: var=result_scn7
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - block:
+     - name: Scenario 8 - create bucket with bucket param as Bucket
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         Bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn8
+     - debug: var=result_scn8
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 9 - create bucket without bucket param 
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn9
+     - debug: var=result_scn9
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+                
+        
+     always:
+      - assert:
+         that:
+            - "'failed' in result_scn1"
+#            - "'Error in creating bucket demo-UAT-Bucket. Details: {HostId: oss-cn-hongkong.aliyuncs.com, Message: The specified bucket is not valid., Code: InvalidBucketName, RequestId: 58DB420FB7190A531B0F0DED, BucketName: demo-UAT-Bucket, }' in result_scn1.msg[0]"
+
+            - "'failed' in result_scn2"
+#            - "'Error in creating bucket _^^trdfggf$. Details: {HostId: oss-cn-hongkong.aliyuncs.com, Message: The specified bucket is not valid., Code: InvalidBucketName, RequestId: 58DB4211B89D9402220D0DFC, BucketName: _^^trdfggf$, }' in result_scn2.msg[0]"
+
+            - "'failed' in result_scn3"
+#            - "'Error in creating bucket ab. Details: {HostId: oss-cn-hongkong.aliyuncs.com, Message: The specified bucket is not valid., Code: InvalidBucketName, RequestId: 58DB42128CEE31C9654B15BA, BucketName: ab, }' in result_scn3.msg[0]"
+            
+            - "'failed' in result_scn5"
+#            - "'Error in creating bucket bucketbucketbucketbucketbucketbucketbucketbucketbucketbucketbucket. Details: {HostId: oss-cn-hangzhou.aliyuncs.com, Message: The specified bucket is not valid., Code: InvalidBucketName, RequestId: 58DB66F3CE2B8017140AD961, BucketName: bucketbucketbucketbucketbucketbucketbucketbucketbucketbucketbucket, }' in result_scn5.msg[0]"
+            
+            - "'failed' not in result_scn4"
+            - "'failed' not in result_del_scn4"
+            
+            - "'failed' not in result_scn6"
+            - "'failed' not in result_del_scn6"
+            
+            - "'failed' in result_scn7"
+            - "'bucket name is required' in result_scn7.msg"
+            
+            - "'failed' in result_scn8"
+            - "'unsupported parameter for module: Bucket' in result_scn8.msg"
+            
+            - "'failed' in result_scn9"
+            - "'missing required arguments: bucket' in result_scn9.msg"
+
+         msg: 'Test pass FAILED !!!'
+        

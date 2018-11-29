@@ -1,0 +1,45 @@
+#Ansible Module Name -- oss.py
+#Test Case : Delete object with all the parameter
+#Ansible Playbook created by - Sachin J
+---
+- name: Delete object with all the parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks: 
+  
+  # Task : 1
+   - block:
+     - name: Scenario 1 - Delete bucket object
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDeleteObject }}'
+         region: '{{ region }}'
+         bucket: deleteobjectwithall
+         object_list: 
+             commands.txt
+         
+         
+       register: result_scn1
+     - debug: var=result_scn1
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+           
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values.
+               REASON: {{ result_scn1 }}'
+

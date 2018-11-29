@@ -1,0 +1,104 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Grant account permissions with Db name parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Grant account permissions with Db name parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Grant account permissions with invalid Db name parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandGrant }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         db_name: '{{ dbNameInvalid }}' 
+         account_privilege: '{{ accountPriveledgeGrant }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 2 - Grant account permissions without Db name parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandGrant }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}' 
+         account_privilege: '{{ accountPriveledgeGrant }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 3 - Grant account permissions with blank Db name parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandGrant }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         db_name:  
+         account_privilege: '{{ accountPriveledgeGrant }}'
+       register: result_scn3
+     - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 4 - Grant account permissions with db name parameter as Db name
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandGrant }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         Db_name: '{{ dbName }}' 
+         account_privilege: '{{ accountPriveledgeGrant }}'
+       register: result_scn4
+     - debug: var=result_scn4
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            
+            - "'failed' in result_scn2"
+            - "'db_name is required for granting account permission' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'db_name is required for granting account permission' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Db_name' in result_scn4.msg"
+            
+            
+         msg: 'Test pass FAILED !!!'

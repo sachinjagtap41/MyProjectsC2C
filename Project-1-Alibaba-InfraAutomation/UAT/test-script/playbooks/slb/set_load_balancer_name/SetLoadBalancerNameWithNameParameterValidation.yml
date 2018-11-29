@@ -1,0 +1,135 @@
+#Ansible Module Name -- Serverload Balancer
+#Test Case : Name Parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Region Parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Name Parameter validation with nos
+   - block: 
+     - name: Name Parameter validation with nos
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBNameNos }}'
+       register: set_slb_name_result_1
+     - debug: var=set_slb_name_result_1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+      # Task 2 - Name Parameter validation with spl chars
+   - block: 
+     - name: Name Parameter validation with spl chars
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBNameSplChar }}'
+       register: set_slb_name_result_2
+     - debug: var=set_slb_name_result_2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    # Task 3 - Name Parameter validation with alphanumeric value
+   - block: 
+     - name: Name Parameter validation with alphanumeric value
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBNameAplphaNos }}'
+       register: set_slb_name_result_3
+     - debug: var=set_slb_name_result_3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    # Task 4 - Name Parameter validation with 1 char
+   - block: 
+     - name: Name Parameter validation with 1 char
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBNameWith1Char }}'
+       register: set_slb_name_result_4
+     - debug: var=set_slb_name_result_4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    # Task 5 - Name Parameter validation SLB Name With Exact 80 Char
+   - block: 
+     - name: Name Parameter validation SLB Name With Exact 80 Char
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBNameWithExact80Char }}'
+       register: set_slb_name_result_5
+     - debug: var=set_slb_name_result_5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    # Task 6 - Name Parameter validation with SLB Name With more than 80 Char
+   - block: 
+     - name: Name Parameter validation SLB Name With more than 80 Char
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBNameWithMoreThan80Char }}'
+       register: set_slb_name_result_6
+     - debug: var=set_slb_name_result_6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' not in set_slb_name_result_1"
+
+            - "'failed' in set_slb_name_result_2"
+            - "'The specified parameter \"LoadBalancerName\" is not valid.' in set_slb_name_result_2.msg[0]['Error Message']"
+
+            - "'failed' not in set_slb_name_result_3"
+
+            - "'failed' not in set_slb_name_result_4"
+
+            - "'failed' not in set_slb_name_result_5"
+
+            - "'failed' in set_slb_name_result_6"
+            - "'The specified parameter \"LoadBalancerName\" is not valid.' in set_slb_name_result_6.msg[0]['Error Message']"
+         msg: 'Test pass FAILED !!!'

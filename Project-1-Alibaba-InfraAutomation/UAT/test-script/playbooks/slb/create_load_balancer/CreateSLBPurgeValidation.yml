@@ -1,0 +1,206 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Purge Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Purge Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+   # Task 1 : Validating Invalid Purge listener
+   - block:
+     - name: Scenario 1 - Validating Invalid Purge listener
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        purge_listeners: '{{ purgeListenersInvalid }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+       register: create_slb_result_scn1
+     - debug: var=create_slb_result_scn1
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   # Task 2 : Validating Purge listener by keeping blank
+   - pause: 
+       seconds: 20
+   - block:
+     - name: Scenario 2 - Validating Purge listener by keeping blank
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        purge_listeners: '{{ purgeListenersBlank }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+       register: create_slb_result_scn2
+     - debug: var=create_slb_result_scn2
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   - pause:
+        seconds: 20
+
+   - block:    
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn2.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn2"
+
+   # Task 3 : Validating purge_listeners as Purge_listener
+   - block:
+     - name: Scenario 3 - Validating purge_listeners as Purge_listener
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        Purge_listeners: '{{ purgeListeners }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_slb_result_scn3
+     - debug: var=create_slb_result_scn3
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   # Task 4 : Validating Invalid Purge instance id
+   - block:
+     - name: Scenario 4 - Validating Invalid Purge instance id
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        purge_instance_ids: '{{ purgeInstanceIdInvalid }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_slb_result_scn4
+     - debug: var=create_slb_result_scn4
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   # Task 5 : Validating Purge instance id by keeping blank
+   - pause: 
+       seconds: 20
+   - block:
+     - name: Scenario 5 - Validating Purge instance id by keeping blank
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        purge_instance_ids: '{{ purgeInstanceIdBlank }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_slb_result_scn5
+     - debug: var=create_slb_result_scn5
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   - pause:
+        seconds: 20
+
+   - block:          
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn5.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn5"
+
+   # Task 6 : Validating purge_instance_ids as Purge_instance_ids
+   - block:
+     - name: Scenario 6 - Validating purge_instance_ids as Purge_instance_ids
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        Purge_instance_ids: '{{ purgeInstanceId }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_slb_result_scn6
+     - debug: var=create_slb_result_scn6
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in create_slb_result_scn1"
+            -  "'Boolean hghghg not in either boolean list' in create_slb_result_scn1.msg"
+
+            - "'failed' not in create_slb_result_scn2"
+
+            - "'failed' in create_slb_result_scn3"
+            -  "'unsupported parameter for module: Purge_listeners' in create_slb_result_scn3.msg"
+
+            - "'failed' in create_slb_result_scn4"
+            -  "'Boolean jajaa not in either boolean list' in create_slb_result_scn4.msg"
+
+            - "'failed' not in create_slb_result_scn5"
+
+            - "'failed' in create_slb_result_scn6"
+            -  "'unsupported parameter for module: Purge_instance_ids' in create_slb_result_scn6.msg"
+         msg: 'Test pass FAILED !!!'
+
+

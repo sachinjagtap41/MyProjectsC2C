@@ -1,0 +1,89 @@
+#Ansible Module Name - ECS_GROUP-
+#Test Case : Verify that secruity group is created with all the mandatory parameters
+#Ansible Playbook created by - Sachin J
+
+- name: Validating security group is created with mandatory parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block:
+   # Task : 1
+     - name: Scenario 1 - Create security group and authorize it using group id
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: '{{SGName}}'
+         description: '{{SGDescription}}'
+    
+       register: Scenario1
+     - debug: var=Scenario1
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+  
+   - block: 
+   # Task : 2
+     - name: Scenario 2 - Authorize security group with rules
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_id: '{{ Scenario1.group_id  }}' 
+        state: '{{ status }}'
+        rules:  
+          - ip_protocol: tcp   
+            port_range: 80/80
+            cidr_ip: '192.168.0.98/32'
+          
+     
+       register: Scenario2
+     - debug: var=Scenario2   
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+        
+        
+   - block: 
+   # Task : 3
+     - name: Scenario 3 - delete security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ Scenario1.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: Scenario3
+     - debug: var=Scenario3
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+     always:
+     - assert:
+        that: 
+           - "'failed' not in Scenario1"  
+           - "'failed' not in Scenario2" 
+           - "'failed' not in Scenario3"  
+            

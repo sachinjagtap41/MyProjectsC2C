@@ -1,0 +1,34 @@
+# Ansible Module Name - ecs_ami
+# Playbook created by : Sachin J
+
+
+# Region parameter
+region: cn-beijing
+
+######### Create Custom Image ########
+
+# ECS Instance Id
+ecsInstanceId: i-2zedh8b4m3cgxo1iyb1t # ID of ECS instance to create custom image from
+ecsInstanceIdLaunchPerm: i-2zedh8b4m3cgxo1iyb1t # ID of ECS instance to create custom image from to test Launch Permission Scenario
+
+
+# Snapshot id
+snapshotId: s-2ze80rucou84ffx472ng # Snapshot ID to create custom Image from
+dataDiskSnapshotId: s-t4n2oby5qeklirfo79cl # Datadisk Snapshot ID to create custom Image from
+
+
+# Disk Mapping      
+diskMapping:
+    - device: /dev/xvda
+      disk_size: 1900
+      snapshot_id: s-2ze80rucou84ffx472ng
+
+
+# Launch permission
+launchPermission: ['XXXXXXXXXXX','XXXXXXXXXXX']   # More than 10 ids are not accepted
+
+
+######### Delete Custom Image ########
+
+# Image Id
+imageId: m-2zee7199ygkyjwh4q50b # Image ID used to test image deletion scenario

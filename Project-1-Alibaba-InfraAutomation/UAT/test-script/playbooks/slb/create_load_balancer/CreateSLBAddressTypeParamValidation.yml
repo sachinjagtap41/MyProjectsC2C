@@ -1,0 +1,112 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Address Type Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Address Type Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+  # Task 1 : Validating Invalid Address Type
+  - block:
+    - name: Scenario 1 - Validating Invalid Address Type
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        address_type: '{{ addressTypeInvalid}}'
+        internet_charge_type: '{{ internetChargeType }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn1
+    - debug: var=create_slb_result_scn1
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+            
+  # Task 2 : Validating Address Type as Address_type
+  - block: 
+    - name: Scenario 2 - Validating Address Type as Address_type
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        Address_type: '{{ addressType}}'
+        internet_charge_type: '{{ internetChargeType }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn2
+    - debug: var=create_slb_result_scn2
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+  # Task 3 : Validating Address Type by keeping blank
+  
+  - pause:
+       seconds: 20
+  - block:
+    - name: Scenario 3 - Validating Address Type by keeping blank
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        #master_zone_id: '{{ masterZone }}'
+        #slave_zone_id: '{{ slaveZone }}'
+        address_type: '{{ addressTypeBlank}}'
+        internet_charge_type: '{{ internetChargeType }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn3
+    - debug: var=create_slb_result_scn3
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:  
+         that:
+            - "'failed' in create_slb_result_scn1"
+            -  "'The specified parameter \"AddressType\" is not valid.' in create_slb_result_scn1.msg[0]['Error Message']"
+
+            - "'failed' in create_slb_result_scn2"
+            -  "'unsupported parameter for module: Address_type' in create_slb_result_scn2.msg"
+
+            - "'failed' not in create_slb_result_scn3"
+         msg: 'Test pass FAILED !!!'
+
+  - pause:
+       seconds: 20
+ 
+  post_tasks: 
+    - name: Delete load balancer with all parameters
+      ecs_slb_lb:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       status: absent
+       load_balancer_id: '{{ create_slb_result_scn3.result[0].LoadBalancerId }}'
+      when:
+        - "'failed' not in create_slb_result_scn3"

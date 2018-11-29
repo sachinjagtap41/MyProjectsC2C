@@ -1,0 +1,58 @@
+# Ansible Module Name - ECS_Disk
+# Interface : AttachDisk
+# Playbook Contains Test-Cases for attach disk 
+# Playbook created by : Sachin J
+
+
+- name: Attach disk to an instance where instance_id is not provided
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+     - ../../../vars/alicloud-creds.yml
+     
+          
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+   
+    - name: Scenario 1 - Attach disk to an instance where instance_id is not provided
+
+      ecs_disk:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        #instance_id: '{{ ecsInstanceIdInvalid }}'   Without Instance_id parameter
+        disk_id: '{{ diskId }}'               
+        device: '{{ deviceName }}'  
+        delete_with_instance: '{{ deleteWithInstance }}'
+        status: '{{ diskStatus }}'
+       
+
+      register: result1
+    - debug: var=result1
+
+    rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+    always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+         
+
+    
+
+
+
+    
+
+

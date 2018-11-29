@@ -1,0 +1,58 @@
+#Ansible Module Name -- Serverload Balancer
+#Test Case : Region Parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Region Parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Region Parameter validation with invalid RegionId
+   - block: 
+     - name: Region Parameter validation with invalid id
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionAlphaNo }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        load_balancer_name: '{{ SLBName }}'
+       register: set_slb_name_result_1
+     - debug: var=set_slb_name_result_1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+      # Task 2 - Region Parameter validation with blank
+   - block: 
+     - name: Region Parameter validation with blank
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: 
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBName }}'
+        load_balancer_name: '{{ SLBName }}'
+       register: set_slb_name_result_2
+     - debug: var=set_slb_name_result_2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' in set_slb_name_result_1"
+            - "'Can not find endpoint to access.' in set_slb_name_result_1.msg[0]['Error Message']"
+
+            - "'failed' in set_slb_name_result_2"
+            - "'region is required' in set_slb_name_result_2.msg"
+         msg: 'Test pass FAILED !!!'
+
+    

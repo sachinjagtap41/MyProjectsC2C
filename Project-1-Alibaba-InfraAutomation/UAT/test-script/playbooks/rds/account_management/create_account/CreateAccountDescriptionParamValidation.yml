@@ -1,0 +1,251 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Create account with description parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create account with description parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Create account with invalid description parameter with https://
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ descriptionInvalid }}'
+         account_type: '{{ accountType }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20
+     
+   - block :
+     - name: Scenario 2 - Create account without description parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         account_type: '{{ accountType }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20
+        
+   - block :
+      - name: Scenario 2.1 - delete account
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceId }}'
+          account_name: '{{ accName }}'  
+        register: result_del_scn2
+      - debug: var=result_del_scn2
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20 
+     
+   - block :
+     - name: Scenario 3 - Create account with blank description parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}' 
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}' 
+         account_password: '{{ accPwd }}'
+         description: 
+         account_type: '{{ accountType }}'
+       register: result_scn3
+     - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20
+        
+   - block :
+      - name: Scenario 3.1 - delete account
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceId }}'
+          account_name: '{{ accName }}'  
+        register: result_del_scn3
+      - debug: var=result_del_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     
+   - block :
+     - name: Scenario 4 - Create account with account description as Description
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         Description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn4
+     - debug: var=result_scn4
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 5 - Create account with description parameter having 1 char
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ descriptionWith1Char }}'
+         account_type: '{{ accountType }}'
+       register: result_scn5
+     - debug: var=result_scn5
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20
+     
+   - block :
+     - name: Scenario 6 - Create account with account name parameter having exact 256 char
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ descriptionWith256Char }}'
+         account_type: '{{ accountType }}'
+       register: result_scn6
+     - debug: var=result_scn6
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20
+        
+   - block :
+      - name: Scenario 6.1 - delete account
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceId }}'
+          account_name: '{{ accName }}'  
+        register: result_del_scn6
+      - debug: var=result_del_scn6
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block :
+     - name: Scenario 7 - Create account with account name parameter having more than 256 char
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ descriptionWithMoreThan256Char }}'
+         account_type: '{{ accountType }}'
+       register: result_scn7
+     - debug: var=result_scn7
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+          
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            - "'The specified parameter \"DBDescription\" is not valid.' in result_scn1.msg[0]['Error Message']"
+            
+            - "'failed' not in result_scn2"
+            - "'failed' not in result_del_scn2"
+
+            
+            - "'failed' not in result_scn3"
+            - "'failed' not in result_del_scn3"
+
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Description' in result_scn4.msg"
+            
+            - "'failed' in result_scn5"
+            - "'The specified parameter \"DBDescription\" is not valid.' in result_scn5.msg[0]['Error Message']"
+
+            - "'failed' not in result_scn6"
+            - "'failed' not in result_del_scn6"
+
+
+            - "'failed' in result_scn7"
+            - "'The specified parameter \"DBDescription\" is not valid.' in result_scn7.msg[0]['Error Message']"
+            
+         msg: 'Test pass FAILED !!!'

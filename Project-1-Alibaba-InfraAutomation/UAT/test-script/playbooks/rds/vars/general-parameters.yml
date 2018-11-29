@@ -1,0 +1,210 @@
+############# Create Database ##########
+
+
+command: create
+
+commandDelete: delete
+    
+
+
+characterSetName: utf8
+
+######### Parameter validation ###########
+ 
+ ### 1.Command ###
+
+
+
+### 3. Database Name ###
+dbNameInvalid: $$$$jhhghff
+dbName64Chars: dbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnm
+dbNameMoreThan64Chars: dbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbnamedbname
+dbName1Chars: ab
+
+## 4. Description ###
+dbDescription1Char: a
+
+## 5. Character Set Name ####
+characterSetNameInvalid: fgsdgsg
+
+######### Create Account ########
+accName: uatdatabaseuser
+accPwd: usr@1234
+description: Database User
+accountType: normal
+accountTypeSuper: Super
+accNameSuper: superuser
+accPwdSuper: superusr@12
+instanceIdInvalid: rm-dj1e1019ojbq6
+
+##### Parameter Validation ####
+
+### 1. Account Name ###
+accNameInvalid: Acc-Na$$$
+accNameWith1Char: a
+accNameWith16Char: account_namedemo
+accNameWithMoreThan16Char: account_name_demo
+
+## 2. Account password ###
+accPwdInvalid: ~~~~~~~~~~~~
+accPwdWith1Char: a
+accPwdWith6Char: user@1
+accPwdWith32Char: user@123user@123user@123user@123
+accPwdWithMoreThan32Char: user@123user@123user@123user@123user@123
+
+## 3. description ###
+descriptionInvalid: http://fsdafdg
+descriptionWith1Char: a
+descriptionWith256Char: DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDes
+descriptionWithMoreThan256Char: DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription
+
+### 4. Account Type ###
+accountTypeInvalid: public
+
+############ Grant Acc Permission ###########
+commandGrant: grant
+commandRevoke: revoke
+accountPriveledgeGrant: ReadWrite
+accountPriveledgeInvalid: public
+
+######### Resetting Acc Password #########
+commandResetPwd: reset_password
+
+######## Resetting Account ########
+commandReset: reset
+
+######### Switching Database #########
+commandSwitch: switch
+forceYes: 'Yes'
+forceNo: 'No'
+
+#### Param Validation ####
+#### 1. Node id ###
+nodeIdInvalid: 0012345
+
+### 2. Force ####
+forceInvalid: public
+
+########## Change RDS Instance Type #####
+commandModify: modify
+dbInstanceClass: rds.mysql.s2.large
+dbInstanceStorage: 15
+payType: Postpaid
+
+##### Parameter Validation ####
+dbInstanceClassInvalid: public
+dbInstanceStorageInvalid: 99999999
+payTypeInvalid: Private
+dbInstanceClassPostgre: rds.pg.s2.large
+dbInstanceClassPPAS: rds.ppas.m1.medium
+
+
+
+
+##########################################
+
+
+regionInvalid: cn-india
+zoneInvalid: cn-india-a
+
+commandRestart: reboot
+commandInvalid: Cdelete
+
+
+forceFailover: yes # no, yes
+forceFailoverInvalid: invalidforcefailover
+
+instanceIdToRestartInvalid: rdsrestart
+instanceIdToDeleteInvalid: rds.1254
+
+instanceDescription: description
+instanceDescriptionWith2Char: de
+instanceDescriptionWith256Char: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescrdescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescript
+instanceDescriptionWithMoreThan256char: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescrdescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptidescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescrdescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescripti
+instanceDescriptionWithUnderscore: descr_iptions
+instanceDescriptionWithHypen: descr-iption
+instanceDescriptionWithOtherSpecialchar: descrip@tion
+instanceDescriptionWithLessThan2Char: D
+instanceDescriptionWithAlphanumeric: desc123
+instanceDescriptionWithhttp: http://
+
+dbDescription: description
+dbDescriptionWith2Char: de
+dbDescriptionWith256Char: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescrdescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescripti
+dbDescriptionWithMoreThan256char: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescrdescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptidescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescrdescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptil
+dbDescriptionWithUnderscore: descr_iptions
+dbDescriptionWithHypen: descr-iption
+dbDescriptionWithOtherSpecialchar: descrip@tion
+dbDescriptionWithLessThan2Char: D
+dbDescriptionWithAlphanumeric: desc123
+dbDescriptionWithhttp: http://
+
+dbName: databaseforuat
+dbNameWith2Char: de
+dbNameWith64Char: namenamenamenamenamenamenamenamenamenamenamenamenamenamenamename
+dbNameWithMoreThan64char: namenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamename
+dbNameWithHypen: name-name
+dbNameUnderScore: name_name
+dbNameWithOtherSpecialchar: descrip@tion
+dbNameWithLessThan2Char: D
+dbNameWithAlphanumeric: name123
+dbNameWithhttp: http://
+
+instanceNetTypeInternet: Internet
+instanceNetTypeIntranet: Intranet
+instanceNetTypeInvalid: dfdfsewe
+
+securityIpList: 192.168.0.2/25
+securityIpAsList: 192.168.0.2/25,192.150.0.2/24
+securityIpListInvalid: 0.0.0.0
+securityIpListInvalidChar: secuirtyiplist
+securityIpListModify: 192.168.0.0/24
+
+vpcId: vpc-2ze5hrb3y5ksx5oa3a0xa 
+vpcIdInvalid: 
+
+vswitchId: vsw-2zewmmqum64hvlrididef
+vswithcIdInvalid:
+
+allocatePublicIpYes: yes
+allocatePublicIpTrue: true
+allocatePublicIpFalse: false 
+allocatePublicIpInvalid: yesno 
+allocatePublicIpNo: no
+
+waityes: yes
+waitno: no
+waitInvalid: nyes
+waitTimeout: 20
+
+dbTags:  
+  "name": "rds"
+dbTagsValidation:  
+  "name": "rds"
+  "name1": "rds1"
+  "name2": "rds2"
+  "name3": "rds3"
+  
+# Parameters for modify rds instance
+currentConnectionStringModify:
+connectionStringPrefix: 
+port: 3325
+db_instance_class: 
+db_instanceStorage: 
+instancedescription: 
+securityIpLiist: 
+instanceNetworkTypeClassic: Classic
+instanceNetworkTypeVpc: VPC
+
+
+maintWindowModify: 
+preferredBackupTimeModify: 
+preferredBackupPeriodModify: 
+backupRetentionPeriodModify: 
+
+connectionModeSafe: Safe
+connectionModePerformance: Performance
+
+  
+  
+  

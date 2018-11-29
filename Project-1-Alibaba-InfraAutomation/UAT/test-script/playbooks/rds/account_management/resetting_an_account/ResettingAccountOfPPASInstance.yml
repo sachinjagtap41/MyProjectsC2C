@@ -1,0 +1,60 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Resetting Account of PPAS instance
+#Ansible Playbook created by - Abha H
+---
+- name: Resetting Account of PPAS instance
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Create account in PPAS instance
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceIdPPAS }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - pause :
+        seconds: 60
+        
+   - block :
+     - name: Scenario 2 - Resetting Account 0f PPAS instance
+       rds_acc_mgmt:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandReset }}'
+        db_instance_id: '{{ instanceIdPPAS }}'
+        account_name: '{{ accName }}'
+        account_password: '{{ accPwd }}'
+       register: result_scn2
+     - debug: var=result_scn2   
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_scn2" 
+         msg: "Test Pass Failed !!"       

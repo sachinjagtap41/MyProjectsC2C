@@ -1,0 +1,263 @@
+@{
+    Layout = "~/Views/Shared/UatAdminMaster.cshtml";
+}
+@{
+    ViewBag.Title = "UAT Project Management:Test Cases";
+}
+
+<script type="text/javascript">
+
+    var flagForClone = 'false';
+
+    $(function () {
+        
+        Main.showLoading();
+        if (isRootWeb)
+            $("#downloadPdf").attr('href', '../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Test Case Template.pdf');
+        else
+            $("#downloadPdf").attr('href', '../../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Test Case Template.pdf');
+        testcase.pageLoad();
+        navigation.changeLinks();
+        /*For Bug Id 1167*/
+        $('#projectHead').click(function (e) {
+            if ($('#assoProjects').height() >= 400)
+                $('#assoProjects').css('overflow-y', 'auto');
+        });
+        /*For Bug Id 11663*/
+        $('#TestPassHead').click(function (e) {
+            if ($('#assoTP').height() >= 400)
+                $('#assoTP').css('overflow-y', 'auto');
+        });
+        Main.hideLoading();
+    });
+
+ 
+
+</script>
+
+<div id="RightPanel">
+
+
+        <!--<div style="text-align: right">-->
+        <div class="pgHead">Test Case Details</div>
+        <div class="prjHead" id="projectName"></div>
+        <div class="tpHead" id="testPassName"></div>
+
+
+        <table class="rgTableBread">
+            <tr>
+                <td id="groupTitle"><label class="rgBCTitle"></label></td>
+                <td id="portfolioTitle"><label class="rgBCTitle"></label></td>
+                <td id="projectTitle"><label class="rgBCTitle"></label></td>
+                <td id="versionTitle"><label class="rgBCTitle"></label></td>
+                <td id="TestPassTitle"><label class="rgBCTitle"></label></td>
+
+            </tr>
+            <tr>
+                <td id="groupHead" style="cursor:pointer">
+                    <label class="rgBCHead">
+                        Group
+                    </label><div id="assoGroups" class="headDD" style="height:auto;-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="grpul" class="headul"></ul></div>
+                </td>
+                <td id="portfolioHead" style="cursor:pointer">
+                    <label class="rgBCHead">
+                        Portfolio
+                    </label><div id="assoPortfolios" class="headDD"><ul style="list-style: none;" id="portful" class="headul"></ul></div>
+                </td>
+                <td id="projectHead" style="cursor:pointer">
+                    <label class="rgBCHead">
+                        Project
+                    </label><div id="assoProjects" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="prjctul" class="headul"></ul></div>
+                </td>
+                <td id="versionHead" style="cursor:pointer">
+                    <label class="rgBCHead">
+                        Version
+                    </label><div id="assoVersions" class="headDD"><ul style="list-style: none;" id="versul" class="headul"></ul></div>
+                </td>
+                <td id="TestPassHead" style="cursor:pointer">
+                    <label class="rgBCHead">
+                        Test Pass
+                    </label><div id="assoTP" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="tpul" class="headul"></ul></div>
+                </td>
+            </tr>
+        </table>
+
+
+        <div class="navTabs">
+            <h2 style="color:#000000">View All</h2>
+            <h2>Create New</h2>
+            <h2 id="dwnlupldTmp" style="display:none">Download/Upload Template</h2>
+            <h2 id="clon">Copy</h2>
+            <h2>Edit TestCase</h2>
+        </div>
+        <div id="countDiv" style="margin-top:7px;margin-right:7px;float:right;display:none">
+            <label style="font-size:14px">Total Records:</label>
+            <label id="labelCount" style="font-size:14px"></label>
+        </div>
+        <p class="clear"></p>
+        <!-- teststep grid starts -->
+        <div>
+
+
+            <table id="testCaseGrid" class="tableGrid" cellspacing="1">
+                <thead>
+                    <tr class="griDetails">
+                        <td style="width:8%">SEQUENCE</td>
+                        <td style="width:60%">TEST CASE</td>
+                        <!--<td style="width:23%" onclick="/*$('#assotestcases').show();*/">
+                        Associated Test Cases </td>-->
+                        <td style="width:14%">
+                            ETT (Minutes)
+                            <img title="ETT - Estimated Test Time in minutes" style="height: 20px;" src="/images/icon-05.png" />
+                        </td>
+                        <!--<td style="width:10%">Attachment</td>-->
+                        <td style="border-right:none;width:13%; text-align: center;">
+                            ACTION
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="gridHeadingRow"></td>
+                    </tr>
+                    <tr><td colspan="4"></td></tr>
+                    <tr><td colspan="4"></td></tr>
+                    <tr><td colspan="4"></td></tr>
+                    <tr><td colspan="4"></td></tr>
+                </thead>
+                <tbody id="showTestCases"></tbody>
+
+            </table>
+        </div>
+
+        <div class="pager">
+            <div id="divTestCaseCount" style="display:none;"></div>
+        </div>
+
+        <div id="noTestCaseDiv" style="font-size:30px;color:#B8B8B8;display:none">
+            No Test Case(s) Available.
+        </div>
+
+        <input type="button" value="Bulk Delete" id="btnDelete" style="float:left;width:100px;margin-top:20px;" class="btnNew1" onclick="Main.showLoading();setTimeout('testcase.BulkDelete();',200);" />
+        <div id="Pagination" style="float:right;padding-top:20px;"></div>
+
+        <!-- teststep grid ends -->
+        <!-- input form starts -->
+        <div id="testCaseContents" style="width:900px;display:none;" class="DivlblWithColon">
+            <div style="float:left;width:310px;">
+                <label id="lblTestCaseName" class="mandatory">Test Case Name:<font color="red"><b>*</b></font></label>
+                <input type="text" class="inputNew" id="txttestcname" />
+                <label id="lblDescription">Description:</label>
+                <textarea id="desc" class="desc textAreaFont" title="Inputing HTML elements will be discarded"></textarea>
+            </div>
+            <div style="float:right;">
+                <div>
+                    <label id="lblETT">Estimated Test Time (Minutes):</label>
+                </div>
+                <input type="text" class="inputNew" id="estTime" />
+                <div style="width:395px;padding-top:7px;">
+                    <p id="paraNote" style="text-align:justify">
+                        <b>NOTE:</b>
+                        Test Cases are used to organize your test steps into logical
+                        groupings within your test pass. And because of the way the
+                        system is structured, it is required that you enter at least one
+                        test case for each test pass.
+                    </p>
+                </div>
+                <div style="width:395px;padding-top:5px;text-align:right;margin-top:40px;">
+                    <input type="button" value="Save" id="btnSave" style="margin-left:0px;margin-right:5px;" class="btnNew1" onclick="Main.showLoading();setTimeout('testcase.saveTestCase();',200);" />
+                    <input id="btnCancelNew" type="button" value="Cancel" style="margin-right:0px;" class="btnNew1" onclick="testcase.clearFields();" />
+                    <input type="button" value="Update" id="btnUpdate" style="margin-left:0px;margin-right:5px;display:none;" class="btnNew1" onclick="Main.showLoading();setTimeout('testcase.updateTestCase();',200);" />
+                    <input id="btnCancel" type="button" value="Reset" class="btnNew1" onclick="testcase.reset()" style="display:none;margin-right:0px;" />
+                </div>
+            </div>
+        </div>
+
+        <div id="divAlert"></div>
+        <div id="divConfirm"></div>
+        <!-- input form ends -->
+        <!-- import/export template starts -->
+        <div id="impExpTemplate" style="display:none;width:450px; text-align: left;">
+
+            <!--<fieldset style="height: 95px">
+                <legend><b>Import Test Case(s)</b></legend>-->
+            <div id="divUpload"><input type="file" id="upload" style="display:none" /></div>
+            <div>
+                <p style="font-size:16px;margin-bottom:10px;">
+                    Please use downloaded template to import.
+                    <!--<img src="../SiteAssets/images/icon-05.png" align="top" style="margin-top:0px;cursor:pointer" title="Click here for Guidelines to upload/import Test Case Template" onclick="testcase.helpTextOnTempalteUse()"/>-->
+                </p>
+            </div>
+            <input name="Button2" type="button" style="width:150px;height:35px;" class="btnNew1" value="Download Template" onclick="Main.showLoading();setTimeout('exp.openExcel()',200);" />&nbsp;
+            <input id="btnImport" name="Button1" type="button" style="width:150px;height:35px;" value="Import Test Case(s)" class="btnNew1" onclick="Main.showLoading();setTimeout('imp.openExcel();',200)" />
+            <br />
+            <div style="width:500px;margin-top:40px;">
+                <p id="pTemp" style="font-size:16px;">
+                    Please follow the same format
+                    as given in downloaded template to add the test cases!
+                </p>
+                <ol id="orderedList">
+                    <li>Download a Template using &#39;Download Template&#39; button.</li>
+                    <li>Populate data of Test Cases as directed in template.</li>
+                    <li>Save Template in local drive.</li>
+                    <li>
+                        Upload this saved template using &#39;Import Test Case(s)&#39;
+                        button.
+                    </li>
+                </ol>
+
+                <span>
+                    Download <a id="downloadPdf" href='../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Test Case Template.pdf' target='_blank' style='text-decoration:underline;color:#0066ff;'>
+                        File
+                    </a> for detailed guidelines.
+                </span>
+            </div>
+
+            <!--</fieldset>-->
+
+        </div>
+        <!-- import/export template ends -->
+        <!-- testcase clone starts -->
+        <div id="divTestCaseClone" style="display:none;">
+            <!-- testcase Clone grid starts -->
+            <div>
+                <table id="testCaseCloneGrid" class="tableGrid" cellspacing="1">
+                    <thead>
+                        <tr class="griDetails">
+                            <td style="width:5%;text-align:center;">ID</td>
+                            <td style="width:62%">TEST CASE</td>
+                            <td style="width:18%">ASSOCIATED TEST PASS</td>
+                            <td style="border-right:none;width:8%; text-align: center;">
+                                COPY
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="gridHeadingRow"></td>
+                        </tr>
+                        <tr><td colspan="4"></td></tr>
+                        <tr><td colspan="4"></td></tr>
+                        <tr><td colspan="4"></td></tr>
+                        <tr><td colspan="4"></td></tr>
+                    </thead>
+                    <tbody id="showTestcasesForClone"></tbody>
+
+                </table>
+            </div>
+
+            <div id="noTestCaseForCloneDiv" style="font-size:30px;color:#B8B8B8;display:none">
+                No Test Case(s) Available.
+            </div>
+            <div id="CloneTestCasePagination" style="float:right;padding-top:20px;"></div>
+            <div id="containerClonePopUp" style="width:345px;display:none;" class="clonePopUp">
+                <div class="arrow-up" style="float:right;"></div>
+                <!--<div style="text-align:right;width:345px;clear:both;"><a onclick="$('#containerClonePopUp').hide();"><img alt="" height="15px;" width="15px;" src="../SiteAssets/images/Admin/cross.png"/></a></div>-->
+                <div id="testPassSelectDiv" style="margin-top:0px;margin-left:10px;"></div>
+                <div style="text-align:right;margin-top:5px;" id="divContainerCloneBtn">
+                    <!--<input type="button" value="Clone" id ="btnClone" style="margin-left:0px;margin-right:5px;" class="btnNewStyle" onclick="Main.showLoading();setTimeout('testcase.saveTest();',200);" />-->
+                </div>
+            </div>
+            <!-- testcase Clone grid ends -->
+        </div>
+        <!-- testcase clone ends -->
+
+
+
+</div>

@@ -1,0 +1,134 @@
+﻿@charset "utf-8";
+/* CSS Document */
+html{background-image:url('../images/bg.jpg');background-position:top center;background-repeat:no-repeat;} 
+
+a{color:#000;}
+a:hover{color:#f60;}
+
+.nav ul li a{display:inline-block;padding:12px 20px;font-size:13px;font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;font-weight:normal;}
+.nav ul li a:hover, .nav ul li a.active{color:#f60;}
+
+.nav .user span b{font-weight:normal;color:#f60;}
+
+.col-lft .box-ft a{color:#f60;}
+.col-lft .box-ft a:hover{color:#000;}
+
+.orange{color:#F90;}
+ 
+.col-rgt .box a.new{color:#f60;}
+.col-rgt .box a.new:hover{color:#000;}
+
+/*
+table.gridDetails td a.proj{color:#f60;}
+table.gridDetails td a.proj:hover{color:#000;}
+*/
+
+a.pedit{background-image:url('../images/icon-edit.jpg');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.pdelete{background-image:url('../images/icon-delete.jpg');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+
+a.healthok{background-image:url('images/icon-health-ok.jpg');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.healthgood{background-image:url('images/icon-health-good.jpg');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.healthbad{background-image:url("images/icon-health-bad.jpg");background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+
+.pager a{padding:0px 10px;display:inline-block;color:#f60;}
+.pager a:hover{padding:0px 10px;display:inline-block;color:#F30;}
+
+div#tabs{width:1000px;padding:8px;border:solid 1px #ccc;overflow:hidden;}
+div#rstnav {width:1016px;}
+div#rstnav a.t1, div#rstnav a.t2, div#rstnav a.t3, div#rstnav a.t4{width:90px;display:inline-block;padding:6px;text-align:center;background-image:url('../images/bg-tab.jpg');background-position:0px 0px;background-repeat:repeat-x;border:solid 1px #ccc;border-bottom:none;}
+div#rstnav a.t1:hover, div#rstnav a.t2:hover,div#rstnav a.t3:hover, div#rstnav a.t4:hover, div#rstnav a.t1hover, div#rstnav a.t2hover, div#rstnav a.t3hover, div#rstnav a.t4hover{width:90px;display:inline-block;text-align:center;background-image:url('../images/bg-tab.jpg');background-position:0px -31px;background-repeat:repeat-x;color:#000;border-bottom:solid 1px #ffe08d;}
+
+div#tabs h3{color:#f60;font-size:14px;font-weight:bold;padding:0px 0px 5px 0px;float:left;}
+div#tabs p{padding:2px 0px 5px 0px;}
+
+.addNew{color:#f60;}
+.addNew:hover{color:#f30;}
+
+.col-rgt .breadcrums a{color:#f60;}
+.col-rgt .breadcrums a:hover{color:#000;}
+
+
+
+
+/*------------- Reports Sept 2013 -------------------- */
+
+.reportsWrapper{width:1204px;padding:2px;margin:0px auto;background-image:url('images/bg-reports.jpg');background-position:top left;overflow:hidden;}
+.reportsWrapperFooter{width:1204px;padding:2px;margin:0px auto;background-image:url("images/bg-reports.jpg");background-position:bottom left;overflow:hidden;height:10px;}
+
+.reptTestPassList{width:743px;}
+.reptProjectList{width:460px;}
+
+.reptChartArea{padding:10px 10px;}
+.reptProjectHead{background-color:#d7d7d7;padding:10px 10px;height:30px}
+.reptProjectHead h2{font-size:20px;}
+.reptProjectHead p{padding:5px 0px 0px 0px;font-size:14px;}
+.reptProjectHead p img{padding:0px 5px 0px 15px;}
+
+.reptTableProjects{width:100%;padding:0;margin:0;background-color:#ffebc0;border-bottom:solid 1px #ccc;}
+.reptTableProjects td.TopHeading{background-color:#353535;color:#fff;height:30px;}
+.reptTableProjects td{border-right:solid 1px #ccc;padding:4px 4px 4px 10px;}
+.reptTableProjects td.last{border:none;}
+.reptTableProjects tr.alternateRow{background-color:#ffd786;}
+
+
+
+.reptTestPassList h2{font-size:20px;color:#ff4800;padding:0px 0px 0px 5px;}
+.reptTableTestPass{width:100%;padding:0;margin:0;border-bottom:solid 1px #ccc;}
+.reptTableTestPass td.TopHeading{color:#111;height:30px; background-color:#fad793}
+.reptTableTestPass td{border-right:solid 1px #ccc;padding:4px 4px 4px 10px;border-bottom:solid 	1px #fff;}
+.reptTableTestPass td.last{border:none;}
+.reptTableTestPass tr.alternateRow{background-color:#e5e5e4;}
+.reptTableTestPass tr:hover{background-color:#66CCFF;}
+.reptTableTestPass td.statusCol{padding:0px;width:230px;}
+.reptTableTestPass td.TopHeading span{color:#ff4800;font-size:10px;display:block;}
+.reptTableTestPass td.statusCol a.legPass{padding:5px;background-color:#008400;color:#fff;font-size:11px;display:inline-block;text-align:center;}
+.reptTableTestPass td.statusCol a.legComplete{padding:5px;background-color:#ffa800;color:#fff;font-size:11px;display:inline-block;text-align:center;}
+.reptTableTestPass td.statusCol a.legFail{padding:5px;background-color:#ff0000;color:#fff;font-size:11px;display:inline-block;text-align:center;}
+.reptTableTestPass td.statusCol a:hover{background-color:#353535;}
+
+
+.rptPaging{padding:10px 10px 0px 10px;}
+.rptPaging a{color:#F60;}
+.rptPaging a:hover{color:#060;}
+.rptShowHideTesters{cursor:pointer;padding:10px 10px 0px 10px;float:right;}
+.rptShowHideTesters span{display:inline-block;float:left;width:100px;padding:0;text-align:right;line-height:1.2em;padding-right:10px;}
+.rptShowHideTesters img{width:30px;float:right;}
+
+.rptTesterDetails{clear:both;width:1188px;padding:10px;margin:0px auto;margin-top:1em;background-color:#f2f2f2;;border:solid 1px #ccc;
+  -webkit-border-radius: 10px; 
+  -moz-border-radius: 10px; 
+  border-radius: 10px; 
+}
+
+.rptTesterDetails h2{font-size:20px;color:#ff4800;padding:0px 0px 0px 10px;overflow:hidden;}
+.rptTesterDetails h2 span{font-size:14px;color:#222;}
+.rptTesterList{height:345px;clear:both;overflow-x: auto;margin-bottom:1em;}
+
+.rptTesterDetails h3{font-size:16px;color:#ff4800;padding:10px 0px 0px 10px;clear:both;}
+.rptTesterDetails h3 span{font-size:14px;color:#222;}
+.rptTesters{height:180px;}
+
+.reptTableTestCase{width:100%;padding:0;margin:0;background-color:#fff;border:solid 1px #ccc;padding:2px;}
+.reptTableTestCase td.TopHeading{background-color:#bdbdbd;color:#000;height:30px;}
+.reptTableTestCase td{border-right:solid 1px #ccc;padding:4px 4px 4px 10px;}
+.reptTableTestCase td.last{border:none;}
+.reptTableTestCase tr.alternateRow{background-color:#f5f3f3;}
+
+/*internal style of Report_New.aspx which are already present DT:21-04-2014*/
+.Mediumddl{
+	position:absolute;background-color:#e5e5e5
+}
+.reptTableProjects tr:nth-child(odd){
+	background-color:#ffd786;
+}
+.reptTableTestPass tr:nth-child(odd){
+	background-color:#e5e5e4;
+}
+.reptTableTestPass tr:nth-child(odd):hover{background-color:#66CCFF;}
+.reptTableTestCase tr:nth-child(odd){background-color:#f5f3f3;}
+.statusCol div:hover{ background-color:#353535 !important;}
+.trColor{
+	background-color:#66CCFF !important;
+}
+div#tabs h3{color:#f60;font-size:14px;font-weight:bold;padding:0px 0px 5px 0px;float:left;}
+/**************************************************/

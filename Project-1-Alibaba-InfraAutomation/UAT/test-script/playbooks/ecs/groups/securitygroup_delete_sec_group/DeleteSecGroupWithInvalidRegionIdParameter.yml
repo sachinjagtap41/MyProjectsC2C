@@ -1,0 +1,50 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify Security-Group is not deleted with invalid regionId parameter
+#Ansible Playbook created by - Sachin J
+
+
+- name: Delete security group with invalid regionId parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  # Task 1:
+
+  tasks:
+  
+  
+   - block: 
+   
+   
+     - name: Scenario 1 - Delete security group with invalid regionId parameter
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionInvalid }}'
+        group_ids: '{{ SGId }}'
+        state: '{{ deletestatus }}'
+        
+         
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+     always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+           - "'Error Message:Can not find endpoint to access.' in result1.msg[0]"
+            
+     

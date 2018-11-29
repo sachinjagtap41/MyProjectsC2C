@@ -1,0 +1,67 @@
+########## Create bucket #########
+modeCreate: create
+permission: public-read-write
+permissionsAll:
+    - private
+    - public-read
+    - public-read-write
+
+###### Create and Delete Bucket Parameter validation ####
+
+#### 1. Mode ###
+invalidMode: sghh54@^
+
+
+##### 3. Permission ####
+permissionInvalid: public
+
+### 4. Region ###
+invalidregion: cn-china
+
+
+######### Delete Bucket ########
+modeDelete: delete
+
+################ Create Folder ###################
+modePutFolder: put_folder
+folderName: folder
+
+######### Create Folder Param Validation ##########
+
+##### 1. Mode #######
+modePutFolderInvalid: public
+
+##### 2. Bucket ######
+invalidBucket: Demo_Bucket
+
+#### 3. Folder Name #####
+invalidFolderName: Folder%%$$
+folderNameHaving1Char: b
+folderNameHaving256Char: Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Fold
+folderNameHavingMoreThan256Char: Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.Folder_Name.
+regionOfListBucket: cn-beijing
+
+
+######### Expiration ##########
+expiration: 52
+expirationNumeral: expiration
+expirationNegative: -25
+expirationSpecialChar: $#() 
+modeDeleteObject: delobj
+modeBucketList: list
+
+
+#### Bucket Name ####
+bucketNameWithUpperCase: demo-UAT-Bucket
+bucketNameWithSplChars: _^^trdfggf$
+bucketNameWithLessThan3Chars: ab
+bucketNameWithMoreThan63Chars: bucketbucketbucketbucketbucketbucketbucketbucketbucketbucketbucket
+bucketNameWithExact63Chars: bucketbucketbucketbucketbucketbucketbucketbucketbucketbucketbuc
+bucketNameWithExact3Chars: big
+bucketNameWithExact8Chars: demo-bkt
+
+
+######### Mode ########
+modeUpload: put
+
+

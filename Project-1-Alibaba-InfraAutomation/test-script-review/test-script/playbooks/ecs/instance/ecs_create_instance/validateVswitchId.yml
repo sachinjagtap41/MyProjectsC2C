@@ -1,0 +1,108 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for create instance VSwitch parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+
+
+- name: Validating create instance with mandatory parameters only
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+      
+    
+  tasks:
+  
+  # Task 1:
+  
+   - block: 
+     - name: Validating - VPC instance is created when valid Vswithch id is given
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        vswitch_id: '{{ ValidVswithId }}'
+        allocate_public_ip: '{{ AllocatePublicIpFalse }}'
+        state: '{{ StateValid }}'
+        
+        
+       register: result
+     - debug: var=result
+        
+     rescue: 
+     - debug: msg=" Expected - Success"
+     
+  
+   # Task 2:
+  
+     
+   - block: 
+     - name: Validating - VPC instance is not created when invalid Vswithch id is given
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        vswitch_id: '{{ InvalidVswithId }}'
+        allocate_public_ip: '{{ AllocatePublicIpFalse }}'
+        state: '{{ StateValid }}'
+        
+        
+       register: result
+     - debug: var=result
+        
+     rescue: 
+     - debug: msg=" Failure Expected - We can not create a VPC instance when invalid VSwitch id is provided"
+ 
+ 
+  # Task 3:
+ 
+  
+   - block: 
+     - name: Validating - VPC instance is not created when allocate public ip parameter is true
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        vswitch_id: '{{ ValidVswithId }}'
+        allocate_public_ip: '{{ AllocatePublicIpTrue }}'
+        state: '{{ StateValid }}'
+        
+        
+       register: result
+     - debug: var=result
+        
+     rescue: 
+     - debug: msg=" Failure Expected - We can not create a VPC instance when allocate public ip parameter is true"
+  
+  
+  
+  
+  
+  

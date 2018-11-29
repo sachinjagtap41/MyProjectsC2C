@@ -1,0 +1,44 @@
+#Ansible Module Name - ECS
+#Test Case 4 : Verify the playbook is throwing an error when user is trying to remove Invalid Security Group from the INVALID ECS Instance
+#Ansible Playbook created by - Jogesh N
+---
+- name: Remove a INVALID Security Group from INVALID ECS Instance
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Removing a INVALID Security Group from INVALID ECS Instance
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        group_id: '{{ removeInvalidSgGroup }}' # INVALID Security Group
+        instance_ids: '{{ removeWindowsInstanceId }}'# INVALID ECS Instance Id
+        sg_action: '{{ sgActionLeave }}'
+
+
+       register: result
+     - debug: var=result
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "result.changed ==  false"
+            -  "'Error MessageThe InstanceId provided does not exist in our records.' in result.msg[2]"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ result}}'

@@ -1,0 +1,45 @@
+---
+##########      Create disk     ###########
+# Available Regions to Select
+region: cn-beijing
+
+#Available zones to Select
+zone: cn-beijing-c
+
+# size
+size: 25
+
+# Status
+status: present
+diskStatus: present
+
+# Snapshot
+snapshotId: s-2ze80rucou84ey5u6kvc
+
+##########    Attach disk     ###########
+# Available Instances
+ecsInstanceId: i-2zedh8b4m3cgxo1iyb1t
+ecsInstanceInvalidId: i-j6c1ygfsdfsdhb92eixoout
+
+# Available Disks
+diskId: d-2zegf2jirxzhrm6jtfbp       # disk id to attach
+diskId2: d-2ze98kacdeucqz3266wy       # disk id to attach
+diskIdInUse: d-2ze4j9u6cb96v9lkbz2t  # disk to be deleted
+diskIdDelete:  d-2ze6fl39oz8ekii1dzyw  # disk to be deleted
+
+# DeviceName
+deviceName: /dev/xvdb
+
+# Delete With Instance
+deleteWithInstance: True
+
+##########   Delete disk     ###########
+# Status
+diskStatusDel: absent
+statusInvalidDelete: delete
+
+
+ 
+  
+
+       

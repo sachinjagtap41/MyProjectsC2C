@@ -1,0 +1,42 @@
+# Ansible Module Name - ECS
+# Interface - QueryingInstancestatusPresent
+# Test Case : Verify playbook is generating an error when invalid regionid, zonid is provided
+# Ansible Playbook created by - Sachin J
+
+
+
+- name: Verify querying instance interface with invalid regionId, zoneId parameters
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+    
+    
+  tasks: 
+   - block: 
+     - name: Verify querying instance interface with invalid regionId, zoneId parameters
+       ecs: 
+        ecs_access_key: '{{ aliyun_acs_access_key }}'
+        ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ regionInvalid }}'
+        acs_zone: '{{ zoneInvalid }}'  
+        state: '{{ queryingInstanceStatus }}' 
+         
+       register: result
+     - debug: var=result
+             
+        
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "result.changed ==  false"
+            -  "'Can not find endpoint to access.' in result.msg[0]['Error Message']"

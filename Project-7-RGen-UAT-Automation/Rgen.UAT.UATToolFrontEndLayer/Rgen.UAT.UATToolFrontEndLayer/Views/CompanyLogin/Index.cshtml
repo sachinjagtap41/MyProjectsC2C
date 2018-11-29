@@ -1,0 +1,194 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_loginMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = ViewBag.title;
+}
+
+<script src="~/js/DashBoard/js/jquery.blockUI.js"></script>
+@*<script src="~/js/DashBoard/js/jquery.blockui.js"></script>*@
+<script src="~/js/DashBoard/js/main.js"></script>
+<script src="~/js/CompanyLogin/_companyLogin.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        /*Clear Span text at load*/
+        $('.SaveMsg').text('');
+        func.fillDropdown({ Type: 'c', DropdownId: 'OptCountry' });
+
+        setTimeout(function () {
+
+            $('#OptCountry').trigger('change');
+        },10)
+
+        $('#OptCountry').change(function () {
+            func.fillDropdown({ Type: 's', countryId: $(this).val(), DropdownId: 'OptState' });
+        });
+
+
+        $('#btnSave').click(function () {
+
+            var x = func.onSaveClick('form-horizontal', 'mandatory');
+            if (x) {
+                _companydetails._collectformValues(_controls, 'SaveMsg');
+            }
+        });
+
+
+        //--- This code for Cursor jump to Next Control while press Enter
+        if (typeof window.event != 'undefined') {
+            document.onkeydown = function () { return func.IE_keydown(); }
+        }
+        else {
+            document.onkeypress = function (e) {
+                return func.Other_keypress(e);
+            }
+        }
+        //--End
+    });
+
+    var _controls = [
+        'TxtFName',
+        'txtLName',
+        'TxtEmail',
+        'TxtContact',
+        'txtCompanyName',
+        'txtCompanyurl',
+        'txtaddress',
+        'OptCountry',
+        'OptState',
+        'TxtPwd',
+        'TxtmobileNo',
+        //'chkTempData',
+        window.location.href.substr(0, window.location.href.lastIndexOf('/'))
+    ];
+
+
+  
+</script>
+
+@* Begin Form *@
+<style type="text/css">
+ .blockPage{
+   
+    border-top-color: none !important;
+    border-right-color: none !important;
+    border-bottom-color: none !important;
+    border-left-color: none !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-top-style: none !important;
+    border-right-style: none !important;
+    border-bottom-style: none !important;
+    border-left-style: none !important;
+  
+}
+
+</style>
+<div class="container">
+    <div class="form-horizontal" role="form">
+
+        <h2>Company Registration Form</h2>
+        <a asp-controller="Login" style="right: 0px; margin-right: 50px; position: absolute;" asp-action="Index">Back to Login</a>
+        <hr />
+
+        <span class="SaveMsg" style="color:red"></span>
+
+        <p><h4 style="background-color:rgba(45, 106, 160, 1);width:457.5px;padding:5px;color:white;">Company  Information</h4></p>
+
+        <div class="form-group">
+            <label for="txtCompanyName" class="col-md-2 control-label">Company Name<span class="red">*</span></label>
+            <div class="col-md-3">
+                <input type="text" class="form-control mandatory" id="txtCompanyName" placeholder="Enter Company Name">
+            </div>
+            <span class="msgSpan"></span>
+        </div>
+        <div class="form-group">
+            <label for="txtCompanyurl" class="col-md-2 control-label">Company Url</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="txtCompanyurl" placeholder="Enter Company Url">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="txtaddress" class="col-md-2 control-label">Company Address</label>
+            <div class="col-md-3">
+                <textarea class="form-control" id="txtaddress" placeholder="Enter Company Address"></textarea>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="TxtContact" class="col-md-2 control-label">Contact Number</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" onkeypress="return func.chkNumber(event, this);" onpaste="return false;" id="TxtContact" placeholder="Enter Contact Number">
+            </div>
+
+        </div>
+        <p><h4 style="background-color:rgba(45, 106, 160, 1);width:457.5px;padding:5px;color:white;">Your  Information</h4></p>
+        <div class="form-group">
+            <label for="TxtFName" class="col-md-2 control-label m">First Name <span class="red">*</span></label>
+            <div class="col-md-3">
+                <input type="text" class="form-control mandatory" id="TxtFName" placeholder="Enter First Name" value="Prashant">
+
+            </div>
+            <span class="msgSpan"></span>
+        </div>
+        <div class="form-group">
+            <label for="TxtLName" class="col-md-2 control-label m">Last Name<span class="red">*</span></label>
+            <div class="col-md-3">
+                <input type="text" class="form-control mandatory" id="txtLName" placeholder="Enter Last Name" value="Mishra">
+            </div>
+            <span class="msgSpan"></span>
+        </div>
+        <div class="form-group">
+            <label for="TxtLName" class="col-md-2 control-label m">Password<span class="red">*</span></label>
+            <div class="col-md-3">
+                <input type="password" class="form-control mandatory" id="TxtPwd" placeholder="Enter Password" value="123456">
+            </div>
+            <span class="msgSpan"></span>
+        </div>
+        <div class="form-group">
+            <label for="TxtEmail" class="col-md-2 control-label">Email Id<span class="red">*</span></label>
+            <div class="col-md-3">
+                <input type="text" class="form-control mandatory" id="TxtEmail" onblur="return func.CheckEmail(this, 'email');" placeholder="Enter Email ID" value="pm@click2cloud.net">
+            </div>
+            <span class="msgSpan email"></span>
+        </div>
+        <div class="form-group">
+            <label for="TxtmobileNo" class="col-md-2 control-label">Mobile Number</label>
+            <div class="col-md-3">
+                <input type="text" class="form-control" onkeypress="return func.chkNumber(event, this);" onpaste="return false;" id="TxtmobileNo" placeholder="Enter Mobile Number">
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label for="OptCountry" class="col-md-2 control-label">Country</label>
+            <div class="col-sm-9">
+                <select id="OptCountry" class="form-control">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="OptState" class="col-md-2 control-label">State</label>
+            <div class="col-sm-9">
+                <select id="OptState" class="form-control" >
+                </select>
+            </div>
+        </div>
+        <div class="form-group" >            
+            <input id="chkTempData" type="checkbox" AutoPostBack="True" checked="checked" />
+            <label for="chkData" style="padding-left:25px">With Sample Data</label>
+            
+            </div>
+        <div class="form-group">
+            <div class="col-sm-9" style="display:flex;padding-left:112px;">
+                <button type="submit" id="btnSave" class="btn btn-primary btn-block" style="width:100px;">Save</button>
+                <button type="reset" id="btnreset" onclick="return func.resetFormFeilds('form-horizontal');" class="btn btn-primary btn-block" style="width:100px;margin-left:30px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

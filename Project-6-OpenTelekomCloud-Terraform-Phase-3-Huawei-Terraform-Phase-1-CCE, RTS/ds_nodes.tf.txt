@@ -1,0 +1,35 @@
+# Configure the OpenStack Provider
+provider "huaweicloud"  {
+  //alias = "main"
+  user_name   = "Longyin_kk"
+  domain_name = "longyin_kk"
+  password    = "kuaiLE02"
+  auth_url    = "https://iam.cn-east-2.myhuaweicloud.com/v3"
+  region      = "cn-east-2"
+  tenant_id   = "95fb48c35a6c49bca3f99924885d0362"
+}
+
+
+
+data "huaweicloud_cce_nodes_v3" "node1" {
+        cluster_id = "cec124c2-58f1-11e8-ad73-0255ac101926" //"ac9675dd-5cf8-11e8-9bfd-0255ac101928"
+        node_id = "cf4bc001-58f1-11e8-ad73-0255ac101926"
+}
+
+output "resource_data" {
+    value = "${data.huaweicloud_cce_nodes_v3.node1.name}"
+
+}
+
+output "resource_data1" {
+    value = "${data.huaweicloud_cce_nodes_v3.node1.data_volumes}"
+}
+
+
+output "resource_data2" {
+    value = "${data.huaweicloud_cce_nodes_v3.node1.public_ip_ids}"
+}
+
+output "resource_data3" {
+    value = "${data.huaweicloud_cce_nodes_v3.node1.node_id}"
+}

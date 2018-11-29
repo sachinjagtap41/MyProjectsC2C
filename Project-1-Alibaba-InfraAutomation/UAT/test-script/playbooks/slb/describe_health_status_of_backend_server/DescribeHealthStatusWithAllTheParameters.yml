@@ -1,0 +1,112 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Check Health Status
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Health Status Interface
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Scenario - 1 Check health status with default ports parameter
+      ecs_slb: 
+       ecs_access_key: '{{ aliyun_acs_access_key }}'                  
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'          
+       #acs_region: '{{ region }}'                                   
+       ecs_slb: '{{ loadBalancerId }}'                             
+       state: '{{ statusHealthCheck }}' 
+       #ports: '{{ portsDeafult }}'                                       
+                                     
+      register: HealthCheckResult1
+    - debug: var=HealthCheckResult1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+   
+   
+  - block:
+   # Task 2 :
+    - name: Scenario - 2 Check health status by providing valid ports value( Within range 1 - 65535)
+      ecs_slb: 
+       access_key: '{{ aliyun_acs_access_key }}'                     
+       secret_key: '{{ aliyun_acs_secret_access_key }}'           
+       #ecs_region: '{{ region }}'                              
+       ecs_slb: '{{ loadBalancerId }}'                            
+       status: '{{ statusHealthCheck }}' 
+       ports: '{{ ports }}'  
+                                          
+      register: HealthCheckResult2
+    - debug: var=HealthCheckResult2
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+  
+    
+    
+  - block: 
+   # Task 3 :
+    - name: Scenario - 3 Check health status by providing ports value more than rang(1 - 65535)
+      ecs_slb: 
+       access_key: '{{ aliyun_acs_access_key }}'                     
+       secret_key: '{{ aliyun_acs_secret_access_key }}'           
+      # ecs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       status: '{{ statusHealthCheck }}' 
+       ports: '{{ portsMoreThanRange }}'  
+                                          
+      register: HealthCheckResult3
+    - debug: var=HealthCheckResult3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+    
+  
+ # For testing this test-case listerners should not be present in the SLB   
+  - block: 
+    # Task 4 :
+    - name: Scenario - 4 Check health status when no listeners are configured
+      ecs_slb: 
+       access_key: '{{ aliyun_acs_access_key }}'                     
+       secret_key: '{{ aliyun_acs_secret_access_key }}'           
+       #ecs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       status: '{{ statusHealthCheck }}' 
+       ports: '{{ portsNotConfigured }}'
+                                          
+      register: HealthCheckResult4
+    - debug: var=HealthCheckResult4
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+
+    always:
+      - assert:
+         that:
+            - "'failed' not in HealthCheckResult1"
+            - "'failed' not in HealthCheckResult2"
+            - "'failed' in HealthCheckResult3"
+            - "'failed' in HealthCheckResult4"
+         msg: 'Test pass FAILED !!!'
+    

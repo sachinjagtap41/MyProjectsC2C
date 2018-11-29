@@ -1,0 +1,36 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Binding Eip With More Than 1Mbsp Bandwidth
+#Ansible Playbook created by - Abha H
+---
+- name: Binding Eip With More Than 1Mbsp Bandwidth
+  hosts: localhost
+  connection: local
+  vars_files: 
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+     - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - Binding Eip With More Than 1Mbsp Bandwidth
+   - block: 
+     - name: Binding Eip With More Than 1Mbsp Bandwidth
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceIdWithMoreThan1MbpsBandwidth }}'
+        allocation_id: '{{ allocationId }}'
+       register: result
+     - debug: var=result
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in result"
+
+         msg: 'Test pass FAILED !!!'

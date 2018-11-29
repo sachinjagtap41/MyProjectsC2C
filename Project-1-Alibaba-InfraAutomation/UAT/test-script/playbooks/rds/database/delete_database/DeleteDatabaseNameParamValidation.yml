@@ -1,0 +1,97 @@
+#Ansible Module Name -- rds.py
+#Test Case : Delete database with database name parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Delete database with database name parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - delete database with invalid database name
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbNameInvalid }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+#   - block:
+#     - name: Scenario 2 - delete database without instance id parameter
+#       rds:
+#        acs_access_key: '{{ aliyun_acs_access_key }}'
+#        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+#        region: '{{ region }}'
+#        command: '{{ command }}'
+#        instance_id: '{{ instanceId }}'
+#       register: result_scn2
+#     - debug: var=result_scn2
+#     rescue:
+#      - fail:
+#          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+        
+        
+   - block:
+     - name: Scenario 3 - delete database with blank database name parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: 
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 4 - delete database with database name parameter as Database name
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        Db_name: '{{ dbName }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+      
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+#            - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: crated' in result_scn1"
+            
+#            - "'failed' in result_scn2"
+#            - "'' in result_scn2"
+            
+            - "'failed' in result_scn3"
+#            - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: None' in result_scn3"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Db_name' in result_scn4.msg"
+
+         msg: 'Test pass FAILED !!!'
+               

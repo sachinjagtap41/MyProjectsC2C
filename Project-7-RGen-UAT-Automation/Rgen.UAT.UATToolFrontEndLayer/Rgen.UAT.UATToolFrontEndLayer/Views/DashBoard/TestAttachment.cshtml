@@ -1,0 +1,90 @@
+﻿
+
+
+<html>
+<head runat="server">
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+      
+        <input type="file" name="FileUpload1" id="f_UploadImage" /><br />
+       
+        <input type="submit" name="Submit" id="Submit" value="SendToDatabase" /><br />
+      
+        <h4>
+            <a id="download" href="#">DownLoad Image from Database</a>
+        </h4>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    $(function () {
+        var _URL = window.URL || window.webkitURL;
+        $("#f_UploadImage").on('change', function () {
+            var data = new FormData();
+
+            var files = $(this).get(0).files;
+
+            // Add the uploaded image content to the form data collection
+            if (files.length > 0) {
+                data.append("UploadedImage", files[0]);
+            }
+
+            sendFile(this);
+        });
+
+
+        $('#download').on('click', function () {
+            debugger;
+            var req = new XMLHttpRequest();
+            var resultCollection;
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+
+                    // Request successful, read the response
+                    var resp = req.responseText;
+
+                    if (resp != "" && resp != null && resp != "value")
+                        resultCollection = JSON.parse(resp);
+                }
+            }
+
+            req.open("GET", 'http://localhost:59947/api/FileUpload/GetUploadFilesfromDB', false);
+            req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+            req.setRequestHeader("appurl", 'http://localhost:1582');
+            req.setRequestHeader("LoggedInUserSPUserId", '19');
+            
+            req.send();
+
+            return resultCollection;
+           
+        });
+    });
+
+    function sendFile(file) {
+
+        var formData = new FormData();
+        formData.append('file', $('#f_UploadImage')[0].files[0]);
+        $.ajax({
+            type: 'post',
+            url: 'http://localhost:59947/api/FileUpload/UploadFile',
+            data: formData,
+            success: function (status) {
+                if (status != 'error') {
+                    var my_path = "MediaUploader/" + status;
+                    $("#myUploadedImg").attr("src", my_path);
+                }
+            },
+            processData: false,
+            contentType: false,
+            error: function () {
+                alert("Whoops something went wrong!");
+            }
+        });
+    }
+</script>

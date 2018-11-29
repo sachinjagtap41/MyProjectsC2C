@@ -1,0 +1,69 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Binding EIP to an instance twice
+#Ansible Playbook created by - Abha H
+---
+- name: Binding EIP to an instance twice
+  hosts: localhost
+  connection: local
+  vars_files: 
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../vars/alicloud-creds.yml
+  tasks:
+   # Task 1 -  Binding EIP to a instance
+   - block: 
+     - name: Scenario 1 -  Binding EIP to a instance
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceId }}'
+        allocation_id: '{{ allocationId }}'
+       register: bind_eip_result_scn1
+     - debug: var=bind_eip_result_scn1
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     # Task 2 -  Binding EIP to same instance again
+     - name: Scenario 2 -  Binding EIP to same instance again
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceId }}'
+        allocation_id: '{{ allocationId }}'
+       register: bind_eip_result_scn2
+     - debug: var=bind_eip_result_scn2
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in bind_eip_result_scn1"
+
+            - "'failed' in bind_eip_result_scn2"
+
+         msg: 'Test pass FAILED !!!'
+
+  post_tasks:
+   - name: Unbind EIP which was bind earlier
+     ecs_vpc_net:
+      acs_access_key: '{{ aliyun_acs_access_key }}'
+      acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+      region: '{{ region }}'
+      status: '{{ statusLeave }}'
+      allocation_id: '{{ allocationId }}'
+      instance_id: '{{ instanceId}}'
+     when:
+      - "bind_eip_result_scn1.changed ==  True"
+

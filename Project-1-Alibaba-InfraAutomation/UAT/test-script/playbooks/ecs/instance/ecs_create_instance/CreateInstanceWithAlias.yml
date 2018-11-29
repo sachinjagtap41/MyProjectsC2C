@@ -1,0 +1,61 @@
+# Ansible Module Name - ECS
+# Interface : CreateInstance
+# Playbook Contains Test-Cases for create instance with alias
+# Playbook created by : Sachin J
+
+- name: Validating create instance with alias for zone
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+
+  tasks:
+  # Task 1:
+   - block: 
+     - name: Validating create instance with alias for zone
+       ecs:
+        access_key: '{{ aliyun_acs_access_key }}'      # access_key   Alias
+        secret_key: '{{ aliyun_acs_secret_access_key }}'  # secret_key   Alias
+        acs_region: '{{ region }}'                   # acs_zone     Alias
+        zone: '{{ zone }}'  # zone        Alias
+        image: '{{ windowsImageId }}'  # image           Alias
+        type: '{{ instanceType }}'   # type            Alias
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        state: '{{ state }}' #          Alias
+       register: create_instance_result
+     - debug: var=create_instance_result
+
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+     always:
+     - assert:
+         that:
+            - "'failed' not in create_instance_result"
+         msg: 'Test pass FAILED !!!'
+   - pause:
+        seconds: 15
+
+  post_tasks:
+   - name: Deleting newly created instance
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result"
+
+  
+  
+  

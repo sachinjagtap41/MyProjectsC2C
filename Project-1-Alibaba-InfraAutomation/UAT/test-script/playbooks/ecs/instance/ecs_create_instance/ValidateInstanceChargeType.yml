@@ -1,0 +1,157 @@
+# Ansible Module Name - ECS
+# Interface : CreateInstance
+# Playbook Contains Test-Cases for ImageId parameter
+# Playbook created by : Sachin J
+
+- name: create instance
+  hosts: localhost
+  connection: local
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+
+  tasks:
+  # Task : 1
+  
+  - block: 
+    - name: Validating - Instance Is Created When ChargeType Is Postpaid
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        instance_charge_type: '{{ instanceChargeTypePostpaid }}'
+        state: '{{ state }}'
+      register: create_instance_result_1
+    - debug: var=create_instance_result_1
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+    
+    
+    # This block could not be executed because, it requires Prepaid account
+    # Task : 2
+   
+#  - block:
+#    - name: Validating - Instance Is Created When ChargeType Is Prepaid
+#      ecs:
+#        acs_access_key: '{{ aliyun_acs_access_key }}'
+#        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+#        region: '{{ region }}'
+#        zone: '{{ zone }}'
+#        image_id: '{{ windowsImageId }}'
+#        instance_type: '{{ instanceType }}'
+#        instance_name: '{{ instanceName }}'
+#        description: '{{ description }}'
+#        host_name: '{{ host_name }}'
+#        password: '{{ password }}'
+#        instance_charge_type: '{{ instanceChargeTypePrepaid }}'
+#        state: '{{ state }}'
+#      register: create_instance_result_2
+#    - debug: var=create_instance_result_2
+#
+#    rescue:
+#    - fail:
+#        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#      when: no
+    
+  
+  # Task : 3
+  
+  - block:
+    - name: Validating - Instance Is Created When ChargeType Is Not Provided
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        #instance_charge_type: '{{ instanceChargeTypePostpaid }}'   Without ChargeType
+        state: '{{ state }}'
+      register: create_instance_result_3
+    - debug: var=create_instance_result_3
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15     
+   
+   # Task : 4
+   
+  - block:
+    - name: Validating - Invalid ChargeType As Paid Invalid
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        instance_charge_type: '{{ instanceChargeTypeInvalid }}'
+        state: '{{ state }}'
+      register: create_instance_result_4
+    - debug: var=create_instance_result_4
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+
+    always:
+       - assert:
+           that:
+              - "'failed' not in create_instance_result_1"
+              - "'failed' not in create_instance_result_3"
+              - "'failed' in create_instance_result_4"
+              - "'The InstanceChargeType does not exist in our records' in create_instance_result_4.msg[0]['Error Message']"
+
+
+           msg: 'Test pass FAILED !!!'
+
+  - pause:
+        seconds: 15     
+
+  post_tasks:
+   - name: Deleting newly created instance in Task 1
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result_1.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result_1"
+
+   - name: Deleting newly created instance in Task 3
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result_3.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result_3"
+     
+     

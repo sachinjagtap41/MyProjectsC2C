@@ -1,0 +1,110 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Modify load balancer Internet Spec with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Modify load balancer Internet Spec with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Validating Region Parameter with nos
+   - block: 
+     - name: Validating Region Parameter with nos
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionNos }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+        bandwidth: '{{ bandwidth }}'
+       register: create_slb_result
+     - debug: var=create_slb_result
+     rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+    
+     # Task 2 - Validating Region Parameter with spl chars
+   - block: 
+     - name: Validating Region Parameter with spl chars
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionSplChar }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+        bandwidth: '{{ bandwidth }}'
+       register: create_slb_result
+     - debug: var=create_slb_result
+     rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+    
+     # Task 3 - Validating Region Parameter with Alphanumeric value
+   - block: 
+     - name: Validating Region Parameter with Alphanumeric value
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionAlphaNo }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+        bandwidth: '{{ bandwidth }}'
+       register: create_slb_result
+     - debug: var=create_slb_result
+     rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+    
+    # Task 4 - Validating blank Region Parameter
+   - block: 
+     - name: Validating Region Parameter with Alphanumeric value
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        region: 
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+        internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+        bandwidth: '{{ bandwidth }}'
+       register: create_slb_result
+     - debug: var=create_slb_result
+     rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+    
+    

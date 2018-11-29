@@ -1,0 +1,42 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Add Listener With Same Load Balancer Port And Different Protocol And Diff Backend Server Ports
+#Ansible Playbook created by - Abha H
+---
+- name: Add Listener With Same Load Balancer Port And Different Protocol And Diff Backend Server Ports
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+     
+  tasks:
+  # Task 1 - Add Listener With Same Load Balancer Port And Different Protocol And Diff Backend Server Ports
+   - block: 
+      - name: Add Listener With Same Load Balancer Port And Different Protocol And Diff Backend Server Ports
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerWithSameLBPortNoAndDiffProtocolAndBackendServerPort }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result
+      - debug: var=create_slb_result
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+          
+     always:
+      - assert:
+         that:
+            - "'failed' in create_slb_result"
+            #- "'There is already a listener bound to the port on the specified load balancer' in create_slb_result.msg[0]['https_listener_result'][0]['Error Message']"
+           
+            
+         msg: 'Test pass FAILED !!!'

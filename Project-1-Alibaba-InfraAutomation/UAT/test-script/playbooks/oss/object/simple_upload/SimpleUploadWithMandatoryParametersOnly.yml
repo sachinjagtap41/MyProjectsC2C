@@ -1,0 +1,110 @@
+#Ansible Module Name -- oss.py
+#Test Case : Simple upload with mandatory parameters only
+#Ansible Playbook created by - Sachin J
+---
+- name: Simple upload with mandatory parameters only
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks: 
+  
+  # Task : 1
+   - block:
+     - name: Scenario 1 - create bucket
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: bucketname-14
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+         
+       register: result_scn1
+     - debug: var=result_scn1
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+
+
+ # Task : 2
+   - block: 
+     - name: Scenario 2 - Upload the file with mandator parameters only
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         bucket: bucketname-14
+         src: '../../../oss_uploading_files/commands.txt'
+         file_name: 'commands.txt'
+         region: '{{ region }}'
+         
+       register: result_scn2
+     - debug: var=result_scn2
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+  # Task : 3     
+   - block:
+     - name: Scenario 3 - Delete bucket objects
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDeleteObject }}'
+         bucket: bucketname-14
+         region: '{{ region }}'  
+         
+       register: result_scn3
+     - debug: var=result_scn3
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no   
+       
+   
+
+ # Task : 4
+   - block:
+     - name: Scenario 4 - Delete bucket
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: bucketname-14 
+         region: '{{ region }}'
+         
+       register: result_scn4
+     - debug: var=result_scn4
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_scn2"
+            - "'failed' not in result_scn3"
+            - "'failed' not in result_scn4"
+            
+         msg: 
+           'Test Pass Failed !!!'      
+       
+   

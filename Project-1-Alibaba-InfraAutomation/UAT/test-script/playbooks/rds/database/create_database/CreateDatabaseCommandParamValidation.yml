@@ -1,0 +1,100 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create database with command parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create database with command parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create database with invalid command parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandInvalid }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+#   - block:
+#     - name: Scenario 2 - create database without command parameter
+#       rds:
+#        acs_access_key: '{{ aliyun_acs_access_key }}'
+#        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+#        region: '{{ region }}'
+#        instance_id: '{{ instanceId }}'
+#        db_name: '{{ dbName }}'
+#        db_description: '{{ dbDescription }}'
+#        character_set_name: '{{ characterSetName }}'
+#       register: result_scn2
+#     - debug: var=result_scn2
+#     rescue:
+#      - fail:
+#          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+
+   - block:
+     - name: Scenario 3 - create database with blank command parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: 
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - create database with command parameter as Command
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        Command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+          #  - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: crated' in result_scn1.msg"
+            
+#            - "'failed' not in result_scn2"
+            
+            - "'failed' in result_scn3"
+         #   - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: None' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Command' in result_scn4.msg"
+            
+         msg: 'Test pass FAILED !!!'
+               

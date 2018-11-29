@@ -1,0 +1,218 @@
+@*/*⋆⋆⋆⋆⋆⋆⋆created By Rupal Shirpurkar ⋆⋆⋆⋆⋆⋆⋆ */*@
+@{
+    Layout = "~/Views/Shared/_loginMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "User Registration";
+}
+
+<script src="~/js/UserRegistration/UserRegistration.js"></script>
+
+
+<script type="text/javascript">
+        $(function () {
+
+            func.fillDropdown({ Type: 'c', DropdownId: 'OptCountry' });
+
+            setTimeout(function () {
+
+                $('#OptCountry').trigger('change');
+            }, 10)
+
+
+
+
+         $('#btnSave').click(function () {
+
+                var x = func.onSaveClick('form-horizontal', 'mandatory');
+                if (x) {
+                    UserRegistration._collectformValues(_controls);
+                }
+            });
+
+
+            //--- This code for Cursor jump to Next Control while press Enter
+            if (typeof window.event != 'undefined') {
+                document.onkeydown = function () { return func.IE_keydown(); }
+            }
+            else {
+                document.onkeypress = function (e) {
+                    return func.Other_keypress(e);
+                }
+            }
+            //--End
+        });
+
+        var _controls = [
+            'FirstName',
+            'LastName',
+            'Email',
+            'Password',
+            'ConfirmPassword',
+            'DOB',
+            'Gender',
+            'MobileNo',
+            'OptCountry'
+
+
+        ];
+</script>
+    <h1>Registration Form</h1>
+<a asp-controller="Login" style="right: 0px; margin-right: 50px; position: absolute;" asp-action="Index">Back to Login</a>
+<hr />
+  
+
+  
+
+    @* Begin Form *@
+    <style type="text/css">
+
+
+    </style>
+    <div class="container">
+        <div class="form-horizontal " role="form">
+            <label id="lbl_alert" style="color: red;font-size:15px; font-weight:500; right: 25px; margin-top: -5px;"></label>
+           
+            <div class="form-group">
+                <label for="First Name" class="col-md-2 control-label m">First Name<span class="red">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control mandatory "  onkeypress="return func.chkAlphabet(event, this);" id="FirstName" placeholder="Enter First Name">
+                </div>
+                <span class="msgSpan"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label for="LastName" class="col-md-2 control-label m">Last Name<span class="red">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control mandatory" onkeypress="return func.chkAlphabet(event, this);" id="LastName" placeholder="Enter Last Name">
+                </div>
+                <span class="msgSpan"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label for="Email" class="col-md-2 control-label">Email Id<span class="red">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control mandatory" id="Email"  onblur="return func.CheckEmail(this, 'email');" placeholder="Enter Email ID">
+                </div>
+                <span class="msgSpan email"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label for="Password" class="col-md-2 control-label m">Password<span class="red">*</span></label>
+                <div class="col-md-3">
+                    <input type="password" class="form-control mandatory" id="Password"    placeholder="Enter Password">
+                </div>
+                <span class="msgSpan "></span>
+            </div>
+
+
+            <div class="form-group">
+                <label for="ConfirmPassword" class="col-md-2 control-label m">Confirm Password<span class="red">*</span></label>
+                <div class="col-md-3">
+                    <input type="password" class="form-control mandatory" id="ConfirmPassword" onblur="return func.CheckPassword(this, 'Password', 'Cpass');" placeholder="Enter Confirm Password">
+                </div>
+                <span class="msgSpan Cpass"></span>
+                @*<label id="lbl_passwordalert" style="color: red; font-weight:400; right: 25px; margin-top: -5px;"></label>*@
+            </div>
+
+
+
+            @*<script type="text/javascript">
+    $(function () {
+        $("#btnSave").click(function () {
+            var password = $("#Password").val();
+            var confirmPassword = $("#ConfirmPassword").val(); 
+            if (password != null && confirmPassword != null && password != "" && confirmPassword != "")
+            {
+                if (password != confirmPassword)  {
+                    func.alertBox("Passwords do not match..!");
+                    return false;
+                }}
+           return true;
+        });
+    });
+            </script>*@
+
+        
+            
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+
+                    $("#DOB").datepicker({
+                        changeMonth: true,
+                        changeYear: true
+
+                    }
+                    );
+
+                    var x = setInterval(function () {
+
+                        if ($('.ui-datepicker-month').length > 0) {
+                            $('.ui-datepicker-month').css('width', '40% !important');
+                            clearInterval(x);
+                        }
+                    }, 100)
+                });
+
+
+            </script>
+
+
+
+
+
+            <div class="form-group">
+                <label id="lblDOB" for="DOB" class="col-md-2 control-label req">DOB:</label>
+                <div class="col-lg-3">
+                    <div class="date " data-date-format="dd-mm-yyyy">
+                        <input class="form-control " id="DOB" type="date" placeholder="Enter DOB">
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="Gender" class="col-md-2 control-label ">Gender:</label>
+                <div class="col-lg-3">
+                    <div id="Gender" style="margin-right: 20px; float: left;">
+                        <input checked="checked" type="radio" name="opGender" value="Male" /> Male <br />
+                    </div>
+                    <div>
+                        <input type="radio" name="opGender" value="Female" /> Female <br />
+                    </div>
+                </div>
+            </div>
+        
+           
+
+            <div class="form-group">
+                <label for="MobileNo" class="col-md-2 control-label">Mobile No</label>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" onkeypress="return func.chkNumber(event, this);" onpaste="return false;" id="MobileNo" placeholder="Enter Contact No">
+                </div>
+
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="OptCountry" class="col-md-2 control-label">Country</label>
+                <div class="col-sm-9">
+                    <select id="OptCountry" class="form-control"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-9" style="display:flex;padding-left:112px;">
+                    <button type="submit" id="btnSave" class="btn btn-primary btn-block" style="width:100px;">Save</button>
+                    <button type="reset" id="btnreset" onclick="return func.resetFormFeilds('form-horizontal');" class="btn btn-primary btn-block" style="width:100px;margin-left:30px;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

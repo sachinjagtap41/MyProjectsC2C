@@ -1,0 +1,86 @@
+#Ansible Module Name -- ecs_slb_vsg.py
+#Test Case : Set Vserver Group
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating set vserver group with vservergroup
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  - block:
+    # Task : 1
+    - name: Scenario 1 - Set vserver group by providing valid vserver group id parameter
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        load_balancer_id: '{{ loadBalancerId }}'
+        vserver_group_name: '{{ vservergroupNameSet }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+      register: result1
+    - debug: var=result1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+  - block:
+    # Task : 2
+    - name: Scenario 2 - Set vserver group by providing invalid vserver group id parameter
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupInvalid }}'
+        vserver_group_name: '{{ vservergroupNameSet }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+      register: result2
+    - debug: var=result2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+    
+  - block: 
+    # Task : 3
+    - name: Scenario 3 - Set vserver group without providing vserver group id parameter
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+       # vserver_group_id: '{{ vserverGroupValid }}'   # without vserver_group_id parameter
+        vserver_group_name: '{{ vservergroupNameSet }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+      register: result3
+    - debug: var=result3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    always:
+      - assert:  
+         that:
+            - "'failed' not in result1"
+            - "'failed' in result2"
+            - "'failed' in result3"
+            
+         msg: 'Test pass FAILED !!!'

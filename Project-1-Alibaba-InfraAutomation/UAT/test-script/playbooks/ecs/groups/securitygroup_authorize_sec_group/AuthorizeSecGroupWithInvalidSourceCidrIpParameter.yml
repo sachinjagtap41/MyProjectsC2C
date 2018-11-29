@@ -1,0 +1,42 @@
+#Ansible Module Name --- ECS_GROUP
+#Test Case : Verify Security-Group is not authorized with invalid cidr_ip parameter
+#Ansible Playbook created by - Sachin J
+
+- name: Authorize security group with invalid cidr_ip  parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Scenario 1 - Authorize security group with invalid cidr_ip  parameter
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_id: '{{ SGId }}' 
+        state: '{{ status }}'
+        rules:  
+          - ip_protocol: tcp   
+            port_range: 80/80
+            cidr_ip: '192.168/32' # Invalid cidr_ip value
+         
+       register: Scenario1
+     - debug: var=Scenario1
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+     always:
+     - assert:
+        that: 
+           - "'failed' in Scenario1"
+     
+     

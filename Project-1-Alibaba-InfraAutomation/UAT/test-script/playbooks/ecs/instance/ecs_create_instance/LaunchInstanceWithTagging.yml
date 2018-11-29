@@ -1,0 +1,63 @@
+
+# This playbook is an example for deploying an instances and tag it.
+
+# The play operates on the local (Ansible control) machine.
+# Ansible Playbook created by : Jogesh N
+---
+- name: create an ECS Instance and Add tag to it
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+     
+  tasks:
+   - block:
+     - name: create an ECS Linux Instance 
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceTypebindEip }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+        instance_tags:
+        - tag_key: apps
+          tag_value: apps
+
+       register: create_instance_result
+     - debug: var=create_instance_result
+
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+   
+     always:
+     - assert:
+         that:
+            - "'failed' not in create_instance_result"
+         msg: 'Test pass FAILED !!!'
+   - pause:
+        seconds: 15     
+  
+
+  post_tasks:
+   - name: Deleting newly created instance
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result"

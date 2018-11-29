@@ -1,0 +1,200 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create Rds instance with zone parameter validation
+#Ansible Playbook created by - Sachin J
+---
+
+- name: Create RDS instance with zone parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../../../vars/alicloud-creds.yml
+    - ../../vars/test-environment.yml
+    - ../../vars/general-parameters.yml
+  
+  
+  tasks:
+  
+  # Task : 1
+   - block:
+     - name: Scenario 1 - Create an RDS instance with zone as default parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'  
+         #zone: '{{ zone }}'   # Default zone parameter
+         command: '{{ command }}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn1
+     - debug: var=result_scn1
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+      
+      
+  # Task : 2
+ 
+   - block:
+     - name: Scenario 2 - Create an RDS instance with zone as invalid parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'  
+         zone: '{{ zoneInvalid }}'   # Invalid zone parameter
+         command: '{{ command }}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn2
+     - debug: var=result_scn2
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+   # Task : 3
+       
+   - block: 
+     - name: Scenario 3 - Create an RDS instance with zone as acs_zone parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'  
+         acs_zone: '{{ zone }}'   
+         command: '{{ command }}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn3
+     - debug: var=result_scn3
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2  
+       
+  # Task : 4
+       
+   - block: 
+     - name: Scenario 4 - Create an RDS instance with zone as ecs_zone parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'  
+         ecs_zone: '{{ zone }}'   
+         command: '{{ command }}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn4
+     - debug: var=result_scn4
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2         
+      
+    # Task : 5
+      
+   - block: 
+     - name: Scenario 5 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn1.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn5
+     - debug: var=result_scn5
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   # Task : 6   
+ 
+   - block: 
+     - name: Scenario 6 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn3.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn6
+     - debug: var=result_scn6
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+      
+  # Task : 7   
+ 
+   - block: 
+     - name: Scenario 7 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn4.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn7
+     - debug: var=result_scn7
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no   
+     always: 
+      - assert: 
+         that: 
+          - "'failed' not in result_scn1" 
+          - "'failed' in result_scn2" 
+          - "'failed' not in result_scn3"
+          - "'failed' not in result_scn4"
+          - "'failed' not in result_scn5"
+          - "'failed' not in result_scn6"
+          - "'failed' not in result_scn7"
+                       
+         msg: 'Test pass FAILED !!!'   

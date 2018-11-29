@@ -1,0 +1,79 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Delete VPC - VPC Id Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: Delete VPC - VPC Id Param Validation
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - Delete VPC - VPC Id Param Validation with invalid value
+   - block: 
+     - name: Scenario 1 - Delete VPC Status Param Validation with invalid value
+       ecs_vpc: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ vpcIdInvalid }}'
+       register: delete_vpc_task1
+     - debug: var=delete_vpc_task1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+   # Task 2 - Delete VPC blank VPC Id Param Validation
+   - block: 
+     - name: Scenario 2 - Delete VPC Status Param Validation
+       ecs_vpc: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: 
+       register: delete_vpc_task2
+     - debug: var=delete_vpc_task2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+                     
+   # Task 3 - Validation of vpc_id param as Vpc_id
+   - block: 
+     - name: Scenario 3 - Validation of status param as Status
+       ecs_vpc: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        Vpc_id: '{{ vpcId }}'
+       register: delete_vpc_task3
+     - debug: var=delete_vpc_task3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+     always:
+      - assert:  
+         that:
+            - "delete_vpc_task1.changed ==  false"
+           
+            
+            - "delete_vpc_task2.changed ==  false"
+            
+            
+            - "delete_vpc_task3.changed ==  false"
+            
+            
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ delete_vpc_task3}}'
+ 
+ 

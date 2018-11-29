@@ -1,0 +1,254 @@
+---
+##########      ECS INSTANCES AND SECURITY GROUP PARAMETERS      ###########
+
+# Available Regions to Select
+region: cn-beijing
+
+
+# Available Zones to Select
+zone: cn-beijing-b
+
+
+# Security Group Name
+SGName: Uat_c2c_ansible
+
+SGId: sg-2zedh8b4m3ch0yfad9ro
+
+
+
+internetInboundRules:
+              - proto: tcp
+                port_range: 80/86
+                cidr_ip: 192.168.0.54/32
+                priority: 1
+              
+              - proto: tcp
+                port_range: 8080/8088
+                cidr_ip: 47.89.23.33/32
+                priority: 1
+             
+              - proto: udp
+                port_range: 10988/10989
+                cidr_ip: 47.89.23.33/32
+                priority: 2
+              
+              - proto: icmp
+                port_range: 8/-1
+                 # icmp type, -1 = any type
+                 # icmp subtype, -1 = any subtype
+                cidr_ip: 10.55.5.35/16
+                priority: 3
+                
+              - proto: all
+#               group_id:  sg-j6c7bol5vzec2ipj2ivz
+#               nic_type: intranet
+                cidr_ip: 47.89.23.33/32
+                port_range: 8080/8080
+                # security_group_name: '{{ internetInRuleSGName }}' 
+   
+internetOutboundRules:
+              - proto: tcp
+                port_range: 80/80
+                cidr_ip: 192.168.0.54/32
+                priority: 1
+              
+              - proto: tcp
+                port_range: 8080/8085
+                cidr_ip: 47.89.23.33/32
+                priority: 1
+             
+              - proto: udp
+                port_range: 10989/10997
+                cidr_ip: 47.89.23.33/32
+                priority: 2
+              
+              - proto: icmp
+                port_range: 8/-1
+                # icmp type, -1 = any type
+                # icmp subtype, -1 = any subtype
+                cidr_ip: 10.55.5.35/16
+                priority: 3
+                
+              - proto: all
+#                group_id:  sg-j6c7bol5vzec2ipj2ivz
+#                nic_type: intranet
+                port_range: 8080/8080
+                cidr_ip: 47.89.23.33/32
+                # security_group_name: '{{ internetInRuleSGName }}' 
+
+intranetInboundRules:
+              - proto: tcp
+                port_range: 80/88
+                cidr_ip: 47.89.23.33/32
+                nic_type: intranet
+                priority: 1
+                
+              - proto: tcp
+                port_range: 8080/8088
+                cidr_ip: 47.89.23.33/32
+                nic_type: intranet
+                priority: 1
+                                
+              - proto: tcp
+                port_range: 22/29
+                cidr_ip: 192.168.0.54/32
+                priority: 1
+                #security_group_name: Uat_c2c_ansible
+                nic_type: intranet
+             
+              - proto: udp
+                port_range: 10989/10996
+                cidr_ip: 47.89.23.33/32
+                priority: 2
+                nic_type: intranet
+                
+#              - proto: icmp
+#                port_range: 8/-1
+#                # icmp type, -1 = any type
+#                # icmp subtype, -1 = any subtype
+#                cidr_ip: 10.55.5.35/16
+#                priority: 3
+#                nic_type: intranet
+#                
+#              - proto: all
+#                port_range: 8080/8080
+##               group_id:  sg-j6c7bol5vzec2ipj2ivz
+#                nic_type: intranet
+#                cidr_ip: 0.0.0.0/0
+#                #security_group_name: Uat_c2c_ansible
+
+intranetOutboundRules:
+              - proto: tcp
+                port_range: 80/83
+                cidr_ip: 47.89.23.33/32
+                nic_type: intranet
+                priority: 1
+                
+              - proto: tcp
+                port_range: 8080/8085
+                cidr_ip: 47.89.23.33/32
+                nic_type: intranet
+                priority: 1
+                                
+              - proto: tcp
+                port_range: 22/27
+                cidr_ip: 192.168.0.54/32
+                priority: 1
+                #security_group_name: Uat_c2c_ansible
+                nic_type: intranet
+             
+              - proto: udp
+                port_range: 10989/10899
+                cidr_ip: 47.89.23.33/32
+                priority: 2
+                nic_type: intranet
+                
+              - proto: icmp
+                port_range: 8/-1
+                # icmp type, -1 = any type
+                # icmp subtype, -1 = any subtype
+                cidr_ip: 10.55.5.35/16
+                priority: 3
+                nic_type: intranet
+                
+              - proto: all
+                port_range: 8080/8080
+              # group_id:  sg-j6c7bol5vzec2ipj2ivz
+                nic_type: intranet
+                cidr_ip: 0.0.0.0/0
+               # security_group_name: Uat_c2c_ansible
+  
+
+##########      SECURITY GROUP DELETE PARAMETERS      ###########
+
+# Available State for Security Groups
+status: present
+deletestatus: absent
+querystatus: getinfo
+
+
+# Security Group Id
+SGIdVpc: sg-j6c51b06t3u4poa7t8ge   
+SGMultipleIds:
+  - sg-j6c51b06t3u4poa7t8ge
+  - sg-j6c52qiz9n49pzeyuodw
+  - sg-j6cbqrb4eg18gil02e8d
+ 
+
+
+###########     ecs_delete_sec_group       ################
+
+# Test Case 1 :delete_sec_groupWhenAttachedWithAnInstance.yml
+# Description: Verify Security-Group is not deleted when it is attached to an Instance
+
+# Test Case 2 :delete_sec_groupWhenReferencedByaRuleOfOtherGroup.yml
+# Description: Verify Security-Group is not deleted when it is a reference by a rule of other group
+
+# Test Case 3 :delete_sec_groupWithAllMandatoryParameters.yml
+# Description: Verify Security-Group is deleted with all the parameterss
+# Test Case 4 :delete_sec_groupWithInvalidGroupIdParameter.yml
+# Description: Verify Security-Group is not deleted when invalid groupId is provided
+
+# Test Case 5 :delete_sec_groupWithregionInvalidIdParameter.yml
+# Description: Verify Security-Group is not deleted when invalid regionId is provided
+
+# Test Case 6 :delete_sec_groupWithInvalidStateParameter.yml
+# Description: Verify Security-Group is not deleted when invalid state parameter is provided
+
+# Test Case 7 :delete_sec_groupWithMulitpleGroupIdsparameter.yml
+# Description: Verify Security-Group is deleted with multiple groupId parameters
+
+# Test Case 8 :delete_sec_groupWithoutRegionIdParameter.yml
+# Description: Verify Security-Group is not deleted without regionId parameter
+
+# Test Case 9 :delete_sec_groupAttachedToVPCInstance.yml
+# Description: Verify Security-Group is deleted from VPC
+
+# Test Case 10 :delete_sec_groupWithoutStateParameter.yml
+# Description: Verify Security-Group is not deleted without state parameter
+
+# Test Case 11 :delete_sec_groupWithoutGroupIdParameter.yml
+# Description: Verify Security-Group is not deleted without groupid parameter
+
+# Test Case 12 :delete_sec_groupWhichIsAvailableInDifferentRegionThanSpecifiedInThePlaybook.yml
+# Description: Verify Security-Group is not deleted
+
+# Test Case 13 :delete_sec_groupWhichIsAlreadyDeleted.yml
+# Description: Verify Security-Group is not deleted 
+
+# Test Case 14 :delete_sec_groupFromUnauthorizedRegion.yml
+# Description: Verify Security-Group is not deleted 
+
+
+##########      SECURITY GROUP QUERY PARAMETERS      ###########
+VpcRegion: cn-hangzhou
+
+
+querySGListState: getinfo
+
+# VpcID values
+VPCId: vpc-bp16fg7vxkp6nq1f3vmth
+
+
+
+##########      SECURITY GROUP AUTHORIZE PARAMETERS      ###########
+
+# Available State for Security Groups
+authorizestatus: authorize
+
+# Protocol type
+invalidProtocol: tdp
+ 
+# Invalid authorizestatus
+authorizestatusInvalid: authorized      # Invalid
+
+# Security Group Id
+SGWithVPCInstance: sg-j6cil97vp46oropn1n9l
+ 
+   
+
+
+
+
+
+

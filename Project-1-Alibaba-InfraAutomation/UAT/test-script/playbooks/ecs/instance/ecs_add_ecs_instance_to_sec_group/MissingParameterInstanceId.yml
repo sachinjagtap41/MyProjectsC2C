@@ -1,0 +1,47 @@
+#Ansible Module Name - ECS
+#Test Case 7 : Verify the playbook throwing an error when the user has missed out to provide ECS instance Id to the defined Security Group
+#Ansible Playbook created by - Jogesh N
+---
+- name: Verify the behaviour when the user missed out to provide ECS instance Id to the defined Security Group
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Verify the behaviour when the user missed out to provide ECS instance Id to the defined Security Group
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        group_id: '{{ sgGroup }}'   
+          
+        # instance_ids: '{{ ecsInstanceId }}' # Missing Parameter : Not passing the Windows Instance Id to Playbook 
+        
+        #Uncomment the below line if you want to run scenario with " blank parameter" from Var File
+        #instance_ids: '{{ ecsInstanceId }}'         # Passing Blank from Var File
+        
+        sg_action: '{{ sgJoin }}'
+
+       register: result
+     - debug: var=result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' in result"
+            -  "'instance_id is required to join to new security group' in result.msg"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ result}}'

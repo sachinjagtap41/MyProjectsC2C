@@ -1,0 +1,35 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Set load balancer status with alias
+#Ansible Playbook created by - Abha H
+---
+- name: Set load balancer status with alias
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Set load balancer status with alias
+   - block: 
+     - name: Set load balancer status with alias
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        ecs_region: '{{ region }}'
+        state: '{{ statusActive }}'
+        ecs_slb: '{{ SLBId }}'
+       register: set_slb_status
+     - debug: var=set_slb_status
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' not in set_slb_status"
+         msg: 'Test pass FAILED !!!'
+
+             

@@ -1,0 +1,48 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify Security-Group is quried with Valid VPC Id
+#Ansible Playbook created by - Sachin J
+
+
+- name: Query Security Group from the VPC with valid VpcId
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+  
+  
+   - block:
+   
+   
+     - name: Scenario 1 - Query Security Group from the VPC with valid VpcId
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ VpcRegion }}' 
+         vpc_id: '{{ VPCId}}'   # Valid VPC Id
+         state: '{{ querySGListState }}'
+       
+       
+     
+       register: result1
+     - debug: var=result1
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+     always:
+     - assert:
+        that: 
+           - "'failed' not in result1" 
+
+
+     

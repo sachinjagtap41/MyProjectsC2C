@@ -1,0 +1,121 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Security Group parameter
+# Playbook created by : Sachin Jagtap
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml   
+     
+     
+     
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+    - name: Validating - Valid GroupId Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        system_disk: '{{ SecurityGroupSystemDisk }}'
+        group_id: '{{ GroupIdValid }}'                        # Valid
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task: 2
+ 
+  - block:
+    - name: Validating - Invalid GroupId Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        system_disk: '{{ SecurityGroupSystemDisk }}'
+        group_id: '{{ GroupIdInvalid }}'                   # Invalid
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+        
+    rescue:
+    - debug: msg="Failure Expected - '{{ SecurityGroupSystemDisk }}' is not a valid parameter"
+  
+  # Task: 3
+  
+  - block:
+    - name: Validating - Invalid GroupId Parameter Which Accepts Null Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        system_disk: '{{ SecurityGroupSystemDisk }}'
+        group_id: '{{ GroupIdNull }}'                     # Null
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+        
+    rescue:
+    - debug: msg="Failure Expected - '{{ GroupIdNull }}' is not a valid parameter"
+ 
+ # Task: 4
+ 
+  - block:
+    - name: Validating - Instance Is Created Without GroupId Parameter (Valid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        #system_disk: '{{ SecurityGroupSystemDisk }}'  Without GroupId parameter
+        #group_id: '{{ group_valid }}'   
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+        
+    rescue:
+    - debug: msg="Expected Success"

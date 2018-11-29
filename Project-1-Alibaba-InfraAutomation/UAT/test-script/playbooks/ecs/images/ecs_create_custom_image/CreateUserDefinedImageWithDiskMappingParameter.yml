@@ -1,0 +1,59 @@
+# Ansible Module Name - ECS_AMI
+# Interface : CreateCustomImage
+# Playbook Contains Test-Case for creating a custom image
+# Playbook created by : Sachin J
+
+
+
+- name: Create user defined image with disk mapping parameter
+    
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - ../vars/general-parameters.yml
+    - ../vars/test-environment.yml
+    - ../../../vars/alicloud-creds.yml
+      
+  tasks:
+  
+  - block:
+  
+    - name: Create user defined image with disk mapping parameter
+    
+      ecs_ami:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        disk_mapping: '{{ diskMapping }}'
+        image_name: '{{ imageName }}-2'
+        image_version: '{{ imageVersion }}'
+        description: '{{ description}}'
+        images_tags: '{{ imagesTags }}'
+
+      register: result
+    - debug: var=result
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+          that:
+            - "result.changed ==  True"
+          msg: 'Test pass FAILED!!! New custom image is not created successfully.
+                REASON: {{ result}}'
+
+  post_tasks:
+    - name: Deleting newly created user defined image
+      ecs_ami:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        image_id: '{{ result.image_id }}'
+        state: 'absent'
+      when:
+        - "result.changed ==  True"

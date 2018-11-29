@@ -1,0 +1,11 @@
+---
+# This file contains Aliyun Credentials 
+
+Shuwei_acs_access_key_id: *********** 
+Shuwei_acs_secret_access_key: *********** 
+
+click2cloud_acs_access_key_id: *********** 
+click2cloud_acs_secret_access_key: *********** 
+
+Invalid_acs_access_key_id: *********** 
+Invalid_acs_secret_access_key: *********** 

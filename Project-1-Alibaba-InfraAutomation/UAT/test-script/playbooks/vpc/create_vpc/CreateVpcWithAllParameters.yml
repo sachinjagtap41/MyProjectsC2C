@@ -1,0 +1,84 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : create VPC with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: create VPC with all parameters
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+   - block: 
+     - name: Scenario 1 - Create VPC with all parameters
+       ecs_vpc: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario1
+     - debug: var=create_vpc_scenario1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+   # deleting vswitch which was created in Scenario1
+   - block:
+     - name: Scenario 1.1 - Delete vswitch which created in Scenario 1
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ create_vpc_scenario1.result[0]["VpcId"] }}'
+        purge_vswitches: '{{ create_vpc_scenario1.result[1][0]["VSwitchId"] }}'
+        state: '{{ status }}'
+       register: delete_vswitch1_scenario1
+     - debug: var=delete_vswitch1_scenario1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+   # delete vpc which was created in Scenario1
+   - block:
+     - name: Scenario 1.2 - Delete VPC which created in Scenario 1
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ create_vpc_scenario1.result[0]["VpcId"] }}'
+       register: delete_vpc1_scenario1
+     - debug: var=delete_vpc1_scenario1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in create_vpc_scenario1"
+            - "'failed' not in delete_vswitch1_scenario1"
+            - "'failed' not in delete_vpc1_scenario1"
+
+         msg: 'Test pass FAILED !!!'
+             
+
+ 
+ 

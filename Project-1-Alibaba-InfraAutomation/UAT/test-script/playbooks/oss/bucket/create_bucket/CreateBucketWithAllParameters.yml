@@ -1,0 +1,58 @@
+#Ansible Module Name -- oss.py
+#Test Case : Create bucket with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Create bucket with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+        minutes: 1
+
+
+   - block:
+     - name: Scenario 2 - Delete bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: '{{ bucketName }}' 
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_scn2"
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values.
+               REASON: {{ result_scn2 }}'
+               

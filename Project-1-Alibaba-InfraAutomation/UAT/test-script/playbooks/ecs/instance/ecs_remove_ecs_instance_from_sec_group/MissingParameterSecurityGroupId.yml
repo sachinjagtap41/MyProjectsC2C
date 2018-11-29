@@ -1,0 +1,47 @@
+#Ansible Module Name - ECS
+#Test Case 6 : Verify the playbook throwing an error when the user has missed out to provide Security Group Id to remove Security Group from the ECS Instance
+#Ansible Playbook created by - Jogesh N
+---
+- name: Verify the behaviour when the user missed out to provide Security Group Id to remove Security Group from the ECS Instance
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Verify the behaviour when the user missed out to provide Security Group Id to remove Security Group from the ECS Instance
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        
+        #group_id: '{{ SgGroup }}'     # Not passing the Security Group Id to Playbook 
+        
+        #Uncomment the below line if you want to run scenario with " blank parameter" from Var File
+        #group_id: '{{ SgGroup }}'         # Passing Blank from Var File
+        
+        instance_ids: '{{ ecsInstanceId }}'  # VALID ECS Instance Id
+        sg_action: 'leave'
+
+       register: result
+     - debug: var=result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "result.changed ==  false"
+            -  "'group_id is required to leave from an existing security group' in result.msg"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ result}}'

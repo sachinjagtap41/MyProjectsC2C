@@ -1,0 +1,39 @@
+#Ansible Module Name - ECS
+#Test Case 1 : Verify that Playbook is throwing an error when user is trying to add CLASSIC Security Group to the Existing VPC instance.
+#Ansible Playbook created by - Jogesh N
+---
+- name: Add CLASSIC Security Group to the Existing VPC instance.
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+  - ../vars/test-environment.yml
+  - ../vars/general-parameters.yml
+  - ../../../vars/alicloud-creds.yml
+  tasks:
+   - block:
+     - name: Add CLASSIC Security Group to the Existing VPC instance.
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        group_id: '{{ sgGroup }}'
+        instance_ids: '{{ ecsVpcInstanceId }}'
+        sg_action: '{{ sgJoin }}'
+       register: result
+     - debug: var=result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' in result"
+            - "'Error Message: Specified instance and security group are not in the same VPC.' in result.msg[2]"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ result}}'

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+info(){
+  echo -e "\n\e[1m[INFO] $@...\e[0m\n"
+}
+
+install_aliyun_packages(){
+ sudo pip install aliyun-python-sdk-ecs --upgrade
+ sudo pip install aliyun-python-sdk-slb --upgrade
+ sudo pip install aliyun-python-sdk-oss2 --upgrade
+ sudo pip install aliyun-python-sdk-rds --upgrade
+}
+
+install_footmark(){
+ sudo pip install test-script/packages/footmark-1.8.1.tar.gz --upgrade 
+}
+
+install_utils(){
+ sudo pip install test-script/packages/ecsutils-1.0.3.tar.gz --upgrade 
+}
+
+install_ossutils(){
+ sudo pip install test-script/packages/ossutils-1.0.0.tar.gz --upgrade 
+}
+
+install_aliyun_ansible_modules(){
+    currentDir="$(pwd)"
+    scriptDir="/test-script/modules"
+    moduleDir=$currentDir$scriptDir
+
+    YELLOW='\033[1;33m'
+    NC='\033[0m' # No Color
+
+    printf "${YELLOW}[WARNING]: To continue running test scripts, run below command on your shell to set Aliyun Ansible modules path.${NC}\n"
+    printf "${NC}export ANSIBLE_LIBRARY="$moduleDir"${NC}\n\n\n"
+}
+
+info "setting up test environment"
+
+info "Installing/Updating aliyun packages"
+#install_aliyun_packages
+
+info "Installing/Updating footmark packages"
+install_footmark
+
+info "Installing/Updating utils packages"
+install_utils
+
+info "Installing/Updating ossutils packages"
+install_ossutils
+
+#info "Installing/Updating aliyun ansible modules"
+#install_aliyun_ansible_modules

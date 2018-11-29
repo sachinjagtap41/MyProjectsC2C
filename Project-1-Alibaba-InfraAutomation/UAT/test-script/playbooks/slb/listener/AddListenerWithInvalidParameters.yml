@@ -1,0 +1,186 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Add listener to already created SLB with invalid parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Add listener to already created SLB with invalid parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+     
+  tasks:
+  # Task 1 -  Add  listener to already created SLB with invalid protocol
+   - block: 
+      - name: Scenario 1 - Add  listener to already created SLB with invalid protocol
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidProtocol }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn1
+      - debug: var=create_slb_result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+  # Task 2 -  Add listener to already created SLB with invalid listener port
+   - block: 
+      - name: Add listener to already created SLB with invalid listener port
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidListenerPort }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn2
+      - debug: var=create_slb_result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+  # Task 3 -  Add listener to already created SLB with invalid backend port
+   - block: 
+      - name: Add listener to already created SLB with invalid backend port
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidBackendPort }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn3
+      - debug: var=create_slb_result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+  # Task 4 -  Add listener to already created SLB with invalid bandwidth
+   - block: 
+      - name: Add listener to already created SLB with invalid bandwidth
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidBandwidth }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn4
+      - debug: var=create_slb_result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+  # Task 5 -  Add listener to already created SLB with invalid scheduler
+   - block: 
+      - name: Add listener to already created SLB with invalid scheduler
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidScheduler }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn5
+      - debug: var=create_slb_result_scn5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+  # Task 6 -  Add listener to already created SLB with invalid Gzip
+   - block: 
+      - name: Add listener to already created SLB with invalid Gzip
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidGzip }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn6
+      - debug: var=create_slb_result_scn6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+  # Task 7 -  Add listener to already created SLB with invalid SSL Certificate
+   - block: 
+      - name: Add listener to already created SLB with invalid SSL Certificate
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerInvalidSslCertificate }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_scn7
+      - debug: var=create_slb_result_scn7
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+     always:
+      - assert:  
+         that:
+            - "'failed' in create_slb_result_scn1"
+            -  "'Invalid Listener Protocol' in create_slb_result_scn1.msg[0]['Error Message']"
+
+            - "'failed' in create_slb_result_scn2"
+            -  "'The specified parameter \"ListenerPort\" is not valid.' in create_slb_result_scn2.msg[0]['https_listener_result'][0]['Error Message']"
+
+            - "'failed' in create_slb_result_scn3"
+            - "'The specified parameter \"BackendServerPort\" is not valid.' in create_slb_result_scn3.msg[0]['https_listener_result'][0]['Error Message']"
+            
+            - "'failed' in create_slb_result_scn4"
+            -  "'The specified parameter \"Bandwidth\" is not valid.' in create_slb_result_scn4.msg[0]['https_listener_result'][0]['Error Message']"
+            
+            - "'failed' in create_slb_result_scn5"
+            -  "'The specified parameter \"Scheduler\" is not valid.' in create_slb_result_scn5.msg[0]['https_listener_result'][0]['Error Message']"
+            
+            - "'failed' in create_slb_result_scn6"
+            -  "'The specified parameter \"Gzip\" is not valid.' in create_slb_result_scn6.msg[0]['https_listener_result'][0]['Error Message']"
+            
+            - "'failed' in create_slb_result_scn7"
+            -  "'The specified parameter ServerCertificateId is not Support.' in create_slb_result_scn7.msg[0]['https_listener_result'][0]['Error Message']"
+            
+         msg: 'Test pass FAILED !!!'

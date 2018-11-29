@@ -1,0 +1,56 @@
+# Ansible Module Name - ECS_Disk
+# Interface : DeleteDisk
+# Playbook Contains Test-Cases for delete disk 
+# Playbook created by : Sachin J
+
+
+- name: Delete disk with all the alias
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../../vars/alicloud-creds.yml
+       
+     
+          
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+
+    - name: Delete disk with all the alias
+
+      ecs_disk:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+        id: '{{ diskIdDelete }}'   # Disk_id
+        status: '{{ diskStatusDel }}'
+       
+
+      register: result1
+    - debug: var=result1
+
+    rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+    always:
+     - assert:
+        that: 
+           - "'failed' not in result1" 
+         
+
+    
+    
+
+
+    
+
+

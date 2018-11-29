@@ -1,0 +1,46 @@
+#Ansible Module Name -- ECS_GROUP
+#Test Case : Verify Security-Group is authorized withour Source cidr parameter
+#Ansible Playbook created by - Sachin J
+
+- name: Authorize security group with all Without Source GroupId
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Scenario 1 - Authorize security group with all Without Source GroupId
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_id: '{{ SGId }}'
+        state: '{{ status }}'
+        rules:
+          - ip_protocol: tcp
+            port_range: 80/80
+            #source_group_id: sg-j6c1nfqrmmcm4r5ru747
+            nic_type: intranet
+            
+#  If cidr_ip is not specified then Nic_Type must be "Intranet"    
+            # cidr_ip: '192.168.0.98/32'
+       register: Scenario1
+     - debug: var=Scenario1
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+     always:
+     - assert:
+        that: 
+           - "'failed' in Scenario1"
+         
+     
+     

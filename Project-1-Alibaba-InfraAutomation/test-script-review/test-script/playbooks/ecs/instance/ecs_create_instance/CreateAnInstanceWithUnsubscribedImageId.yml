@@ -1,0 +1,35 @@
+# This playbook is an example for deploying an instances with unsubscribed Image id
+
+# The play operates on the local (Ansible control) machine.
+# Failure Expected
+---
+- name: create an ECS Instance with unsubscribed Image Id
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+     
+  tasks:
+   - block:
+     - name: create an ECS Linux Instance with unsubscribed Image Id
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ Hongkong_region }}'
+        zone_id: '{{ Hongkong_zone }}'
+        image_id: '{{ unsubscribed_image_id }}'
+        instance_type: '{{ I_O_optimized_instance_type }}'
+        instance_name: '{{ linux_instance_name }}'
+        description: '{{ Instance_Description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ Password }}'
+    
+       register: ecs_instance_id
+     - debug: var=ecs_instance_id
+     
+     rescue: 
+     - debug: msg=" Failure Expected - Instance should not be created with unsubscribed Image Id"

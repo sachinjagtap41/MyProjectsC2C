@@ -1,0 +1,221 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Io-Optimized parameter
+# Playbook created by : Sachin Jagtap
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml 
+    
+    
+  tasks:
+  
+  # Task : 1
+  
+  - block:
+    - name: Validating - Valid IoOptimized Parameter as None
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        io_optimized: '{{ IoOptimizedNone }}'
+        instance_type: '{{ InstanceTypeGeneration1 }}'
+        state: '{{ StateValid }}'
+      
+        
+      register: result
+    - debug: var=result
+     
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+  # Task : 2
+ 
+  - block:
+    - name: Validating - Valid IoOptimized Parameter As Optimized
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_type: '{{ InstanceTypeGeneration2 }}'
+        io_optimized: '{{ IoOptimized }}'
+        state: '{{ StateValid }}'
+     
+        
+      register: result
+    - debug: var=result
+       
+    rescue:
+    - debug: msg="Expected - Success"
+  
+   # Task : 3
+  
+  - block:
+    - name: Validating - Valid IoOptimized Parameter Which Accepts Default Value As None For Generation I Instances
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_type: '{{ InstanceTypeGeneration1 }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success"
+  
+   # Task : 4
+  
+  - block:
+    - name: Validating - Valid IoOptimized Parameter Which Accepts Optimized Value For Generation II Instances
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_type: '{{ InstanceTypeGeneration2 }}'
+        io_optimized: '{{ IoOptimized }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+  # Task : 5
+ 
+  - block:
+    - name: Validating - Invalid IoOptimized Parameter Which Accepts Optimized Value For Generation I Instances
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        io_optimized: '{{ IoOptimized }}'
+        instance_type: '{{ InstanceTypeGeneration1 }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+      
+      
+    rescue:
+    - debug: msg="Failure Expected - We can not user optimized for Generation 1 type instances"
+  
+   # Task : 6
+  
+  - block:
+    - name: Validating - Invalid IoOptimized Parameter Which Accepts Default Value As None For Generation II Instances
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_type: '{{ InstanceTypeGeneration2 }}'
+        state: '{{ StateValid }}'
+        
+        
+    
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Failure Expected - We can not user Default ioOptimized value for Generation 2 instances"
+  
+   # Task : 7
+  
+  - block:
+    - name: Validating - Invalid IoOptimized Parameter Which Accepts Default Value As Optimized For Generation I Instances
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_type: '{{ InstanceTypeGeneration1 }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Failure Expected - We can not user Default for Generation 1 instances"
+ 
+  # Task : 8
+ 
+  - block:
+    - name: Validating - Invalid IoOptimized Parameter Value For Generation I Instance
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_type: '{{ InstanceTypeGeneration1 }}'
+        io_optimized: '{{ IoOptimizedInvalid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+         
+    rescue:
+    - debug: msg="Failure Expected - We can not invalid ioOptimized value for Generation 1 instances"

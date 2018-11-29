@@ -1,0 +1,133 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Add Backend Server
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Add Backend Servers Backend Servers Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Scenario - 1 Add backend servers without serverid parameter
+      ecs_slb:
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+       #acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServersWithoutServerId }}'    # Without serverId parameter                  
+       state: '{{ status }}'       
+                                     
+      register: AddBackendServerResult1
+    - debug: var=AddBackendServerResult1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+      
+  - block: 
+    # Task 2 :  
+    - name: Scenario - 2 Add backend servers with weight more than 100
+      ecs_slb:
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+       #acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServersWeightMoreThan100 }}'        # Weight more than 100               
+       state: '{{ status }}'       
+                                     
+      register: AddBackendServerResult2
+    - debug: var=AddBackendServerResult2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+  - block: 
+    # Task 3 : 
+    - name: Scenario - 3 Add backend servers with invalid serverid parameter
+      ecs_slb:
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+       #acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServersInvalidServerId }}'        # Invalid serverId               
+       state: '{{ status }}'       
+                                     
+      register: AddBackendServerResult3
+    - debug: var=AddBackendServerResult3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+    
+  - block: 
+    # Task 4 : 
+    - name: Scenario - 4 Add backend servers with weight parameter as string
+      ecs_slb:
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+       #acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServersWeightAsStringParameter }}'        # Weight parameter as string              
+       state: '{{ status }}'       
+                                     
+      register: AddBackendServerResult4
+    - debug: var=AddBackendServerResult4
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+    
+    
+    
+  - block: 
+    # Task 5 : 
+    - name: Scenario - 5 Add backend servers with List datatype
+      ecs_slb: 
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+       #acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServersWithInvalidServer }}'        # Backend server as List of strings data type
+       state: '{{ status }}'       
+                                     
+      register: AddBackendServerResult5
+    - debug: var=AddBackendServerResult5
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    always:
+      - assert:  
+         that:
+            - "'failed'  in AddBackendServerResult1"
+            - "'server_id is mandatory' in AddBackendServerResult1.msg"
+            
+            - "'failed'  in AddBackendServerResult2"
+            - "'Invalid weight parameter' in AddBackendServerResult2.msg"
+            
+            - "'failed'  in AddBackendServerResult3"
+            - "'Failed to add backend servers with error code ObtainIpFail and message:' in AddBackendServerResult3.msg[0]"
+            
+            - "'failed'  in AddBackendServerResult4"
+            - "'Invalid weight parameter' in AddBackendServerResult4.msg"
+            
+            - "'failed'  in AddBackendServerResult5"
+         msg: 'Test pass FAILED !!!'
+    

@@ -1,0 +1,109 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Create account with region parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create account with region parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Create account with invalid region parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ regionInvalid }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 2 - Create account without region parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 3 - Create account with blank region parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: 
+         command: '{{ command }}' 
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn3
+     - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 4 - Create account with region parameter as Region
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         Region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn4
+     - debug: var=result_scn4 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            - "'Can not find endpoint to access.' in result_scn1.msg[0]['Error Message']"
+            
+            - "'failed' in result_scn2"
+            - "'region is required' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'region is required' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Region' in result_scn4.msg"
+            
+         msg: 'Test pass FAILED !!!'
+        

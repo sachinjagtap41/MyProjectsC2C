@@ -1,0 +1,639 @@
+﻿
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+
+}
+
+@{
+    ViewBag.Title = " UAT Project Management: Stakeholder Dashboard";
+}
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=10">
+    <meta name="GENERATOR" content="Microsoft SharePoint">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=10">
+    <meta http-equiv="Expires" content="0">
+    <meta name="msapplication-TileImage" content="/_layouts/15/images/SharePointMetroAppTile.png">
+    <meta name="msapplication-TileColor" content="#0072C6">
+
+    <link href="~/css/theme/blue/style/jQuery Styles/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
+    <link href="~/css/theme/blue/Report/orange.css" rel="stylesheet" />
+    <style type="text/css">
+        .col-full {
+            width: 1240px;
+            padding: 0px 10px 0px 10px;
+        }
+
+        .consGridBackgrnd {
+            background-color: rgb(188,186,188) /*#cecfce/*#adaaad*/ !important;
+        }
+
+        .consbBgrdGrp {
+            background-color: #d7d7d7 /*#adaaad/*#FFD786*/;
+        }
+
+        .tTip {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+
+        .ms-support-icon {
+            float: left;
+            margin-right: 0.5em;
+            cursor: pointer;
+            background-image: url(/images/lync-support.png);
+            background-repeat: no-repeat;
+            background-position: bottom left;
+            padding: 15px 0px 0px 20px;
+        }
+
+       
+
+        ms-imnSpan1 {
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+
+        .ulTabs {
+            width: 251px;
+            background-image: none;
+            background-color: transparent;
+            float: left;
+            border-color: transparent;
+        }
+
+        #tabs {
+            display: block !important;
+        }
+
+        div#tabs {
+            width: auto;
+            padding: 8px;
+            border: solid 1px #ccc;
+            overflow: hidden;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            /* // isPortfolioOn = false;
+             Added by Shilpa For Dynamic Theme Conversion */
+            if (isRootWeb) {
+                var src = "/css/theme/" + themeColor + "/Report/images/showSubRept.jpg";
+
+           
+                var src1 = "/css/theme/" + themeColor + "/Report/images/hideSubRept.jpg"
+                var src2 = "/css/theme/" + themeColor + "/Report/images/leg-pass.jpg";
+                var src3 = "/css/theme/" + themeColor + "/Report/images/leg-fail.jpg";
+                var src4 = "/css/theme/" + themeColor + "/Report/images/leg-complete.jpg";
+                var src5 = "/css/theme/" + themeColor + "/Report/images/leg-progress.jpg";
+
+                var str = '<img src="/css/theme/' + themeColor + '/Report/images/leg-pass.jpg" alt="Pass" /> Pass ' +
+                     '<img src="/css/theme/' + themeColor + '/Report/images/leg-complete.jpg" alt="Complete" /> Not Completed ' +
+                     '<img src="/css/theme/' + themeColor + '/Report/images/leg-fail.jpg" alt="Fail" /> Fail';
+
+                var str1 = '<img src="/css/theme/' + themeColor + '/Report/images/leg-pass.jpg" alt="Pass" /> Pass <br/>' +
+                     '<img src="/css/theme/' + themeColor + '/Report/images/leg-complete.jpg" alt="Complete" /> Not Completed <br/>' +
+                     '<img src="/css/theme/' + themeColor + '/Report/images/leg-fail.jpg" alt="Fail" /> Fail<br/>' +
+                     '<span><img src="/css/theme/' + themeColor + '/Report/images/leg-progress.jpg" alt="Executed" /> Executed</span>';
+
+                $('a[title="Go"]').html('<img src="/css/theme/' + themeColor + '/images/go-button.png" style="margin-top: -3px" />');
+                $('a[title="Reset"]').html('<img src="/css/theme/' + themeColor + '/Report/images/Reset_OrangeNew.png" style="margin-top: -3px;width:21px;height:21px" />');
+            }
+            else {
+                var src = "/css/theme/" + themeColor + "/Report/images/showSubRept.jpg";
+               
+                var src1 = "/css/theme/" + themeColor + "/Report/images/hideSubRept.jpg"
+                var src2 = "/css/theme/" + themeColor + "/Report/images/leg-pass.jpg";
+                var src3 = "/css/theme/" + themeColor + "/Report/images/leg-fail.jpg";
+                var src4 = "/css/theme/" + themeColor + "/Report/images/leg-complete.jpg";
+                var src5 = "/css/theme/" + themeColor + "/Report/images/leg-progress.jpg";
+
+                var str = '<img src="/css/theme/' + themeColor + '/Report/images/leg-pass.jpg" alt="Pass" /> Pass ' +
+                      '<img src="/css/theme/' + themeColor + '/Report/images/leg-complete.jpg" alt="Complete" /> Not Completed ' +
+                      '<img src="/css/theme/' + themeColor + '/Report/images/leg-fail.jpg" alt="Fail" /> Fail';
+
+                var str1 = '<img src="/css/theme/' + themeColor + '/Report/images/leg-pass.jpg" alt="Pass" /> Pass <br/>' +
+                      '<img src="/css/theme/' + themeColor + '/Report/images/leg-complete.jpg" alt="Complete" /> Not Completed <br/>' +
+                      '<img src="/css/theme/' + themeColor + '/Report/images/leg-fail.jpg" alt="Fail" /> Fail<br/>' +
+                      '<span><img src="/css/theme/' + themeColor + '/Report/images/leg-progress.jpg" alt="Executed" > Executed</img></span>';
+
+                $('a[title="Go"]').html('<img src="/css/theme/' + themeColor + '/images/go-button.png" style="margin-top: -3px" />');
+                $('a[title="Reset"]').html('<img src="/css/theme/' + themeColor + '/Report/images/Reset_OrangeNew.png" style="margin-top: -3px;width:21px;height:21px" />');
+            }
+            $('#legImgs').html(str);
+            $('#legImgs1').html(str1);
+
+            $('.imgUp').attr('src', src);
+
+            $('.imgDown').attr('src', src1);
+
+            $('.imgPass').attr('src', src2);
+
+            $('.imgFail').attr('src', src3);
+
+            $('.imgNC').attr('src', src4);
+
+            $('.imgProgress').attr('src', src5);
+
+            /*Code for Portfolio Feature:Mohini Date:04-03-2014*/
+            report.isPortfolioOn = isPortfolioOn;
+
+          /*  //For Hover Over Information :Ejaz Waquif DT:2/11/2014*/
+            if (resource.isConfig.toLowerCase() == 'true') {
+                report.gConfigProject = resource.gPageSpecialTerms['Project'] == undefined ? 'Project' : resource.gPageSpecialTerms['Project'];
+                report.gConfigTestPass = resource.gPageSpecialTerms['Test Pass'] == undefined ? 'Test Pass' : resource.gPageSpecialTerms['Test Pass'];
+                report.gConfigTestCase = resource.gPageSpecialTerms['Test Case'] == undefined ? 'Test Case' : resource.gPageSpecialTerms['Test Case'];
+                report.gConfigTestStep = resource.gPageSpecialTerms['Test Step'] == undefined ? 'Test Step' : resource.gPageSpecialTerms['Test Step'];
+                report.gConfigStatus = resource.gPageSpecialTerms['Status'] == undefined ? 'Status' : resource.gPageSpecialTerms['Status'];
+                report.gConfigTester = resource.gPageSpecialTerms['Tester'] == undefined ? 'Tester' : resource.gPageSpecialTerms['Tester'];
+                report.gConfigGroup = resource.gPageSpecialTerms['Group'] == undefined ? 'Group' : resource.gPageSpecialTerms['Group'];
+                report.gConfigPortfolio = resource.gPageSpecialTerms['Portfolio'] == undefined ? 'Portfolio' : resource.gPageSpecialTerms['Portfolio'];
+                report.gConfigVersion = resource.gPageSpecialTerms['Version'] == undefined ? 'Version' : resource.gPageSpecialTerms['Version'];
+            }
+            $("#executedTitle").attr('title', 'Number of ' + report.gConfigTestStep + 's tested/executed (with Pass or Fail ' + report.gConfigStatus.toLowerCase() + ') within the selected \'Date Filter\' criteria.');
+            $("#activTesterTitle").attr('title', 'Number of ' + report.gConfigTester + 's who has performed Testing with the selected \'Date Filter\' criteria.');
+
+            /*End of For Hover Over Information :Ejaz Waquif DT:2/11/2014*/
+
+            /*Following changes is for resource file:Added by Mohini(Date:25-02-2014)*/
+            $('#cloumnTPName').append('<span>Click on link for more details</span>');
+            $('#columnStatus').append('(%)<span>Click ' + report.gConfigStatus + ' block for more details</span>');
+            $('#h2TPStatus').html(report.gConfigTestPass + '(es) Status');
+            $('#h2Projects').html(report.gConfigProject + 's');
+            $('#arrowUpText').text('Show ' + report.gConfigTester + ' Details');
+            $('#arrowDownText').text('Hide ' + report.gConfigTester + ' Details');
+            $('#h2testerList').html(report.gConfigTester + ' List<span id="brdCrum"></span> ')
+            $('#TSStatistics').html(report.gConfigTestStep + '(s) Statistics:');
+            $('#activeTester').html('Active ' + report.gConfigTester + 's:');
+            $('#headingStatus').text(report.gConfigStatus);
+            $('#noTP').html('No ' + report.gConfigTestPass + '(es) Available.');
+            /********************************************/
+            Main.showLoading();
+
+            /*To get data collection from service*/
+            report.getDataFromService();
+
+            /*setTimeout('report.pageLoad();',200);*/
+            $("#tabs").tabs();
+        });
+
+        function ShowDetailView() {
+            if ($("#dvDet").parent(".ui-state-active").length == 0)/* Code modified to call the function only if Consolidated tab is In active |Ejaz Waquif DT:Dec/18/2014*/
+            {
+                Main.showLoading(); setTimeout('report.detailedViewClick();', 200); Main.hideLoading();
+            }
+        }
+    </script>
+
+
+</head>
+
+<!-- Full Panel : START-->
+<div class="col-full">
+
+    <div style="background-color: whitesmoke;">
+        <!--class="box details"-->
+        <div id="tabs" style="margin-bottom:8px;padding-left:0px;padding-right:0px;background-image:none;overflow:auto;position:static; display: block !important;">
+
+            <ul class="ulTabs withPortfolio ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" style="">
+                <li>
+                    <a href="#tab-1" id="dvCon">
+                        Consolidated View
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab-2" id="dvDet" onclick="ShowDetailView();">
+                        Detailed View
+                    </a>
+                </li>
+            </ul>
+
+            <div style="float: left;margin-left:3px;padding-top:6px" id="dvDateFilter">
+                <div style="float: left">
+                    <b>Project Status:</b>
+                    <select id="setStatus" class="ddl" style="width: 88px;height: 20px" onchange="report2.setStatusFilter()">
+                        <option value="All">All</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <div style="float: left;margin-left:10px;">
+                    <b>Select Date:</b>
+                    <select id="setFilter" class="ddl" style="width: 125px;height: 20px" onchange="report2.setFilter()">
+                        <option value="Select">Select Filter</option>
+                        <option value="Dates">Dates - From/To</option>
+                        <option value="1">Today</option>
+                        <option value="2">Today - 1</option>
+                        <option value="7">Last 7 Days</option>
+                    </select>
+                </div>
+
+                <div style="float: left; margin-top: -5px; margin-left: 10px" id="dateDiv">
+                    <div id="dvCalender" style="float: left;display: none; ">
+                        &nbsp;<b>From: </b>
+                        <input type="text" id="startDate" name="startDate" readonly="readonly" onkeydown="Main.preventBackspace()"
+                               style="width: 68px" />
+                        &nbsp;<b>To: </b>
+                        <input type="text" id="endDate" name="endDate" readonly="readonly" onkeydown="Main.preventBackspace()"
+                               style="width: 68px" />
+                    </div>
+                </div>
+
+                <div style="float: right;margin-left:10px;">
+                    <b>Fiscal Year:</b>
+                    <select id="setFiscal" class="ddl" style="width: 60px;height: 20px" onchange="report2.setFiscalFilter()"></select>
+                    <span id="quarter" style="margin-left:3px">
+                        <input type="checkbox" id="q1" onclick="setTimeout('report2.fillGridForDateFilter(2,1);')" />Q1
+                        <input type="checkbox" id="q2" onclick="setTimeout('report2.fillGridForDateFilter(2,2);')" />Q2
+                        <input type="checkbox" id="q3" onclick="setTimeout('report2.fillGridForDateFilter(2,3);')" />Q3
+                        <input type="checkbox" id="q4" onclick="setTimeout('report2.fillGridForDateFilter(2,4);')" />Q4
+                    </span>
+
+                </div>
+
+            </div>
+            <!--div>
+            <a style="color:blue;cursor:pointer;float:right;padding-right:10px;text-decoration:underline" href="Dashboard-Stakeholder.aspx">
+            Go To Program Management Dashboard</a>
+            </div-->
+            <p class="clear" style="background-color:white">
+                &nbsp;
+            </p>
+
+            <div id="tab-1" style="background-color:white;overflow:hidden;padding-left:10px;padding-right:10px;padding-top:0px">
+
+                <!--Portfolio div of consolidated view-->
+                <div id="dvDetView" style="display: none" class="withPortfolio">
+
+                    <div class="consGridBackgrnd" style="width:65%;float:left;height:339px">
+                        <table id="tblProj" style="width:100%" class="reptTableProjects lft gConfigTableHeader" cellpadding="0" cellspacing="0">
+                            <thead id="tbTitle">
+                                <tr>
+                                    <td class="TopHeading" style="width: 15%;">
+                                        Group
+                                    </td>
+                                    <td class="TopHeading" style="width: 15%;">
+                                        Portfolio
+                                    </td>
+                                    <td class="TopHeading" style="width: 20%;">
+                                        Project
+                                    </td>
+                                    <td class="TopHeading" style="width: 10%;">
+                                        Version
+                                    </td>
+
+                                    <td class="TopHeading" style="width:15%;">
+                                        Version Lead
+                                    </td>
+                                    <td class="TopHeading" style="width: 11%;">
+                                        End Date
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="prjDetailsCons" style="text-align: left"></tbody>
+                        </table>
+                    </div>
+                    <div style="width:35%;float:right;">
+                        <div style="height:38px;color:#fff;background-color:#353535;line-height:38px">
+                            <span id="headingStatus" style="padding-left:5px;color:white">
+                                Status
+                            </span>
+
+                            <p class="rptPaging rgt" style="cursor:pointer; padding-top: 0px; color:white;padding-right:10px">
+                                <a style="color:white" id="tpAllCons">All</a> | <a style="color:white" id="tpPassCons">
+                                    Passed
+                                </a> |
+                                <a style="color:white" id="tpNCCons">
+                                    Not Completed
+                                </a>
+                                | <a id="tpFailCons" style="color:white">Failed</a>
+                                | <a id="tpExecCons" style="color:white">
+                                    Executed
+                                </a>
+                            </p>
+                        </div>
+                        <div id='pieChartDet' style='height: 200px; width:200px; float:left'></div>
+                        <!-- Added by shilpa for statistics -->
+                        <div id='pieChartStatistic' style='height: 200px; width:200px; float:right'>
+
+
+
+                            <div id="TSStatistics" style="margin-top:10px;color:#333;font-weight:bold;font-size:14px">
+                                Test Step(s) Statistics:
+                            </div>
+                            <div style="padding:3px"><div style="width:140px;float:left"><img src="" class="imgPass" alt="Pass" />&nbsp;&nbsp;Pass:</div><div id="passCount" style="width:35px;float:left;text-align:right"></div></div>
+                            <br />
+                            <div style="padding:3px"><div style="width:140px;float:left"><img src="" class="imgFail" alt="Fail" />&nbsp;&nbsp;Fail:</div><div id="failCount" style="width:35px;float:left;text-align:right"></div></div>
+                            <br />
+                            <!--div style="padding:3px"><div style="width:140px;float:left"><img src="./css/js/custom/Report/images/leg-progress.jpg" alt="Executed" />&nbsp;&nbsp;Executed:<img src="./css/images/icon-05.png" align="top"  title="The percentage of testing done before and after the selected date criteria is counted as �Executed� status."/></div><div id="execCount" style="width:35px;float:left;text-align:right"></div></div> -->
+                            <!--div style="padding:3px"><div style="width:140px;float:left"><img src="./css/js/custom/Report/images/leg-pending.png" alt="Pending" />&nbsp;&nbsp;Pending:</div><div id="pendingCount" style="width:35px;float:left;text-align:right"></div></div>
+                            <br/-->
+                            <div style="padding:3px">
+                                <div style="width:140px;float:left">
+                                    <img src="" class="imgNC" alt="Not Completed" />&nbsp;&nbsp;Not
+                                    Completed:
+                                </div><div id="NCCount" style="width:35px;float:left;text-align:right"></div>
+                            </div>
+                            <br />
+                            <div><span>---------------------------</span></div>
+                            <div style="padding:3px">
+                                <div style="width:140px;float:left">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total:
+                                </div><div id="totalTSCount" style="width:35px;float:left;text-align:right"></div>
+                            </div>
+                            <div style="padding:3px;margin-top:30px">
+                                <div style="width:140px;float:left">
+                                    <img src="/images/User.png" alt="Testers" style="width:22px;height:22px;float:left" /><div id="activeTester" style="float:left;margin-top:3px;margin-left:5px">
+                                        Active Testers:
+                                    </div><img id="activTesterTitle" src="/images/icon-05.png" align="top" title="Number of Testers performed testing" />
+                                </div><div id="execTesters" style="width:35px;float:left;text-align:right;margin-top:3px"></div>
+                            </div>
+
+
+                            <div id="execLegend" style="padding:3px;margin-top:45px;display:none">
+                                <div style="width:140px;float:left;height:30px">
+                                    <img src="" class="imgProgress" style="padding-top:4px" alt="Executed" />&nbsp;&nbsp;Executed:<img align="top" id="executedTitle" src="/images/icon-05.png" />
+                                </div>
+
+                                <div id="execCount" style="width:35px;float:left;text-align:right">
+                                    1111
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="width:200px;height:60px;margin-top:211px;margin-left:20px;">
+                            <label id="executedMessage" style="display:none;font-weight:bold">
+                                No Testing done in selected date range.
+                            </label>
+                            <label id="executedMessageForLessTS" style="display:none">
+                                As &#39;Executed&#39; count is very less compared to total,
+                                no bar chart is generated!
+                            </label>
+
+                            <table style="width:100%;display:none" id="executedTable">
+                                <tr>
+                                    <td colspan="5" style="width:100%;background-color:#d7d7d7">
+                                        <div id="executedBarGraph" style="background-color:#0073c6;height:20px;"><!--<label id="execCnt" style="color:white"></label>--></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!--<td style="width:33%">0</td>
+                                    <td align="center" style="width:33%">50</td>
+                                    <td align="right" style="width:34%">100</td>-->
+                                    <td style="width:20%">0</td>
+                                    <td align="center" style="width:20%">25</td>
+                                    <td align="center" style="width:20%">50</td>
+                                    <td align="center" style="width:20%">75</td>
+                                    <td align="right" style="width:20%">100</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- -->
+                        <div class="reptProjectHead" style="height:6px;margin-top:4px">
+                            <!-- Export to ppt -->
+                            <a title="Export to ppt" style="display:none" onclick="Main.showLoading();setTimeout('ppt.statusPatternDiaplg();',200);" class="btnExpPPT">
+                                Export To PPT
+                            </a>
+                        </div>
+
+                    </div>
+                    <div id="noProjDet" style="color: #f60; font-size: 14px; font-weight: bold; display: none;
+		                padding: 10px">
+                        No Projects Available.
+                    </div>
+                    <div id="noQuarterSelectedDet" style="color: #f60; font-size: 14px; font-weight: bold;
+		                display: none; padding: 10px">
+                        Please select at least one quarter.
+                    </div>
+                    <div id="divAlertDet">
+                    </div>
+
+                    <!-- Added for Export to PPT -->
+                    <div id="divPPTAlert" title="Export To PPT - Pattern Status - Result">
+                    </div>
+                    <div id="statusPopUpForDates" title="Select Pattern" style="display:none">
+                        <input type="checkbox" value="Monthly" />Monthly Status <br />
+                        <input type="checkbox" value="Weekly" />Weekly Status <br />
+                        <input type="checkbox" value="Daily" />Daily Status <br />
+                        <input type="checkbox" value="Consolidate" />Consolidate
+                        Status <br />
+                    </div>
+                    <div id="statusPopUpForLast7" title="Select Pattern" style="display:none">
+                        <input type="checkbox" value="Daily" />Daily Status <br />
+                        <input type="checkbox" value="Consolidate" />Consolidate
+                        Status <br />
+                    </div>
+
+                    <!-- -->
+                    <div id="PaginationCons" style="padding-top: 5px; float:left;margin-right:500px">
+                    </div>
+
+                    <div id="dvTabsDet">
+                        <div id="tblDataDet">
+                        </div>
+                        <div id="infoDivDet" class="pager">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-2" style="background-color:white;padding-top:0px">
+
+                <!--Portfolio Div of Detailed View-->
+                <div id="dvConView" class="withPortfolio">
+                    <div class="reportsWrapper">
+                        <div class="lft reptProjectList">
+                            <div class="reptChartArea" style="height:240px;width:460px">
+                                <div id="pieChart" style="height:200px;width:330px;float:left">
+                                </div>
+                                <div style="float:right;width:120px;margin-top:120px;margin-right:10px">
+                                    <p id="legImgs1">
+
+                                    </p>
+                                </div>
+                                <!--  <img src="../SiteAssets/js/custom/Report/images/filler-chart.jpg" alt="" />-->
+                                <div style="width:300px;height:60px;;margin-left:55px;float:left">
+                                    <label id="executedMessage2" style="display:none;font-weight:bold">
+                                        No Testing done in selected date range.
+                                    </label>
+                                    <label id="executedMessageForLessTS2" style="display:none">
+                                        As &#39;Executed&#39; count is very less compared to
+                                        total, no bar chart is generated!
+                                    </label>
+
+                                    <table style="width:100%;cursor:default" id="executedTable2">
+                                        <tr>
+                                            <td colspan="5" style="width:100%;background-color:#d7d7d7">
+                                                <div id="executedBarGraph2" style="background-color:#0073c6;height:20px;"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:20%">0</td>
+                                            <td align="center" style="width:20%">
+                                                25
+                                            </td>
+                                            <td align="center" style="width:20%">
+                                                50
+                                            </td>
+                                            <td align="center" style="width:20%">
+                                                75
+                                            </td>
+                                            <td align="right" style="width:20%">
+                                                100
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="reptProjectHead DivlblWithColon">
+                                <label>Group :</label>&nbsp;
+                                <select id="ddGroup" onchange="report.fillPortfolioDropDown();" style="width:156px;border:solid 1px #D7D7D7;height:23px;margin-top:3px"><!--<option>Select Group</option>--></select>&nbsp;&nbsp;
+                                <label>Portfolio :</label>&nbsp;
+                                <select id="ddPortfolio" onchange="report.projectsDetailViewPortfolio();" style="width:156px;border:solid 1px #D7D7D7;height:23px;margin-top:3px"><!--<option>Select Portfolio</option>--></select>
+                            </div>
+                            <table class="reptTableProjects gConfigTableHeader" cellpadding="0" cellspacing="0">
+                                <thead id="tbTitle">
+                                    <tr>
+                                        <td class="TopHeading">
+                                            Project
+                                        </td>
+                                        <td class="TopHeading">
+                                            Version
+                                        </td>
+
+                                        <td class="TopHeading">
+                                            Version Lead
+                                        </td>
+                                        <td class="TopHeading last" width="90">
+                                            End Date
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody id="prjDetails" style="text-align: left"></tbody>
+                            </table>
+                            <div id="noProj" style="color: #f60; font-size: 14px; font-weight: bold; display: none;
+                                padding: 10px">
+                                No Projects Available.
+                            </div>
+                            <div id="noQuarterSelected" style="color: #f60; font-size: 14px; font-weight: bold;
+                                display: none; padding: 10px">
+                                Please select at least one quarter.
+                            </div>
+                            <div id="divAlert">
+                            </div>
+                            <div id="Pagination" style="float: left; padding-top: 5px;">
+                            </div>
+                            <!-- <p class="rptPaging">Showing Projects 5 of 10 | <a href="#">Prev 5</a> - <a href="#">Next 5</a></p>-->
+                        </div>
+                        <div class="rgt reptTestPassList">
+                            <h2 id="h2TPStatus">
+                                Test Pass(es) Status
+                            </h2>
+                            <table id="tblTP" class="reptTableTestPass gConfigTableHeader" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <td class="TopHeading" style="width:13%">
+                                            Project
+                                        </td>
+                                        <td class="TopHeading" style="width:9%">
+                                            Version
+                                        </td>
+
+                                        <td class="TopHeading" id="cloumnTPName" style="width:18%">
+                                            Test Pass
+
+                                        </td>
+                                        <td class="TopHeading" style="width:12%">
+                                            Test Manager
+                                        </td>
+                                        <td class="TopHeading" style="width:11%">
+                                            End Date
+                                        </td>
+                                        <td class="TopHeading last" style="width:22%" id="columnStatus">
+                                            Status
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody id="TPTable" style="text-align: left"></tbody>
+
+                            </table>
+                            <div id="noTP" class="h3DbDa" style="font-size: 14px; font-weight: bold; display: none;
+		                        padding:20px 10px 10px 10px">
+                                No Test Pass(es) Available.
+                            </div>
+                            <div id="PaginationTP" style="float: left; padding-top: 5px;">
+
+                            </div>
+
+                            <a class="rgt rptShowHideTesters">
+                                <span id="arrowUpText">
+                                    Show Tester Details
+                                </span><span id="arrowDownText" style="display:none">
+                                    Hide
+                                    Tester Details
+                                </span><img src="/css/theme/blue/Report/images/showSubRept.jpg" class="imgUp" id="arrowUp" onclick="report.showTesterDet();" /><img src="/css/theme/blue/Report/images/hideSubRept.jpg" class="imgDown" id="arrowDown" style="display:none" onclick="report.hideTesterDet();" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="reportsWrapperFooter">
+                    </div>
+                    <!-- Project List + Test Pass List End -->
+                    <div class="rptTesterDetails">
+                        <h2 id="h2testerList" class="lft">
+                            Testers List<span id="brdCrum"></span>
+                        </h2>
+                        <p class="rptPaging rgt" style="cursor:pointer;" id="statusClk">
+                            <a id="tpAll">All</a> | <a id="tpPass">Passed</a> | <a id="tpNC">
+                                Not Completed
+                            </a>
+                            | <a id="tpFail">Failed</a>
+                        </p>
+                        <div id="toggleTP" style="float: right; margin-top: 30px; margin-left: 0px; margin-right: -215px;">
+
+                        </div>
+                        <!--<p class="rptPaging rgt" style="cursor:pointer"><a onclick="report.prevTP();">Previous Test Pass</a> - <a onclick="report.nxtTP();">Next Test Pass</a></p>-->
+
+                        <div class="rptTesterList">
+                            <!-- <img src="images/filler-testers.jpg" alt="" width="1300" height="130" />-->
+                            <div id="testerChart" style="height: 300px; display: none; width: 1000px; ">
+
+
+                            </div>
+                            <div id="PaginationTesterChart" style="float: left; padding-top: 10px;margin-left:10px"></div>
+
+                            <div id="noTester" style="color: #f60; font-size: 14px; font-weight: bold; display: none;
+		                        padding: 10px">
+                                No Tester(s) Available.
+                            </div>
+
+                            <!-- Chart code goes here-->
+                        </div>
+                        <div id="dvtabs">
+                            <h3 class="lft" id="testerName"></h3>
+
+                            <div id="tblData">
+                            </div>
+                            <div id="infoDiv" class="pager ">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<p class="box-ft">
+    </p>-->
+    <!-- Right Side Detail Grid: END-->
+</div>
+<!-- Right Panel : END-->

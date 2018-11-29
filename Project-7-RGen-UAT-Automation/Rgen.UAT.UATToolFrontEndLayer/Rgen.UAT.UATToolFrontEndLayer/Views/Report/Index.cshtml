@@ -1,0 +1,282 @@
+﻿@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+
+}
+
+@{
+    ViewBag.Title = " UAT Project Management: Reports";
+}
+<head>
+    
+    <script src="~/js/Report/uatReport.js"></script>
+    <script src="~/js/Report/multiselectddl.js"></script>
+    <script src="~/js/Report/jquery.tinyscrollbar.min.js"></script>
+    <script src="~/js/DashBoard/js/richtext_copy(1).js"></script>
+    <script src="~/js/Report/html2xhtml.min.js"></script>
+    <script src="~/js/Report/JSLINQ.js"></script>
+
+    <link href="~/css/theme/blue/style/jScrollbar.jquery.css" rel="stylesheet" />
+    <link href="~/css/theme/blue/style/rte.css" rel="stylesheet" />
+    <link href="~/css/theme/blue/style/jQuery Styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (isRootWeb) {
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg";
+                var src1 = "/css/theme/" + themeColor + "/images/cmd-export.jpg";
+            }
+            else {
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg";
+                var src1 = "/css/theme/" + themeColor + "/images/cmd-export.jpg";
+            }
+            $('img[title="Show"]').attr('src', src);
+            $('img[title="Export To Excel"]').attr('src', src1);
+
+            Main.showLoading();
+            //security.applySecurityForAnalysis(_spUserId,$('#userW').text());
+
+
+            UATReport.initReportPage();
+            $('#scrollbar1').tinyscrollbar({ size: 'auto', sizethumb: 'auto' });
+
+            /*********Added By Mohini for Resource file*************/
+            $('#scenSelect').html('<option>Select ' + UATReport.gConfigTestPass + '</option>');
+            $('#tester').html('<option>Select ' + UATReport.gConfigTester + '</option>');
+            $('#action').html('<option value="0">Export ' + UATReport.gConfigTestCase + 's</option><option value="1">Import ' + UATReport.gConfigTestCase + 's</option>');
+            $('#exportTCPP').attr('title', 'Select ' + UATReport.gConfigRole + '(s) for exporting the respective testing template!');
+            $('#roleList').html('<option>Select ' + UATReport.gConfigRole + '</option>');
+
+            Main.hideLoading();
+
+            if (!isPortfolioOn) {
+                //:SD
+                $('#projSelect').css('width', '260px');
+                $('#scenSelect').css('width', '260px');
+                $('#tester').css('width', '240px');
+                $('#roleList').css('width', '200px');
+                $('#status').css('width', '160px');
+                $('#versionField').hide();
+                $('#VersionName').hide();
+            }
+
+
+        });
+    </script>
+    <style type="text/css">
+        /* shilpa 16 apr */
+        .gridDetails a {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        ,
+        .filter1 {
+            height: 55px;
+            margin: -5px -9px 0px -9px;
+            background-color: rgb(215, 215, 215);
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            border: 1px solid #000000;
+            background: #FFFFCC;
+            padding: 5px 5px;
+            margin-top: 10px;
+            font-size: 9pt;
+        }
+
+        .filter .selectedRow {
+            background-color: rgb(215, 215, 215);
+        }
+    </style>
+
+</head>
+
+
+<!--Copyright © 2012 RGen Solutions . All Rights Reserved.
+
+    Contact : support@rgensolutions.com -->
+<!-- Right Side Detail Grid: START-->
+
+
+<div id="teststepsbind" style="display:none;"></div>
+<div class="box details">
+    <!--     <div id="bodyloader">
+        <div class="bodyloader">
+            <img src="../SiteAssets/images/LoadingPage.gif" width="64" height="64" alt="Loading" /><br />
+            &nbsp;&nbsp;Please wait ...</div>
+    </div>-->
+
+
+    <h1 style="width:inherit;">
+        <span id="pgHeading" style="font-weight:bold;font-size:14px;">
+            Reports
+        </span>
+        <!--span style="float:right;"><span style="font-size:14px;font-weight:500">
+        Actions</span> &nbsp;&nbsp;<select class="ddl" style="width:220px;height:25px;font-family:Lucida Sans Unicode" id="action"><option value="0">
+        Export Test Cases</option><option value="1">Import Test Cases</option></select>
+            <a style="vertical-align:top;cursor:pointer" onclick="Main.showLoading();setTimeout('UATReport.showAction();',200);" id="go"><img src="../SiteAssets/images/go-button.png" /></a>
+            <img src="../SiteAssets/images/icon-05.png" align="top" style="cursor:pointer" title="Click here for Guidelines to upload/import Testing Template" onclick="UATReport.helpTextOnTempalteUse()"/>
+            </span-->
+        <span style="float:right;">
+            <img alt="" title="Show" style="margin-bottom: -5px;cursor: pointer;top: 11px" onclick="Main.showLoading();setTimeout('UATReport.showTesterData();',200);" src="" />
+            <img alt="" title="Export To Excel" style="top:1px;left:-58px ; cursor: pointer;margin-bottom:-5px;" onclick="Main.showLoading();setTimeout('CreateExcelSheet();',200);" src="" />
+        </span>
+    </h1>
+    <p class="clear"></p>
+    <!--<div id="bodyloader" class="loadingMainDiv"><img src="../SiteAssets/images/ajax-loaderFinal.gif" class="innerLoadImg" alt="Waiting.."/></div>-->
+    <div class="filter " style="height:55px;margin:-5px -9px 0px -9px;background-color:rgb(215, 215, 215)">
+        <table>
+            <tr>
+                <td>
+                    <label class="mandatory">Select Project:<font color="red">*</font></label><br />
+                    <select id="projSelect" class="ddl" style="width:240px">
+                        <option>
+                            Project Name
+                        </option>
+                    </select>
+                </td>
+                <td style="width:150px" id="versionField">
+                    <label>Version: </label>
+                    <select id="versionSelect" class="ddl" style="width: 160px">
+                        <option>
+                            Select Version
+                        </option>
+                    </select>
+                </td>
+
+
+                <td>
+                    <label>Select Test Pass :</label><br />
+                    <select id="scenSelect" class="ddl" style="width:240px">
+                        <option>
+                            Select Test Pass
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <label>Select Tester :</label><br />
+                    <select id="tester" class="ddl" style="width:200px">
+                        <option>
+                            Select Tester
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <label>Select Role :</label><br />
+                    <select id="roleList" class="ddl" style="width: 160px">
+                        <option>Select Role</option>
+                    </select>
+                </td>
+                <td>
+                    <label>Status : </label><br />
+                    <select id="status" class="ddl" style="width:150px;margin-right:0">
+                        <option value="0">All</option>
+                        <option value="2">Pass</option>
+                        <option value="3">Fail</option>
+                        <option value="1">Not Completed</option>
+                    </select>
+                </td>
+                <!--td valign="bottom"-->
+                <!--
+                    <input type="button" onclick="Main.showLoading();setTimeout('UATReport.showTesterData();',200);" id="btnShow" value="Show" class="btnTemp" style="width:135px;margin-top:5px;margin-left:15px;cursor:pointer" title="Click to see report of selected criteria."/>
+                    <span id="export" class="export"><a href="#" onclick="Main.showLoading();setTimeout('CreateExcelSheet();',200);"><input type="button" style="cursor:pointer" value="Export To Excel" class="btnTemp" title="Click to download report of selected criteria in excel format"/></a></span>
+                -->
+                <!--img alt="" title="Show"  style="margin-bottom: -5px;cursor: pointer;top: 11px" onclick="Main.showLoading();setTimeout('UATReport.showTesterData();',200);" src="../SiteAssets/images/cmd-go.jpg"/>
+                <img alt="" title="Export To Excel"  style="top:1px;left:-58px ; cursor: pointer;margin-bottom:-5px;" onclick="Main.showLoading();setTimeout('CreateExcelSheet();',200);" src="../SiteAssets/images/cmd-export.jpg"/>
+
+
+                </td-->
+            </tr>
+        </table>
+
+    </div>
+
+    <div id="dvProjectDetails" style="display:none;margin-top:20px" class="proj-desc">
+        <h2 id="projectName">
+            Project - No Project Available<span>
+                (#ID: )
+            </span>
+        </h2>
+
+        <h2 id="VersionName">Version - </h2>
+
+
+        <p id="projDesc" style="width:1200px;" class="masterTooltip"></p>
+        <h2 id="tpDetails">Test Pass Details</h2><br />
+        <div id="thisScenario" style="width:100%;"></div>
+
+    </div>
+    <!-- test caes section starts here -->
+    <h4 id="hTestCase" style="display:none">Test Step(s)</h4>
+
+    <div id="testStepDetails">
+    </div>
+    <div id="Pagination" style="float:right;padding-top:20px;"></div>
+</div>
+
+<div id="dvTriage" title="Triage" style="display:none;">
+    <table>
+        <tr>
+
+            <td>Triage Result :-</td>
+            <td>
+                <select id="drpTriageResult" style="width:161px;">
+                    <option value="Bug">
+                        Bug
+                    </option>
+                    <option value="Not a Bug">Not a Bug</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Description :-</td>
+            <td><textarea id="rtaTriageDescription" style="height:80px; width:160px;"></textarea></td>
+
+
+        </tr>
+    </table>
+</div>
+
+
+<p class="box-ft"></p>
+<!-- Right Side Detail Grid: END-->
+<div id="dialog" title="Project Select"></div>
+<!-- Right Panel : END-->
+
+
+
+<div id="logBugWP" title="Log Bug :" style="display:none;">
+
+</div>
+<div id="exportTCPP" title="Select Role(s) for exporting the respective testing template!">
+    <div id="role" class="Mediumddl" style="width:400px">
+    </div>
+</div>
+<div id="divAlert" style="display:none;" title="Report">
+
+</div>
+<div id="divHtml" style="display:none;"></div>
+<div id="dvTemp" style="display:none;" title="Report">
+
+</div>
+<div id="divUpload"><input type="file" id="upload" style="display:none" /></div>
+
+
+<div style="overflow:hidden;width:2px;height:2px" id="rteDiv" class="rte1Container">
+    <div></div>
+    <script type="text/javascript">
+        var parameter1 = Main.getSiteUrl() + "/images/";
+        var parameter2 = Main.getSiteUrl() + "/palletes/";
+        initRTE(parameter1.toString(), parameter2.toString(), "", true);
+        //initRTE("../SiteAssets/js/RTE/images/", "../SiteAssets/js/RTE/",  "", true);
+        writeRichText('rte1', "", 610, 200, false, false);
+    </script>
+</div>
+<div id="parentExp">
+    <div id="expectedResultWithImage" class="pasteImage" style="display:none"></div>
+    <div id="divExp"></div>
+    <div id="divAct"></div>
+</div>
+<input id="hdnMapListID" type="hidden" runat="server" Value="" EnableViewState="true" />
+

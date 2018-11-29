@@ -1,0 +1,129 @@
+#Ansible Module Name -- oss.py
+#Test Case : create bucket with region Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: create bucket with Mode Param Validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create bucket with invalid region Param
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ invalidregion }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - create bucket with blank region Param
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: 
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+        minutes: 1
+   
+   - block:
+     - name: Scenario 2.1 - Delete bucket with all parameters
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: '{{ bucketName }}'
+       register: result_del_scn2
+     - debug: var=result_del_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - block:
+     - name: Scenario 3 - create bucket with region Param as Region
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         Region: '{{ region }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - create bucket without region Param
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no        
+
+   - pause:
+        minutes: 1
+   
+   - block:
+     - name: Scenario 4.1 - Delete bucket with all parameters
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: '{{ bucketName }}'
+       register: result_del_scn4
+     - debug: var=result_del_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+     always:
+      - assert:
+         that:
+            - "'failed' in result_scn1"
+ #need to change           - "'value of status must be one of: present,absent,getinfo_vroute,getinfo_vswitch, got: shghshsg' in result_scn1.msg"
+
+            - "'failed' not in result_scn2"
+
+            - "'failed' not in result_del_scn2"
+
+            - "'failed' in result_scn3"
+            - "'unsupported parameter for module: Region' in result_scn3.msg"
+
+            - "'failed' not in result_scn4"
+
+            - "'failed' not in result_del_scn4"
+
+         msg: 'Test pass FAILED !!!'
+        

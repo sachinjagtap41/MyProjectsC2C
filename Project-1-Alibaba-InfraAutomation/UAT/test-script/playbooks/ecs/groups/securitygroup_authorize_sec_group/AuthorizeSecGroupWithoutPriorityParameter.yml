@@ -1,0 +1,48 @@
+#Ansible Module Name -- ECS_GROUP
+#Test Case : Verify Security-Group is authorized without priority parameter
+#Ansible Playbook created by - Sachin J
+
+- name: Authorize security group without priority parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Scenario 1 - Authorize security group without priority parameter
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'  
+        group_id: '{{ SGId }}'
+        status: '{{ status }}'  
+        rules:
+          - ip_protocol: tcp
+            port_range: 80/80
+            #priority: 3    By default priority is 1
+            cidr_ip: '192.168.0.98/32'
+      
+       register: Scenario1
+     - debug: var=Scenario1
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+     always:
+     - assert:
+        that: 
+           - "'failed' not in Scenario1"
+        
+     
+     
+     
+     
+     
+     

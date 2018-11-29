@@ -1,0 +1,90 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : create VPC Region Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: create VPC Region Param Validation
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - Validation of Region param with invalid region
+   - block:
+     - name: Scenario 1 - Validation of Region param with invalid region
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionInvalid }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario1
+     - debug: var=create_vpc_scenario1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   # Task 2 - Validation of Region param as blank
+   - block:
+     - name: Scenario 2 - Validation of Region param as blank
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region:
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario2
+     - debug: var=create_vpc_scenario2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   # Task 3 - Validation of region param as Region
+   - block:
+     - name: Scenario 3 - Validation of region param as Region
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        Region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario3
+     - debug: var=create_vpc_scenario3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:
+         that:
+            - "'failed' in create_vpc_scenario1"
+            
+
+            - "'failed' in create_vpc_scenario2"
+            
+
+            - "'failed' in create_vpc_scenario3"
+            
+
+         msg: 'Test pass FAILED !!!'
+

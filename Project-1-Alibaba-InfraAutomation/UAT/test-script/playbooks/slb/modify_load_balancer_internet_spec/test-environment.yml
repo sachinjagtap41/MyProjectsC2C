@@ -1,0 +1,121 @@
+ ############ Create an SLB ###############
+
+instanceIds:
+      - i-t4ne59fbigiry5wl5y1n
+VSwitchId: vsw-t4nwwt4hfd0tlo7d8qx3c
+singleZoneRegion: cn-hongkong
+masterZoneForSingleZoneRegion: cn-hongkong-b
+slaveZoneForSingleZoneRegion: cn-hongkong-c
+
+
+################### Business Scenarios SLB #################
+
+diffRegionVSwitchId: vsw-2ze1v3bg6r6rtbdsqfzei
+masterZoneOfDiffRegion: cn-beijing-a
+slaveZoneOfDiffRegion: cn-beijing-b
+instanceIdsOfDiffRegion:
+  -  i-2zeefrrzhrojmp31nkei
+     i-2zede0yjqvz9z4ntk2q2
+
+
+
+
+##########################################################################################################
+
+################# Create Listener #####################
+
+SLBId: lb-gs5sywh5vh1szbbdq01xv
+
+      
+
+ #####################################################################################################################
+ 
+############################# Business Scenarios for Listener ##################################################
+
+listenerWithPortNoSameAndDiffProtocol:
+  - protocol: https
+    load_balancer_port: 80
+    instance_port: 80
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+      
+listenerWithSameLBPortNoAndDiffProtocolAndBackendServerPort:
+  - protocol: https
+    load_balancer_port: 80
+    instance_port: 20
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+
+listenerWithSameBackendServerPortAndDiffProtocolAndLBPortNo:
+  - protocol: https
+    load_balancer_port: 20
+    instance_port: 80
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+      
+ 
+ ##################### Modify Internet Spec ##############
+ 
+SLBIdInvalid: 364723hgsfhsgfh 
+
+#####################################################################################################################
+
+################### Delete Load Balancer ###########
+
+deleteLoadBalancerId: lb-gs5xi73bmdsr5r6koh8ip  
+deleteLoadBalancerIdWithStopState: lb-gs5jk5w4gmyl0jrrs5df0 
+deleteLoadBalancerId1: lb-gs5rxopo1ifc1y2tof9st 
+
+########## Set Load Balancer Status ###############
+
+SLBIdInActiveState: lb-gs5rxopo1ifc1y2tof9st
+SLBIdInactiveState: lb-gs5rxopo1ifc1y2tof9st
+
+
+
+    

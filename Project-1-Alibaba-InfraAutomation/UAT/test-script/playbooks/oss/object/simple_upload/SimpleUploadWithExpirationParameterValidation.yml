@@ -1,0 +1,260 @@
+#Ansible Module Name -- oss.py
+#Test Case : Simple upload with expiration parameter
+#Ansible Playbook created by - Sachin J
+---
+- name: Simple upload with expiration parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks: 
+  
+  # Task : 1
+   - block:
+     - name: Scenario 1 - create bucket
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: bucketname-12
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+         
+       register: result_scn1
+     - debug: var=result_scn1
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+
+
+ # Task : 2
+   - block: 
+     - name: Scenario 2 - Upload the file with default expiration parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         bucket: bucketname-12
+        # expiration: '{{ expiration }}'
+         headers:
+           Key1: value1
+           Key2: value2
+         
+         metadata: 
+          tag_key1: tag_value1
+          tag_key2: tag_value2 
+        
+         src: '../../../oss_uploading_files/commands.txt'
+         file_name: 'commands.txt'
+         region: '{{ region }}'
+         
+       register: result_scn2
+     - debug: var=result_scn2
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+       
+       # Task : 3
+   - block: 
+     - name: Scenario 3 - Upload the file with expiration parameter as numeral
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         bucket: bucketname-12
+         expiration: '{{ expirationNumeral }}'
+         headers:
+           Key1: value1
+           Key2: value2
+         
+         metadata: 
+          tag_key1: tag_value1
+          tag_key2: tag_value2 
+         
+         src: '../../../oss_uploading_files/commands.txt'
+         file_name: 'commands.txt'
+         region: '{{ region }}'         
+         
+       register: result_scn3
+     - debug: var=result_scn3
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+       
+       
+   # Task : 4
+   - block: 
+     - name: Scenario 4 - Upload the file with expiration parameter as negative
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         bucket: bucketname-12
+         expiration: '{{ expirationNegative }}'
+         headers:
+           Key1: value1
+           Key2: value2
+         
+         metadata: 
+          tag_key1: tag_value1
+          tag_key2: tag_value2 
+         
+         src: '../../../oss_uploading_files/commands.txt'  
+         file_name: 'commands.txt'
+         region: '{{ region }}'          
+         
+       register: result_scn4
+     - debug: var=result_scn4
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+       
+       # Task : 5
+   - block: 
+     - name: Scenario 5 - Upload the file with expiration parameter as Special Symbol
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         bucket: bucketname-12
+         expiration: '{{ expirationSpecialChar }}'
+         headers:
+           Key1: value1
+           Key2: value2
+        
+         metadata: 
+          tag_key1: tag_value1
+          tag_key2: tag_value2 
+         
+         region: '{{ region }}'  
+         src: '../../../oss_uploading_files/commands.txt' 
+         file_name: 'commands.txt'      
+         
+       register: result_scn5
+     - debug: var=result_scn5
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2 
+       
+       
+    
+  # Task : 6
+   - block: 
+     - name: Scenario 6 - Upload the file without specifying value for expiration parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeUpload }}'
+         bucket: bucketname-12
+         expiration: 
+         headers:
+           Key1: value1
+           Key2: value2
+         
+         metadata: 
+          tag_key1: tag_value1
+          tag_key2: tag_value2 
+         
+         region: '{{ region }}'  
+         file_name: 'commands.txt'
+         src: '../../../oss_uploading_files/commands.txt'         
+         
+       register: result_scn6
+     - debug: var=result_scn6
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2 
+   
+   # Task : 7    
+       
+   - block:
+     - name: Scenario 7 - Delete bucket object
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDeleteObject }}'
+         bucket: bucketname-12
+         region: '{{ region }}'  
+         
+       register: result_scn7
+     - debug: var=result_scn7
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no   
+       
+   
+
+ # Task : 8
+   - block:
+     - name: Scenario 8 - Delete bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket: bucketname-12 
+         region: '{{ region }}'
+         
+       register: result_scn8
+     - debug: var=result_scn8
+     
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_scn2"
+            - "'failed' in result_scn3"
+            - "'failed' in result_scn4"
+            - "'failed' in result_scn5"
+            - "'failed' in result_scn6"
+            - "'failed' not in result_scn7"
+            - "'failed' not in result_scn8"
+         msg: 
+           'Test Pass Failed !!!'  
+            
+         

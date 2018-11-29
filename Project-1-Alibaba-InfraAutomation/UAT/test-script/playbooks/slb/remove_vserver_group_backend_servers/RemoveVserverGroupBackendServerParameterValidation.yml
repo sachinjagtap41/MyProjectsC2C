@@ -1,0 +1,86 @@
+#Ansible Module Name -- ecs_slb_vsg.py
+#Test Case : Remove Backend Servers from Vserver Group
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating remove backend servers from vserver group
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  - block:
+    # Task : 1
+    - name: Scenario 1 - Remove backend servers from the vserver group with valid backendservers
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        purge_backend_servers: '{{ removeVserverGroupBackendServers }}'       
+        status: '{{ status }}'
+        
+      register: result1  
+    - debug: var=result1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+    
+
+    
+  - block: 
+    # Task : 2
+    - name: Scenario 2 - Remove backend servers from the vserver group when backend server is invalid
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        purge_backend_servers: '{{ removeVserverGroupBackendServersInavlid }}'       
+        status: '{{ status }}'
+        
+      register: result2  
+    - debug: var=result2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+    
+ 
+    
+  - block: 
+    # Task : 3
+    - name: Scenario 3 - Remove backend servers from the vserver group when one of the server is not present in the list
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        purge_backend_servers: '{{ removeVserverGroupBackendServersOneInvalidFromList }}'       
+        status: '{{ status }}'
+        
+      register: result3  
+    - debug: var=result3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+    
+   
+    always:
+      - assert:  
+         that:
+            - "'failed' not in result1"
+            - "'failed' in result2"
+            - "'failed' in result3"
+         msg: 'Test pass FAILED !!!'

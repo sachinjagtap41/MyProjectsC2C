@@ -1,0 +1,99 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for count parameter
+# Playbook created by : Sachin Jagtap
+
+
+- name: Validating count parameter
+  hosts: localhost
+  connection: local
+  
+  
+ 
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+    
+    
+#Count100: 100              It is not feasible to test this Scenario,So we believe on API for this Scenario.
+
+#CountMoreThan100: 102      It is not feasible to test this Scenario,So we believe on API for this Scenario.   
+    
+            
+  tasks:
+  
+  
+  # Task :1
+  
+  - block:
+    - name: Validating - Valid Count Parameter Which Accepts Value As 2
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        count: '{{ CountValid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+        
+        
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+  # Task : 2
+ 
+  - block:
+    - name: Validating - Invalid Count Parameter Which Accepts Value As -5
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        count: '{{ CountInvalid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ CountInvalid }}' is not a valid parameter"
+ 
+  # Task : 3
+ 
+  - block:
+    - name: Validating - Instance Is Created Without Specifying Count Parameter (Valid Test - Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        #count: '{{ CountValid }}'  Without count parameter  (Default count = 1)
+        state: '{{ StateValid }}'
+        
+        
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success"

@@ -1,0 +1,35 @@
+#Ansible Module Name -- rds.py
+#Test Case : Delete database of different instance
+#Ansible Playbook created by - Abha H
+---
+- name: Delete database of different instance
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - Delete database of different instanceDelete database of different instance
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ instanceIdDiff }}'
+        db_name: '{{ dbNamePresent }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            - "'The specified database is not found.' in result_scn1.msg[0]['Error Message']"        

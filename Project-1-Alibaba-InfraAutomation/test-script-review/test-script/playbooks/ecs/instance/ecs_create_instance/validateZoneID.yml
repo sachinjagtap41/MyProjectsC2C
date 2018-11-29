@@ -1,0 +1,135 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for RegionId parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml  
+    
+    
+  tasks:
+  
+  # Task: 1
+  
+  - block:
+    - name: Validating - Valid ZoneId / Valid RegionId  Parameter (Valid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'  # Valid
+        zone_id: '{{ ZoneValid }}'    # Valid
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task: 2
+ 
+  - block:
+    - name: Validating - Invalid ZoneId / Valid RegionId Parameter (Invalid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'   # Valid
+        zone_id: '{{ ZoneInvalid }}'   # Invalid
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ ZoneInvalid }}' is not a valid parameter"
+  
+  # Task: 3
+  
+  - block:
+    - name: Validating - Default ZoneId / Valid RegionId Parameter (Valid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'    # Valid
+        # zone_id: '{{ ZoneValid }}'   Default ZoneId
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success "
+  
+  # Task: 4
+  
+  - block:
+    - name: Validating - Valid ZoneId / Invalid RegionId Parameter (Invalid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionInvalid }}'    # Invalid
+        zone_id: '{{ ZoneValid }}'        # Valid
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ RegionInvalid }}' is not a valid parameter"
+ 
+  # Task: 5
+ 
+  - block:
+    - name: Validating - Invalid ZoneId / Invalid RegionId Parameter (Invalid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionInvalid }}'   # Invalid
+        zone_id: '{{ ZoneInvalid }}'    # Invalid
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ RegionInvalid }}' , '{{ ZoneInvalid }}' is not a valid parameter  "

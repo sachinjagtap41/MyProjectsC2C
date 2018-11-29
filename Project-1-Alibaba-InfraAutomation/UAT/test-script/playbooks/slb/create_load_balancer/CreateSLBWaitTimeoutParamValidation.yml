@@ -1,0 +1,149 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Wait Timeout Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Wait Timeout Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+ # Task 1 : Validating Invalid Wait Timeout
+    - block:
+      - name: Scenario 1 - Validating Invalid Wait Timeout
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts}}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeoutInvalid }}'
+        register: create_slb_result_task1
+      - debug: var=create_slb_result_task1
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+     
+
+ # Task 2 : Validating Wait Timeout by keeping blank
+    - pause: 
+       seconds: 20
+    - block:
+      - name: Scenario 2 - Validating Wait Timeout by keeping blank
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeoutBlank }}'
+        register: create_slb_task2
+      - debug: var=create_slb_task2
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+             
+    - pause: 
+       seconds: 20
+
+    - block: 
+      - name: Delete load balancer with all parameters
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_task2.result[0].LoadBalancerId }}'
+        when:
+          - "create_slb_task2.changed ==  True"  
+ 
+ # Task 3 : Validating Wait Timeout more than the limit
+    - pause: 
+       seconds: 20
+    - block:
+      - name: Scenario 3 - Validating Wait Timeout more than the limit
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeoutMoreThan300 }}'
+        register: create_slb_task3
+      - debug: var=create_slb_task3
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    - pause: 
+       seconds: 20    
+
+    - block:
+      - name: Delete load balancer with all parameters
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_task3.result[0].LoadBalancerId }}'
+        when:
+          - "create_slb_task3.changed ==  True"
+ 
+ # Task 4 : Validating wait_timeout as Wait_timeout
+    - block:
+      - name: Scenario 4 - Validating wait_timeout as Wait_timeout
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          validate_certs: '{{ validateCerts}}'
+          wait: '{{ wait }}'
+          Wait_timeout: '{{ waitTimeout }}'
+        register: create_slb_result_task4
+      - debug: var=create_slb_result_task4
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+      always:
+      - assert:  
+         that:
+            - "create_slb_result_task1.changed ==  false"
+#            - "'argument wait_timeout is of type <type 'str'> and we were unable to convert to int' in create_slb_result_task1.msg"
+            
+            - "'failed' not in create_slb_task2"
+            
+            - "'failed' not in create_slb_task3"
+                
+            - "create_slb_result_task4.changed ==  false"
+            - "'unsupported parameter for module: Wait_timeout' in create_slb_result_task4.msg"
+               
+         msg: 'Test pass FAILED !!!'

@@ -1,0 +1,54 @@
+# Ansible Module Name - ECS_Disk
+# Interface : DetachDisk
+# Playbook Contains Test-Cases for detach disk 
+# Playbook created by : Sachin J
+
+
+- name: Detach disk with invalid disk_id parameter
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../../vars/alicloud-creds.yml
+      
+     
+          
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+
+    - name: Scenario 1 - Detach disk with invalid disk_id parameter
+
+      ecs_disk:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'         
+        disk_id: '{{ diskIdInvalid }}'   #Invalid diskid parameter
+        status: '{{ diskStatus }}' 
+      
+      register: result1
+    - debug: var=result1
+        
+       
+    rescue: 
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+    always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+         
+        
+          
+
+    
+
+

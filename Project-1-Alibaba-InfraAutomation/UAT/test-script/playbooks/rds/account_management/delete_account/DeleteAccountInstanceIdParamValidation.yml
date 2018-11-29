@@ -1,0 +1,96 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Delete account with instance id parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Delete account with instance id parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Delete account with invalid instance id parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandDelete }}'
+         db_instance_id: '{{ instanceIdInvalid }}'
+         account_name: '{{ accName }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 2 - Delete account without instance id parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandDelete }}'
+         account_name: '{{ accName }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 3 - Delete account with blank instance id parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandDelete }}' 
+         db_instance_id: 
+         account_name: '{{ accName }}'
+       register: result_scn3
+     - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 4 - Delete account with command instance id as Instance id
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandDelete }}'
+         Db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+       register: result_scn4
+     - debug: var=result_scn4 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            - "'The specified instance is not found.' in result_scn1.msg[0]['Error Message']"
+            
+            - "'failed' in result_scn2"
+            - "'db_instance_id is required for delete account' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'db_instance_id is required for delete account' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Db_instance_id' in result_scn4.msg"
+            
+         msg: 'Test pass FAILED !!!'

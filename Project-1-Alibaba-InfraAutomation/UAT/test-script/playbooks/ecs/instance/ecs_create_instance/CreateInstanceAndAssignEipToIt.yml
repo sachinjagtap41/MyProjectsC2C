@@ -1,0 +1,71 @@
+# Ansible Module Name - ECS
+# Interface : CreateInstance
+# Playbook Contains Test-Cases for Bind Eip parameter
+# Playbook created by : Sachin J
+
+
+- name: Bind Eip to an VPC instance
+  hosts: localhost
+  connection: local
+ 
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+         
+   
+  tasks:
+  - block:
+    - name: Validating Bind Eip parameter
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceTypebindEip }}'
+        instance_name: '{{ instanceName }}'
+        vswitch_id: '{{ vswithId }}'                # Give Vswith of the Created VPC
+        bind_eip: '{{ bindEip }}'                           # Give Allocation Ip
+        internet_data: '{{ internetDataPayByTrafficAllDefaultParameters }}'          # Internet data = PayByTraffic
+        io_optimized: '{{ ioOptimizedTrue }}'   # ioOptimizedTrue = True
+        allocate_public_ip: '{{ allocatePublicIpFalse }}'   # Allocate Public Ip = False
+        state: '{{ state }}'
+        
+      register: create_instance_result
+    - debug: var=create_instance_result
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  
+    always:
+    - assert:
+        that:
+           - "'failed' not in create_instance_result"
+        msg: 'Test pass FAILED !!!'
+  - pause:
+       seconds: 15
+
+  post_tasks:
+   - name: Deleting newly created instance
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result"
+            
+        
+        
+        
+        
+        
+        
+        
+        
+       

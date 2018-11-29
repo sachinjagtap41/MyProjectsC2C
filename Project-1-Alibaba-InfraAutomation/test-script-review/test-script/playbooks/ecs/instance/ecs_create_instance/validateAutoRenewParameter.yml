@@ -1,0 +1,158 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for AutoRenew parameter
+# Playbook created by : Sachin Jagtap
+# This Parameter can not be tested as it requires prepaid account
+
+- name: Validating auto renew parameter
+  hosts: localhost
+  connection: local
+  
+      
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+    
+ 
+  tasks:
+  
+ 
+  # Task : 1
+  # This test case is not tested because charge type is "prepaid"
+  
+  - block: 
+    - name: Validating - Valid AutoRenew Parameter As True When Charge Type Is Prepaid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        auto_renew: '{{ AutoRenewTrue }}'
+        instance_charge_type: '{{ ChargeTypePrepaid }}'
+        period: '{{ Period }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Expected - Success"
+   
+   # Task : 2
+   # This test case is not tested because charge type is "prepaid"
+   
+  - block: 
+     - name: Validating - Valid  Default Value Of AutoRenew Parameter As False
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        #auto_renew: '{{ AutoRenewFalse }}'
+        instance_charge_type: '{{ ChargeTypePrepaid }}'
+        period: '{{ Period }}'
+        state: '{{ StateValid }}'
+        
+       register: result
+     - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"
+  
+  # Task : 3
+  
+    - block: 
+    - name: Validating - Instance Is Not Created When Charge Type Is Postpaid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        auto_renew: '{{ AutoRenewFalse }}'
+        instance_charge_type: '{{ ChargeTypePostpaid }}'
+        period: '{{ Period }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected -"
+   
+   # Task : 4
+   
+    - block: 
+    - name: Validating - Instance Is Not Created When Charge Period Value Is Invalid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        auto_renew: '{{ AutoRenewTrue }}'
+        instance_charge_type: '{{ ChargeTypePostpaid }}'
+        period: '{{ PeriodInvalid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected - "
+  
+  # Task : 5
+  
+    - block: 
+    - name: Validating - Instance Is Not Created When AutoRenew Parameter Has Given Value As 0 /1
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_charge_type: '{{ ChargeTypePostpaid }}'
+        auto_renew: '{{ AutoRenewInvalidZero }}'   # Invalid
+        period: '{{ PeriodValid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected - '{{ AutoRenewInvalidZero }}' is not a valid parameter"
+    
+    
+    
+    
+    
+  
+  

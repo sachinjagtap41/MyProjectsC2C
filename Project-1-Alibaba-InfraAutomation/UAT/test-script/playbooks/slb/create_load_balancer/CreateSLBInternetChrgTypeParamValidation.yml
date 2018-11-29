@@ -1,0 +1,91 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Internet Charge Type Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Internet Charge Type Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+  # Task 1 : Validating Invalid Internet Charge Type
+  - block:
+    - name: Scenario 1 - Validating Invalid Internet Charge Type
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        internet_charge_type: '{{ internetChrgTypeInvalid }}'
+        master_zone_id: '{{ masterZone }}'
+        slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn1
+    - debug: var=create_slb_result_scn1
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+  # Task 2 : Validating Internet Charge Type by keeping blank
+  - block:
+    - name: Scenario 2 - Validating Internet Charge Type by keeping blank
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        internet_charge_type: '{{ internetChrgTypeBlank }}'
+        master_zone_id: '{{ masterZone }}'
+        slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn2
+    - debug: var=create_slb_result_scn2
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+  # Task 3 : Validating internet_charge_type as Internet_charge_type
+  - block:
+    - name: Scenario 3 - Validating internet Charge Type as Internet_charge_type
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        Internet_charge_type: '{{ internetChargeType }}'
+        master_zone_id: '{{ masterZone }}'
+        slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn3
+    - debug: var=create_slb_result_scn3
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:  
+         that:
+            - "'failed' in create_slb_result_scn1"
+            -  "'value of internet_charge_type must be one of: paybybandwidth,paybytraffic, got: vjjv' in create_slb_result_scn1.msg"
+
+            - "'failed' in create_slb_result_scn2"
+            -  "'value of internet_charge_type must be one of: paybybandwidth,paybytraffic, got: None' in create_slb_result_scn2.msg"
+
+            - "'failed' in create_slb_result_scn3"
+            -  "'unsupported parameter for module: Internet_charge_type' in create_slb_result_scn3.msg"
+         msg: 'Test pass FAILED !!!'

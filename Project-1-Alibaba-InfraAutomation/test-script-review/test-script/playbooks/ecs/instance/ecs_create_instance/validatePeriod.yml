@@ -1,0 +1,147 @@
+# The Period parameter could not be checked as it requires Prepaid account
+# Playbook contains test cases for Period parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml   
+    
+  tasks:
+  
+  # Task: 1
+  # This test-case can not be tested as it requires prepaid account
+  - block: 
+    - name: Validating - Valid Period Parmeter As Prepaid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        instance_charge_type: '{{ PeriodChargeTypePrepaid }}'
+        period: '{{ PeriodParameter }}'
+        
+      register: result
+    - debug: var=result
+  
+        
+    rescue: 
+    - debug: msg="Expected - Success"
+ 
+ # Task: 2
+ # This test-case can not be tested as it requires prepaid account
+  - block: 
+    - name: Validating - Invalid Period Parmeter As Postpaid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        instance_charge_type: '{{ PeriodChargeTypePostpaid }}'
+        period: '{{ PeriodParameter }}'
+        
+      register: result
+    - debug: var=result
+  
+        
+    rescue: 
+    - debug: msg="Failure Expected "
+ 
+ # Task: 3
+ # This test-case can not be tested as it requires prepaid account
+  - block: 
+    - name: Validating - Invalid Period Parmeter As Null
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        instance_charge_type: '{{ PeriodChargeTypeNull }}'
+        period: '{{ PeriodParameter }}'
+        
+      register: result
+    - debug: var=result
+  
+       
+    rescue: 
+    - debug: msg="Failure Expected "
+  
+  # Task: 4
+  # This test-case can not be tested as it requires prepaid account
+  - block: 
+    - name: Validating - Invalid Period Parmeter As Paid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        instance_charge_type: '{{ PeriodChargeTypeInvalid }}'
+        period: '{{ PeriodParameter }}'
+        
+      register: result
+    - debug: var=result
+  
+        
+    rescue: 
+    - debug: msg="Failure Expected "
+  
+  # Task: 5
+  # This test-case can not be tested as it require prepaid account
+  
+  - block: 
+    - name: Validating - Instance Is Created Without Period Parameter 
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        instance_charge_type: '{{ PeriodChargeTypePrepaid }}'  
+      #  period: '{{ PeriodParameter }}'   Without period parameter
+        
+      register: result
+    - debug: var=result
+        
+    rescue: 
+    - debug: msg="Expected - Success "
+  

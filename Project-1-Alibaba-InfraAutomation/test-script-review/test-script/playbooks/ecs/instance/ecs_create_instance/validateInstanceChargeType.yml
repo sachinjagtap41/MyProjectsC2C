@@ -1,0 +1,123 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for ImageId parameter
+# Playbook created by : Sachin Jagtap
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml 
+    
+   
+    
+  tasks:
+  
+  # Task : 1
+  
+  - block: 
+    - name: Validating - Instance Is Created When ChargeType Is Postpaid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_charge_type: '{{ InstanceChargeTypePostpaid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"
+    
+    
+    
+    # This block could not be executed because, it requires Prepaid account
+    # Task : 2
+   
+    - block: 
+    - name: Validating - Instance Is Created When ChargeType Is Prepaid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_charge_type: '{{ InstanceChargeTypePrepaid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"
+    
+  
+  # Task : 3
+  
+    - block: 
+    - name: Validating - Instance Is Created When ChargeType Is Not Provided
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        #instance_charge_type: '{{ InstanceChargeTypePostpaid }}'   Without ChargeType
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected - We can not create an instance when charge type is not provided"
+    
+   
+   # Task : 4
+   
+    - block: 
+    - name: Validating - Invalid ChargeType As Paid Invalid
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        instance_charge_type: '{{ InstanceChargeTypeInvalid }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+   
+    rescue: 
+    - debug: msg="Failure Expected - '{{ InstanceChargeTypeInvalid }}' is not a valid parameter"
+      
+     
+     

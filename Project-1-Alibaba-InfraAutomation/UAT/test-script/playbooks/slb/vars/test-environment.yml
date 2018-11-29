@@ -1,0 +1,196 @@
+
+############### Region parameter #############################
+
+region: cn-beijing
+
+############ Create an SLB ###############
+
+VSwitchId: vsw-2zeob1v20umn67x6i5ybx    # Provide Vswitch instance ID available in specified region parameter
+
+instanceIds:     # add list of instance ids to attach to SLB. Instance should be in running state
+  - i-2ze3x1b8qd8dgwo32d19
+
+masterZone: cn-beijing-b # Change this value if working on different region other than ap-southeast-1
+
+slaveZone: cn-beijing-c  # Change this value if working on different region other than ap-southeast-1
+
+instanceIdsCLassic: # add list of instance ids to attach to SLB in classic n/w type. Instance should be in running state
+  -  i-2ze29dmxl3opyw6i3rn1
+instanceIdsVpc: # add list of instance ids to attach to SLB in classic n/w type. Instance should be in running state
+  -  i-2ze0omf4xy00kxy2bbog
+
+################### Business Scenarios SLB #################
+
+masterZoneOfDiffRegion: ap-southeast-1a
+
+slaveZoneOfDiffRegion: ap-southeast-1b
+
+################# Create Listener #####################
+
+SLBId: lb-dj1vnysrzpie9bniblm78 # Provide SLB instance ID available in specified region parameter to add listner
+SLBIdWithHttpListener: lb-dj17dxjttgyun9rkgqp4b
+
+
+############################# Business Scenarios for Listener ##################################################
+
+listenerWithPortNoSameAndDiffProtocol:
+  - protocol: https
+    load_balancer_port: 80
+    instance_port: 80
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_159dedd04a9 # Update the certificate ID with you certificate ID. Leave other values as it is
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+      
+listenerWithSameLBPortNoAndDiffProtocolAndBackendServerPort:
+  - protocol: https
+    load_balancer_port: 80
+    instance_port: 20
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_159dedd04a9 # Update the certificate ID with you certificate ID. Leave other values as it is
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+
+
+SLBIdWitSameBackendServerPort: lb-dj1h6smz9h5j13g9it8i8
+
+listenerWithSameBackendServerPortAndDiffProtocolAndLBPortNo:
+  - protocol: https
+    load_balancer_port: 20
+    instance_port: 80
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_159dedd04a9 # Update the certificate ID with you certificate ID. Leave other values as it is
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+      
+
+#####################################################################################################################
+
+################### Delete Load Balancer ###########
+
+deleteLoadBalancerId: lb-dj1lr5j81pmedgbpfo47m  #### TO Discuss
+deleteLoadBalancerIdWithStopState: lb-dj16m4romw968phyk3b4e
+deleteLoadBalancerId1: lb-dj1no473g27bxwtyarz1e
+
+########## Set Load Balancer Status ###############
+
+SLBIdInActiveState: lb-dj17qou65qhsite1as1zj
+
+
+############### Load balancer id parameter ###################
+
+loadBalancerId: lb-dj14raq0xieqrofh76nc2 # Load Balance ID used to test add backend servers, health check, create delete vserver group
+
+############### 3. Backend server parameter #####################
+
+# Enter the valid backend servers data here
+addBackendServers1: 
+ - server_id: i-2zehpk0zd4gynplii7rb   # Backend server to be added in add backend server interface
+   weight: 15
+
+addBackendServers2: 
+ - server_id: i-2ze97lodftpuolktuze5    # Backend server to be added in add backend server interface
+   weight: 16
+   
+backendServers: 
+ - server_id: i-2ze7b179ej8juo3m60m3    # Backend server to be added in add backend server interface
+   weight: 17
+   
+backendServers1: 
+ - i-2ze93neuthobiw802xim    # remove added backend server
+   
+backendServers2: 
+ - i-2ze3x1b8qd8dgwo32d19    # remove added backend server
+ 
+ 
+############### 4. Backend server for VserverGroup #################
+
+# Enter the valid backend servers data here
+
+backendServersForVserverGrp:             # add vservergroup backend server
+  - server_id: i-2ze29dmxl3opyw6i3rn1 
+    port: 22
+    weight: 14
+    
+backendServerServerId:
+- server_id: i-2ze1fyqpkpyviq6fhk2c      # add vservergroup backend server
+  port: 53 
+  weight: 45
+  
+############### 5. VserverGroup ####################################
+
+vserverGroupLoadBalancerId: lb-dj14raq0xieqrofh76nc2   #  LoadBalancerID
+
+# Enter Vserver Group ID's Here
+
+vserverGroupId: rsp-dj18u7gak4mee                # Vserver group id
+                 
+vserverGroupIdDelete: rsp-dj1rm4go8cp0f               # Vserver group to be deleted
+
+
+############### 6. Remove vserver group backend servers ############################
+
+# Enter the correct backend servers id and port number need to be remove from the VserverGroup
+
+removeVserverGroupBackendServers:
+   - server_id: i-2zej1w93pk7a8rnmmtiy   
+     port: 12
+  
+removeVserverGroupBackendServersOneInvalidFromList: 
+   - server_id: i-2zehpk0zd4gynplii7rb   
+     port: 13
+
+   - server_id: i-2ze9ufq5dfdfdf58n0f6o2nc     
+     port: 5      
+
+############### 8. Ports ############################################   
+
+ports: 125   # Enter the port for getting the Health status of the instances connected to it
+
+
+############### 9. Modify VServer Group Backend Servers  ############################################ 
+  
+modifyBackendServersNew: 
+ - server_id: i-2ze3x1b8qd8dgwo32d19     
+   port: 42
+   weight: 4  
+

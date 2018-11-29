@@ -1,0 +1,38 @@
+#Ansible Module Name -- rds.py
+#Test Case : Switching primary and stanby database of RDS instance with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Switching primary and stanby database of RDS instance with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block: 
+     - name: switching between primary and standby database
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandSwitch }}'
+         instance_id: '{{ instanceId}}'
+         node_id: '{{ nodeId }}'
+         force: '{{ forceYes }}'
+       register: result
+     - debug: var=result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result"
+ 
+         msg: 'Test pass FAILED !!!'
+               

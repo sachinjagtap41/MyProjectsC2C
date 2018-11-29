@@ -1,0 +1,62 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Delete load balancer with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Delete load balancer with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  
+   - block:
+     - name: create server load balancer with all parameters
+       ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: '{{ status }}'
+         load_balancer_name: '{{ SLBName }}'
+         address_type: '{{ addressType }}'
+         vswitch_id: '{{ VSwitchId }}'
+         #master_zone_id: '{{ masterZone }}'
+         #slave_zone_id: '{{ slaveZone }}'
+         bandwidth: '{{ bandwidth }}'
+         listeners: '{{ listeners }}'
+         instance_ids: '{{ instanceIdsVpc }}'
+         internet_charge_type: '{{ internetChargeType }}'
+         validate_certs: '{{ validateCerts }}'
+         tags: '{{ tags }}'
+         wait: '{{ wait }}'
+         wait_timeout: '{{ waitTimeout }}'
+
+       register: create_slb_result
+     - debug: var=create_slb_result
+
+  
+  # Task 1 - Delete load balancer with all parameters
+   - block: 
+     - name: Delete load balancer with all parameters
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        load_balancer_id: '{{ create_slb_result.result[0].LoadBalancerId }}'
+       register: delete_slb_result
+     - debug: var=delete_slb_result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in delete_slb_result"
+         msg: 'Test pass FAILED !!!
+               Playbook FAILED due to improper input values.
+               REASON: {{ delete_slb_result}}'

@@ -1,0 +1,97 @@
+#Ansible Module Name -- rds.py
+#Test Case : Switching database with node id parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Switching database with node id parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - Switching database with invalid node id parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandSwitch }}'
+         instance_id: '{{ instanceId }}'
+         node_id: '{{ nodeIdInvalid }}'
+         force: '{{ forceNo }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - Switching database without node id parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandSwitch }}'
+         instance_id: '{{ instanceId }}'
+         force: '{{ forceNo }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 3 - Switching database with blank node id parameter
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandSwitch }}'
+         instance_id: '{{ instanceId }}'
+         node_id: 
+         force: '{{ forceNo }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - Switching database with node id parameter as Node id
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandSwitch }}'
+         instance_id: '{{ instanceId }}'
+         Node_id: '{{ nodeId }}'
+         force: '{{ forceNo }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            - "'The specified node_id is not found' in result_scn1.msg[0]['Error Message']"
+            
+            - "'failed' in result_scn2"            
+            - "'node_id is required for switching between primary and standby database for rds instance' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'node_id is required for switching between primary and standby database for rds instance' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Node_id' in result_scn4.msg"
+            
+         msg: 'Test pass FAILED !!!'
+               

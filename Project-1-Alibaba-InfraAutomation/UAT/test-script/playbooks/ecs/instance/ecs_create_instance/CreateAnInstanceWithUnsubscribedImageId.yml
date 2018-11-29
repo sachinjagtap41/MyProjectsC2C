@@ -1,0 +1,47 @@
+# This playbook is an example for deploying an instances with unsubscribed Image id
+
+# The play operates on the local (Ansible control) machine.
+# Failure Expected
+# Ansible playbook Created by : S Gupta
+---
+- name: create an ECS Instance with unsubscribed Image Id
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+     
+  tasks:
+    - block:
+      - name: create an ECS Linux Instance with unsubscribed Image Id
+        ecs:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          zone: '{{ zone }}'
+          image_id: '{{ unsubscirbedImageId }}'
+          instance_type: '{{ instanceTypebindEip }}'
+          instance_name: '{{ instanceNameLinux }}'
+          description: '{{ description }}'
+          host_name: '{{ host_name }}'
+          password: '{{ password }}'
+          
+        register: create_instance_result
+      - debug: var=create_instance_result
+
+      rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+      always:
+      - assert:
+          that:
+             - "'failed' in create_instance_result"
+#             - "'The specified ImageId does not exist.' in create_instance_result.msg[0]['Error Message']"
+#          msg: 'Test pass FAILED !!!'
+

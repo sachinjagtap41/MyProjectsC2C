@@ -1,0 +1,102 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Create Vswitch
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating create vswitch with alias validation
+  hosts: localhost
+  connection: local
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Create vswitch with alias validations 1
+      ecs_vpc: 
+       ecs_access_key: '{{ aliyun_acs_access_key }}'                  
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'           
+       acs_region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       subnets: '{{ vswitches }}'
+       state: '{{ status }}'
+       
+      register: create_vswitch_result_1
+    - debug: var=create_vswitch_result_1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  - pause:
+     seconds: 6
+     
+# Task 2 : 
+  - block: 
+    - name: Create vswitch with alias validations 2
+      ecs_vpc: 
+       access_key: '{{ aliyun_acs_access_key }}'                 
+       secret_key: '{{ aliyun_acs_secret_access_key }}'         
+       ecs_region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       vswitches: '{{ vswitches2 }}'
+       status: '{{ status }}'
+       
+      register: create_vswitch_result_2
+    - debug: var=create_vswitch_result_2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+  - pause: 
+      seconds: 6
+        
+     
+  post_tasks:
+    
+      - name: Deleting newly created vswitch 1
+        ecs_vpc:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         vpc_id: '{{ vpcId }}'
+         purge_vswitches: '{{ create_vswitch_result_1.VSwitchId[0] }}'
+         status: '{{ status }}'
+         
+        register: delete1
+      - debug: var=delete1
+           
+
+
+      - pause: 
+         seconds: 6
+       
+      - block:  
+        - name: Deleting newly created vswitch 2
+          ecs_vpc:
+           acs_access_key: '{{ aliyun_acs_access_key }}'
+           acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+           region: '{{ region }}'
+           vpc_id: '{{ vpcId }}'
+           purge_vswitches: '{{ create_vswitch_result_2.VSwitchId[0] }}'
+           status: '{{ status }}'
+         
+          register: delete2
+        - debug: var=delete2
+        - pause: 
+           seconds: 6
+         
+        always: 
+         - assert: 
+            that: 
+             - "'failed' not in create_vswitch_result_1"
+             - "'failed' not in create_vswitch_result_2"
+             - "'failed' not in delete1"
+             - "'failed' not in delete2"
+            msg: 'Test pass FAILED !!!'
+      

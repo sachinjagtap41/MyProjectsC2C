@@ -1,0 +1,56 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Delete load balancer region parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Delete load balancer region parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Delete load balancer with invalid region
+   - block: 
+     - name: Scenario 1 -  Delete load balancer with invalid region
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionAlphaNo }}'
+        status: '{{ statusAbsent }}'
+        load_balancer_id: '{{ deleteLoadBalancerId }}'
+       register: delete_slb_result_task1
+     - debug: var=delete_slb_result_task1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+    # Task 2 - Delete load balancer with blank region
+   - block: 
+     - name: Scenario 2 -  Delete load balancer with blank region
+       ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: 
+         status: '{{ statusAbsent }}'
+         load_balancer_id: '{{ deleteLoadBalancerId }}'
+       register: delete_slb_result_task2
+     - debug: var=delete_slb_result_task2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "delete_slb_result_task1.changed ==  false"
+            
+         
+            - "delete_slb_result_task2.changed ==  false"
+            
+            
+         msg: 'Test pass FAILED !!!'

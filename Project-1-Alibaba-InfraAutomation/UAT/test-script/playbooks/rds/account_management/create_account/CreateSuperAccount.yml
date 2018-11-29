@@ -1,0 +1,87 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Create super account
+#Ansible Playbook created by - Abha H
+---
+- name: Create super account
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Create super account
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceIdSuperAcc }}'
+         account_name: '{{ accNameSuper }}'
+         account_password: '{{ accPwdSuper }}'
+         description: '{{ description }}'
+         account_type: '{{ accountTypeSuper }}'
+       register: result_scn1
+     - debug: var=result_scn1
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 2 - create another super account
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceIdSuperAcc }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountTypeSuper }}'
+       register: result_scn2
+     - debug: var=result_scn2  
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - pause :
+        seconds: 20
+        
+   - block :
+      - name: Scenario 3 - delete account
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceIdSuperAcc }}'
+          account_name: '{{ accNameSuper }}'  
+        register: result_scn3
+      - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+      
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            
+            - "'failed' in result_scn2"
+            - "'The operation is not permitted due to status of instance.' in result_scn2.msg[0]['Error Message']"
+            
+            - "'failed' in result_scn3"
+            - "'The operation is not permitted due to status of instance.' in result_scn3.msg[0]['Error Message']"
+            
+         msg: 'Test pass FAILED !!!'
+               
+      

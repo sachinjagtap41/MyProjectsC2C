@@ -1,0 +1,171 @@
+#Ansible Module Name -- ecs_slb_vsg.py
+#Test Case : Modify Backend Servers from Vserver Group
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating modify backend servers from vserver group
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task : 1
+  - block:
+   
+    - name: Scenario 1 - Add backend servers to the vserver group with valid vservergroupid
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+      register: result1  
+    - debug: var=result1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  - pause:
+     seconds: 6 
+          
+  - block:
+    # Task : 2
+    - name: Scenario 2 - Modify backend servers from the vserver group with valid backend servers for old server
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        purge_backend_servers: '{{ backendServersForVserverGrp }}'       
+        status: '{{ status }}'
+        
+      register: result2  
+    - debug: var=result2
+    rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+    
+      
+  - block: 
+    # Task : 3
+    - name: Scenario 3 - Modify backend servers from the vserver group when backend server is invalid for the old servers
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        purge_backend_servers: '{{ modifyBackendServersOldInvalid }}'       
+        status: '{{ status }}'
+        
+      register: result3  
+    - debug: var=result3
+    
+    rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+    
+    
+  - block: 
+    # Task : 4
+    - name: Scenario 4 - Modify backend servers from the vserver group when one of the server is invalid from the list of old server
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        purge_backend_servers: '{{ modifyBackendServersListWhereOneServeridIsInvalid }}'       
+        status: '{{ status }}'
+        
+      register: result4  
+    - debug: var=result4
+    
+    rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+     
+    
+    
+  - block:
+    # Task : 5
+    - name: Scenario 5 - Modify backend servers from the vserver group with valid backend servers for new server
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        #purge_backend_servers: '{{ modifyBackendServersNew }}'    
+        backend_servers: '{{ modifyBackendServersNew }}'   
+        status: '{{ status }}'
+        
+      register: result5  
+    - debug: var=result5
+    
+    rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no 
+    
+    
+  - block: 
+    # Task : 6
+    - name: Scenario 6 - Modify backend servers from the vserver group when backend server is invalid for the new servers
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        #purge_backend_servers: '{{ modifyBackendServersNewInvalid }}'  
+        backend_servers: '{{ modifyBackendServersNewInvalid }}'     
+        status: '{{ status }}'
+        
+      register: result6  
+    - debug: var=result6
+    
+  
+    rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+    
+  - block: 
+    # Task : 7
+    - name: Scenario 7 - Modify backend servers from the vserver group when one of the server is invalid from the list of new server
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        #purge_backend_servers: '{{ modifyBackendServersListWhereOneServeridIsInvalid }}'  
+        backend_servers: '{{ modifyBackendServersListWhereOneServeridIsInvalid }}'     
+        status: '{{ status }}'
+        
+      register: result7  
+    - debug: var=result7
+    
+   
+    rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no  
+ 
+    always:
+      - assert:  
+         that:
+            - "'failed' not in result1"
+            - "'failed' not in result2"
+            - "'failed' in result3"
+            - "'failed' in result4"
+            - "'failed' not in result5"
+            - "'failed' in result6"
+            - "'failed' in result7"
+                  
+         msg: 'Test pass FAILED !!!'

@@ -1,0 +1,51 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Unbinding EIP with alias
+#Ansible Playbook created by - Abha H
+---
+- name: Unbinding EIP with alias
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+   - pause:
+        seconds: 40
+   - block: 
+     - name: Binding EIP with all parameters
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceId }}'
+        allocation_id: '{{ allocationId }}'
+       register: result
+     - debug: var=result
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in result"
+
+         msg: 'Test pass FAILED !!!'
+
+  post_tasks:
+   - pause:
+      minutes: 1
+   - name: Unbinding EIP with all parameters
+     ecs_vpc_net:
+      acs_access_key: '{{ aliyun_acs_access_key }}'
+      acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+      region: '{{ region }}'
+      status: '{{ statusLeave }}'
+      instance_id: '{{ instanceId }}'
+      allocation_id: '{{ allocationId }}'
+     when:
+      - "result.changed ==  True"

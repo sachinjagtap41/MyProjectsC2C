@@ -1,0 +1,264 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for ImageId parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+    
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml 
+    
+            
+  tasks:
+  
+ # Task :1
+  
+  - block:  
+    - name: Verifying - Valid InstanceName Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameValid }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+     
+    rescue: 
+    - debug: msg="Expected - Success"
+  
+  # Task :2
+  
+  - block:  
+    - name: Validating - Invalid InstanceName Parameter As http:// At Begining
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameUrl }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+       
+    rescue: 
+    - debug: msg="Failure Expected - '{{ InstanceNameUrl }}' is not a valid parameter"
+ 
+ # Task :3
+ 
+  - block:
+    - name: Validating - Valid InstanceName Parameter As AlphaNumeric
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameAlphanumeric }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+        
+    rescue:
+    - debug: msg="Expected - Success"  
+      
+ # Task :4
+ 
+  - block:              
+    - name: Validating - Valid InstanceName Parameter Which Accepts Special Characters As . - _ only
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameSpecialChar }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+       
+    rescue: 
+    - debug: msg="Expected - Success "
+ 
+ # Task :5
+ 
+  - block:              
+    - name: Validating - Invalid InstanceName Parameter Which Accepts Other Special Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameOtherSpecialChar }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+       
+    rescue: 
+    - debug: msg="Failure Expected - '{{ InstanceNameOtherSpecialChar }}' is not a valid parameter"
+
+ 
+ # Task :6
+ 
+  - block:  
+    - name: Validating - Valid InstanceName Parameter As Null
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameNull }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Expected - Success"  
+ 
+ # Task :7       
+ 
+  - block:  
+    - name: Validating - Valid InstanceName Parameter With Default Which Takes InstanceId Of The Instance
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        # instance_name: '{{ InstanceName }}'  Default Instance Name
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+     
+    rescue: 
+    - debug: msg="Expected - Success "      
+ 
+ # Task :8
+ 
+  - block:   
+    - name: Validating - Invalid InstanceName Parameter Which Accepts Less Than 2 Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameLessThan2Char }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Failure Expected - '{{ InstanceNameLessThan2Char }}' is not a valid parameter"     
+      
+ # Task :9
+ 
+  - block:   
+    - name: Validating - Invalid InstanceName Parameter Which Accepts More Than 128 Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceNameMoreThan128Char }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Failure Expected - '{{ InstanceNameMoreThan128Char }}' is not a valid parameter"     
+         
+ # Task :10
+ 
+  - block:   
+    - name: Validating - Valid InstanceName Parameter Which Accepts 128 Characters Only
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName128CharOnly }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"        
+      
+      
+      
+      
+      
+      
+      
+      

@@ -1,0 +1,172 @@
+# This playbook is an example for deploying ECS Instance and Adding instance to the security Group 
+# The play operates on the local (Ansible control) machine.
+# Ansible Playbook created by - Jogesh N
+---
+- name: create instance
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block: 
+     - name: Create a New ECS Instance and Add Defined Security Group 
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        group_id: '{{ sgGroupId}}'
+        instance_name: '{{ sgName }}'
+        description: '{{ description }}'
+        host_name: Administrator
+        password: Admin123
+        internet_data:
+           charge_type: PayByTraffic
+           max_bandwidth_in:  200
+           max_bandwidth_out: 0
+        system_disk:
+           disk_category: cloud
+           disk_size: 50
+        volumes:
+          -  device_category: cloud
+             device_size: 20
+             device_name: volume1
+             device_description: volume 1 description comes here
+          -  device_category: cloud
+             device_size: 20
+             device_name: volume2
+             device_description: volume 2 description comes here
+
+        instance_tags:
+        - tag_key: create_test_1
+          tag_value: '0.01'
+        - tag_key: create_test_2
+          tag_value: '0.02'
+        - tag_key: create_test_3
+          tag_value: '0.03'
+     #   state: '{{ state }}'       
+     
+      
+       register: instance_id
+     - debug: var=instance_id
+    
+     rescue:
+     - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block: 
+   # Task : 1
+     - name: Scenario 1 - Create security group 
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: UATSGGRP
+         description: Sg Group for UAT
+    
+       register: GroupId
+     - debug: var=GroupId
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+   - block:
+     - name: Join Security Group
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        instance_ids: '{{ instance_id.result[0].instance_id }}'
+        group_id: '{{GroupId.group_id}}'
+        sg_action: join
+        region: '{{ region }}'
+     
+       register: result
+
+     - debug: var=result
+      
+     rescue:
+     - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block: 
+     - name: Remove a Security Group From Existing ECS Instance
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        group_id: '{{ sgGroup }}'
+        instance_ids: '{{ instance_id.result[0].instance_id }}'
+        sg_action: leave
+    
+       register: result1
+     - debug: var=result1
+   
+     rescue:
+     - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+     
+  post_tasks:
+  - block: 
+    - name: Deleting newly created instance
+      ecs: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ instance_id.result[0].instance_id }}'
+       status: absent
+       
+    rescue:
+     - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no  
+        
+    when:
+      - "result.changed ==  True" 
+    
+
+  - block: 
+     - name: Delete security group with multiple groupids parameter
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ GroupId.group_id }}'
+        state: absent
+
+     
+    rescue:
+     - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no  
+        
+    when:
+      - "result.changed ==  True" 
+     
+
+
+    always:
+      - assert:  
+         that:
+            - "'failed' not in result"
+         msg: 'EXPECTED - SUCCESS!!! 
+               Playbook FAILED due to improper input values. 
+               REASON: {{ result }}'
+    
+    
+    
+   

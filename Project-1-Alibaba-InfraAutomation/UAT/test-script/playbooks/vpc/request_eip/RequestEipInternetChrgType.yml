@@ -1,0 +1,79 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Request Eip Internet Charge Type Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: Request Eip Internet Charge Type Param Validation
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+   # Task 1 - Validation of Internet Charge Type param with invalid value
+   - block: 
+     - name: Scenario 1 -  Validation of Internet Charge Type param with invalid value
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        bandwidth: '{{ bandwidth }}'
+        internet_charge_type: '{{ internetChrgTypeInvalid }}'
+       register: req_eip_result_scn1
+     - debug: var=req_eip_result_scn1
+
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+            
+   # Task 2 - Validation of Internet Charge Type param as blank
+   - block: 
+     - name: Scenario 2 -  Validation of Internet Charge Type param as blank
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        bandwidth: '{{ bandwidth }}'
+        internet_charge_type: 
+       register: req_eip_result_scn2
+     - debug: var=req_eip_result_scn2
+
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+                     
+   # Task 3 - Validation of internet_charge_type param as Internet_charge_type
+   - block: 
+     - name: Scenario 3 -  Validation of internet_charge_type param as Internet_charge_type
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        Region: '{{ region }}'
+        status: '{{ status }}'
+        bandwidth: '{{ bandwidth }}'
+        Internet_charge_type: '{{ internetChargeType }}'
+       register: req_eip_result_scn3
+     - debug: var=req_eip_result_scn3
+
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in req_eip_result_scn1"
+
+            - "'failed' in req_eip_result_scn2"
+
+            - "'failed' in req_eip_result_scn3"
+
+         msg: 'Test pass FAILED !!!'
+
+ 
+ 

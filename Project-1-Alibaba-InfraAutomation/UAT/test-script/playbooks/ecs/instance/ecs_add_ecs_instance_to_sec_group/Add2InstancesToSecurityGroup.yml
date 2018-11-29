@@ -1,0 +1,109 @@
+#Ansible Module Name - ECS
+#Test Case : Verify that Valid User is able to add 10 instances to the Security Group 
+#Ansible Playbook created by - Jogesh N
+---
+- name: Add a 2 VALID ECS Instances To to the Security Group 
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+#  instance_id1:
+#    - i-j6c6j115h8aowaaol2ye
+#    - i-j6c6377q7u5t1j0vicgg
+    
+  
+  tasks:
+   - block:
+     - name: Add a 2 VALID ECS Instances To to the Security Group 
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_id: '{{ addSgGroupId }}' # VALID Security Group
+        # instance_ids: [' i-j6c6j115h8aowaaol2ye ' , ' i-j6c6377q7u5t1j0vicgg ']
+        #  instance_ids: ['i-j6c2xwb8j29wwgwio5ro' ,'i-j6c6j115h8aowaaol2ye']
+       # instance_ids: '{{ ecsInstanceId, ecsInstanceId, ecsInstanceId, ecsInstanceId, ecsInstanceId, ecsInstanceId, ecsInstanceId, ecsInstanceId }}'
+        instance_ids: '{{ instanceIds }}'
+        sg_action: '{{ sgJoin }}'
+     
+       register: result1
+     - debug: var=result1
+   
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+#     always:
+#      - assert:  
+#         that:
+#            - "result1.changed ==  true"
+#         msg: 'EXPECTED - SUCCESS!!! 
+#               Playbook FAILED due to improper input values. 
+#               REASON: {{ result1 }}'
+               
+  post_tasks:
+   - block: 
+ 
+     - name: Remove a Security Group From Existing ECS Instance
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        group_id: '{{ addSgGroupId }}'
+        instance_ids: '{{ result1.success_instance_ids[0]}}'
+        sg_action: '{{ sgActionLeave }}'
+      
+       register: result2
+     - debug: var=result2
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+     when:
+      - "result1.changed ==  True"
+      
+      
+   - block: 
+
+     - name: Remove a Security Group From Existing ECS Instance
+       ecs:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         zone: '{{ zone }}'
+         group_id: '{{ addSgGroupId }}'
+         instance_ids: '{{ result1.success_instance_ids[1]}}'
+         sg_action: '{{ sgActionLeave }}'
+      
+       register: result3
+
+     - debug: var=result3 
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+     when:
+      - "result1.changed ==  True"   
+          
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result1"
+            - "'failed' not in result2"
+            - "'failed' not in result3"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ result1}}'
+         
+       

@@ -1,0 +1,109 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Querying Vrouter
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating querying vrouter list 
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+ # Task : 1  Querying vrouter list when pagenumber and pagesize are provided as string
+  - block:
+    - name: Scenario 1 - Querying vrouter list when pagenumber and pagesize are provided as string
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vrouter_id: '{{ vrouterId }}'    
+       pagenumber: '{{ pageNumberString }}'   # PageNumberString
+       pagesize: '{{ pageSizeString }}'       # PageSizeString           
+       state: '{{ statusQueryingVRouter }}'                                        
+                          
+      register: query_vrouter_result_scn1
+    - debug: var=query_vrouter_result_scn1
+
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+  # Task 2 :  Querying vrouter list with all valid parameters
+  - block:
+    - name: Scenario 2 - Querying vrouter list with all valid parameters
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vrouter_id: '{{ vrouterId }}'
+      #pagenumber: '{{ pageNumberString }}'  
+      #pagesize: '{{ pageSizeString }}'                
+       state: '{{ statusQueryingVRouter }}'
+
+      register: query_vrouter_result_scn2
+    - debug: var=query_vrouter_result_scn2
+
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+    # Task : 3 Querying vrouter list with pagenumber parameter more than 50
+  - block:
+    - name: Scenario 3 -  Querying vrouter list with pagenumber parameter more than 50
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ regionOther }}'
+       vrouter_id: '{{ vrouterId }}'    
+       pagenumber: '{{ pageNumberMoreThanSize }}'   
+      # pagesize: '{{ pageSizeString }}'               
+       state: '{{ statusQueryingVRouter }}'                                        
+                          
+      register: query_vrouter_result_scn3
+    - debug: var=query_vrouter_result_scn3
+
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+# # Task : 4 Querying vrouter list without state paraemter
+#  - block:
+#    - name: Scenario 4 -  Querying vrouter list without state paraemter
+#      ecs_vpc: 
+#       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+#       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+#       region: '{{ region }}'
+#       vrouter_id: '{{ vrouterId }}'    
+#       # pagenumber: '{{ pageNumberMoreThanSize }}'   
+#       # pagesize: '{{ pageSizeString }}'               
+#       #state: '{{ statusQueryingVRouter }}'                                        
+#                          
+#      register: query_vrouter_result_scn4
+#    - debug: var=query_vrouter_result_scn4
+#
+#    rescue:
+#     - fail:
+#         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#       when: no
+
+    always:
+     - assert:
+        that:
+           - "'failed' in query_vrouter_result_scn1"
+
+           - "'failed' not in query_vrouter_result_scn2"
+
+           - "'failed' not in query_vrouter_result_scn3"
+
+         #  - "'failed' in query_vrouter_result_scn4"
+
+        msg: 'Test pass FAILED !!!'
+
+
+
+                      

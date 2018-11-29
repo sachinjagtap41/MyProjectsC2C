@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+	<title>Insert Link</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script language="JavaScript" type="text/javascript">
+<!--
+var ua = navigator.userAgent.toLowerCase();
+var isIE = ((ua.indexOf("msie") != -1) && (ua.indexOf("opera") == -1) && (ua.indexOf("webtv") == -1));
+var ieVersion = parseFloat( ua.substring( ua.indexOf('msie ') + 5 ) );
+var isGecko = (ua.indexOf("gecko") != -1);
+var isSafari = (ua.indexOf("safari") != -1);
+var safariVersion = parseFloat(ua.substring(ua.lastIndexOf("safari/") + 7));
+var isKonqueror = (ua.indexOf("konqueror") != -1);
+var isOpera = (ua.indexOf("opera") != -1);
+var isNetscape = (ua.indexOf("netscape") != -1);
+
+function getQueryVariable(variable) {
+	try {
+		var query = window.location.search.substring(1);
+		var vars = query.split("&");
+		for (var i=0; i < vars.length; i++) {
+			var pair = vars[i].split("=");
+			if (pair[0] == variable) {
+				return unescape(pair[1]);
+			}
+		}
+		alert('Query Variable ' + variable + ' not found');
+	} catch (e) {
+		alert(e);
+	}
+}
+
+function AddLink() {
+	try {
+		var oForm = document.linkForm;
+		
+		//validate form
+		if (oForm.url.value == '') {
+			alert('Please enter a url.');
+			return false;
+		}
+		if (oForm.linkText.value == '') {
+			alert('Please enter link text.');
+			return false;
+		}
+		
+		var html = '<a href="' + document.linkForm.url.value + '" target="' + document.linkForm.linkTarget.options[document.linkForm.linkTarget.selectedIndex].value + '">' + document.linkForm.linkText.value + '</a>';
+		
+		opener.insertHTML(html);
+		window.close();
+		return true;
+	} catch (e) {
+		alert(e);
+	}
+}
+
+function setLinkText(linkText) {
+	//set link text value in insert link dialog
+	try {
+		document.linkForm.linkText.value = linkText;
+	} catch (e) {
+		//may take some time to create dialog window.
+		//Keep looping until able to set.
+		//alert(e);
+		setInterval("setLinkText('" + linkText + "')", 100);
+	}
+}
+//-->
+</script>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:xd_Signature msdt:dt="string"></mso:xd_Signature>
+<mso:TemplateUrl msdt:dt="string"></mso:TemplateUrl>
+<mso:Order msdt:dt="string">25500.0000000000</mso:Order>
+<mso:xd_ProgID msdt:dt="string"></mso:xd_ProgID>
+<mso:ContentTypeId msdt:dt="string">0x010100B368333E0B30A94B852819C49833C540</mso:ContentTypeId>
+<mso:_SourceUrl msdt:dt="string"></mso:_SourceUrl>
+<mso:_SharedFileIndex msdt:dt="string"></mso:_SharedFileIndex>
+<mso:MetaInfo msdt:dt="string">512;#vti_contentversionisdirty:BW|false
+vti_parserversion:SR|14.0.0.5114
+TemplateUrl:SW|
+Order:DW|25500.0000000000
+vti_contenttag:SW|{124EB8F8-37D0-4E87-8B21-74F5CC876EF5},1,1
+vti_folderitemcount:IR|0
+vti_charset:SR|utf-8
+vti_author:SR|RSINNGP\\rajiv.khobragade
+vti_cachedneedsrewrite:BR|false
+xd_Signature:SW|
+vti_cachedhastheme:BR|false
+xd_ProgID:SW|
+vti_cachedcustomprops:VX|xd_Signature TemplateUrl Order xd_ProgID ContentTypeId vti_title _SourceUrl _SharedFileIndex
+vti_modifiedby:SR|RSINNGP\\rajiv.khobragade
+vti_docstoreversion:IR|1
+vti_metainfoversion:IW|1
+vti_foldersubfolderitemcount:IR|0
+vti_syncwith_srvsps2\:80/uat/uatappv2:TW|29 Nov 2011 06:17:53 -0000
+vti_cachedtitle:SR|Insert Link
+vti_metatags:VR|HTTP-EQUIV=Content-Type text/html;\\ charset=utf-8
+vti_title:SR|Insert Link
+ContentTypeId:SW|0x0101000E425423D6662C49A3F1F5AC345B9453
+vti_cachedbodystyle:SR|&lt;body style=&quot;margin: 10px; background: #D3D3D3;&quot;&gt;
+_SourceUrl:SW|
+_SharedFileIndex:SW|
+</mso:MetaInfo>
+<mso:FSObjType msdt:dt="string">0</mso:FSObjType>
+<mso:FileDirRef msdt:dt="string">uat/TestEnv/SiteAssets/js/RTE</mso:FileDirRef>
+<mso:FileLeafRef msdt:dt="string">insert_link.htm</mso:FileLeafRef>
+<mso:ContentType msdt:dt="string">Document</mso:ContentType>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+
+<body style="margin: 10px; background: #D3D3D3;">
+
+<form name="linkForm" onSubmit="return AddLink();">
+<table cellpadding="4" cellspacing="0" border="0">
+	<tr><td colspan="2"><span style="font-style: italic; font-size: x-small;"><b>Tip:</b> To insert an email link, start your URL with "mailto:"</span></td></tr>
+	<tr>
+		<td align="right">URL:</td>
+		<td><input name="url" type="text" id="url" size="40"></td>
+	</tr>
+	<tr>
+		<td align="right">Text:</td>
+		<td><input name="linkText" type="text" id="linkText" size="40"></td>
+	</tr>
+	<tr>
+		<td align="right">Target:</td>
+		<td align="left">
+			<select name="linkTarget" id="linkTarget">
+				<option value="_blank">_blank</option>
+				<option value="_parent">_parent</option>
+				<option value="_self" selected>_self</option>
+				<option value="_top">_top</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center">
+			<input type="submit" value="Insert Link" />
+			<input type="button" value="Cancel" onClick="window.close();" />
+		</td>
+	</tr>
+</table>
+
+</form>
+<script language="JavaScript" type="text/javascript">
+<!--
+setLinkText(getQueryVariable("selectionText"));
+//-->
+</script>
+</body>
+</html>

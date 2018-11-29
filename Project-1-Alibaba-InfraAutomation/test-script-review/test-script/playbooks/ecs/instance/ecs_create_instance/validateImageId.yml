@@ -1,0 +1,119 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for ImageId parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+    
+    
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml 
+    
+    
+    
+  tasks:
+  
+  # Task : 1
+  
+  - block:
+    - name: Verifying - Invalid ImageID Parameter (Invalid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageInvalid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+            
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ ImageInvalid }}' is not a valid parameter"
+  
+  # Task : 2
+  
+  - block:
+    - name: Verifying - Invalid ImageId Parameter as Null (Invalid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageNull }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+            
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ ImageNull }}' is not a valid parameter "
+ 
+ # Task : 3
+ 
+  - block:
+    - name: Verifying - Valid ImageID Parameter (Valid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+            
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task : 4
+ 
+  - block:
+    - name: Verifying - Instance Is Created With Default ImageId Parameter(Invalid Test-Case)
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        #image_id: '{{ ImageIdValid }}'  Without ImageId parameter
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+            
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - We can not create an instance without imageid parameter"

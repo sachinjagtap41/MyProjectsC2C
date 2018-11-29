@@ -1,0 +1,115 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Add listener to already created SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Add listener to already created SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+     
+  tasks:
+  # Task 1 -  Add Http listener to already created SLB
+   - block: 
+      - name: Add Http listener to already created SLB
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerHttp }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result_task1
+      - debug: var=create_slb_result_task1
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+             
+    
+    # Task 2 -  Add Https listener to already created SLB
+   - block: 
+     - name: Add Https listener to already created SLB
+       ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerHttps }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+       register: create_slb_result_task2
+     - debug: var=create_slb_result_task2
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+             
+    
+     # Task 3 -  Add TCP listener to already created SLB
+   - block: 
+     - name: Add TCP listener to already created SLB
+       ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          listeners: '{{ listenerTcp }}'
+          internet_charge_type: '{{ internetChargeType }}'
+       register: create_slb_result_task3
+     - debug: var=create_slb_result_task3
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+      
+     # Task 4 -  Add UDP listener to already created SLB
+   - block: 
+     - name: Add UDP listener to already created SLB
+       ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBId }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerUdp }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+       register: create_slb_result_task4
+     - debug: var=create_slb_result_task4
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+               
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' not in create_slb_result_task1"
+            
+            - "'failed' not in create_slb_result_task2"
+            
+            - "'failed' not in create_slb_result_task3"
+            
+            - "'failed' not in create_slb_result_task4"
+            
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values.
+               REASON: {{ create_slb_result_task4}}'

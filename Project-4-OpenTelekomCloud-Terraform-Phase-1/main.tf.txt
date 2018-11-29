@@ -1,0 +1,82 @@
+# Configure the OpenStack Provider
+provider "opentelekomcloud" {
+  //user_name   = "liyongle"
+  //domain_name = "OTC00000000001000010507"
+  //password    = "OpenStackSDK"
+//  auth_url    = "https://iam.eu-de.otc.t-systems.com/v3"
+  //region      = "eu-de"
+ // tenant_id = "18899b93e7be46c2b7f0d2568efabc33"
+}
+
+#to create security group
+resource"opentelekomcloud_networking_vpc_v1" "networking_vpc_v1"{
+  name = "secgroup"
+  cidr = "192.168.0.0/16"
+}
+
+
+
+data "opentelekomcloud_networking_vpc_v1" "network_data_vpc_v1" {
+  name = "default"
+}
+
+resource"opentelekomcloud_networking_secgroup_v2" "secgroup_1"{
+  name = "secgroup"
+  description = "just to check"
+}
+
+//resource "opentelekomcloud_networking_secgroup_rule_v2" "secgroup_rule_1" {
+//  direction         = "ingress"
+//  ethertype         = "IPv4"
+//  protocol          = "tcp"
+//  port_range_min    = 22
+//  port_range_max    = 22
+//  remote_ip_prefix  = "0.0.0.0/0"
+//  security_group_id = "${opentelekomcloud_networking_secgroup_v2.secgroup_1.id}"
+//}
+/*
+resource "opentelekomcloud_networking_router_v2" "vpc_1" {
+  name             = "my_c2c_router"
+  #external_gateway = "f67f0d72-0ddf-11e4-9d95-e1f29f417e2f"
+}
+
+
+data "opentelekomcloud_networking_secgroup_v2" "secgroup" {
+  name = "default"
+}
+output "sec_data" {
+  value = "${data.opentelekomcloud_networking_secgroup_v2.secgroup.tenant_id}"
+}*/
+
+#not working
+/*data "opentelekomcloud_networking_network_v2" "vpc" {
+  name = "vpc-elb-l00379969"
+}
+
+output "vpc_data" {
+  value = "${data.opentelekomcloud_networking_network_v2.vpc.name}"
+}*/
+/*
+resource "opentelekomcloud_networking_network_v2" "network_1" {
+  name           = "mynetwork_1"
+  admin_state_up = "true"
+}
+
+resource "opentelekomcloud_networking_subnet_v2" "subnet_1" {
+  name       = "subnet_1"
+  network_id = "${opentelekomcloud_networking_network_v2.network_1.id}"
+  cidr       = "192.168.199.0/24"
+  ip_version = 4
+}
+
+resource "opentelekomcloud_compute_secgroup_v2" "secgroup_1" {
+  name        = "mysecgroup_1"
+  description = "a security group"
+
+  rule {
+    from_port   = 22
+    to_port     = 22
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+}*/

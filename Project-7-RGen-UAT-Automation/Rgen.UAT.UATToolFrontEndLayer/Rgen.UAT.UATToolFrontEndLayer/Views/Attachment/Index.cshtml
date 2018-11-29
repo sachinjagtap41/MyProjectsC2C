@@ -1,0 +1,373 @@
+﻿
+@{
+    Layout = "~/Views/Shared/UatAdminMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "UAT Attachment";
+}
+@*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>*@
+<script type="text/javascript" src="/js/Common/showgrid.js"></script>
+
+<script type="text/javascript" src="~/js/Attachment/attachment.js"></script>
+
+<!--Start attachment html-->
+<div id="RightPanel">
+    <div class="pgHead">Attachment Details</div>
+    <div class="prjHead" id="projectName"></div>
+    <div class="tpHead" id="testPassName"></div>
+
+    <table class="rgTableBread">
+        <tr>
+            <td id="groupTitle"><label class="rgBCTitle"></label></td>
+            <td id="portfolioTitle"><label class="rgBCTitle"></label></td>
+            <td id="projectTitle"><label class="rgBCTitle"></label></td>
+            <td id="versionTitle"><label class="rgBCTitle"></label></td>
+            <td id="TestPassTitle"><label class="rgBCTitle"></label></td>
+
+        </tr>
+        <tr>
+            <td id="groupHead" style="cursor:pointer"><label class="rgBCHead">Group</label><div id="assoGroups" class="headDD" style="height:auto;z-index:200;-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="grpul" class="headul"></ul></div></td>
+            <td id="portfolioHead" style="cursor:pointer">
+                <label class="rgBCHead">
+                    Portfolio
+                </label><div id="assoPortfolios" class="headDD"><ul style="list-style: none;" id="portful" class="headul"></ul></div>
+            </td>
+            <td id="projectHead" style="cursor:pointer"><label class="rgBCHead">Project</label><div id="assoProjects" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="prjctul" class="headul"></ul></div></td>
+            <td id="versionHead" style="cursor:pointer"><label class="rgBCHead">Version</label><div id="assoVersions" class="headDD"><ul style="list-style: none;" id="versul" class="headul"></ul></div></td>
+            <td id="TestPassHead" style="cursor:pointer">
+                <label class="rgBCHead">
+                    Test
+                    Pass
+                </label><div id="assoTP" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="tpul" class="headul"></ul></div>
+            </td>
+        </tr>
+        </tr>
+    </table>
+
+    <div><select style="width: 180pt;" id="testCaseName" onchange="attachment.populateTestSteps();" class="Mediumddl"></select></div>
+    <div class="navTabs">
+        <h2 style="color:#000000">View All</h2>
+        <h2>Create New</h2>
+        <h2 style="display:none">Edit Attachment</h2>
+    </div>
+
+    <div id="countDiv" style="margin-top:7px;margin-right:7px;float:right;">
+        <label style="font-size:14px">Total Records:</label>
+        <label id="labelCount" style="font-size:14px"></label>
+    </div>
+
+
+    <p class="clear"></p>
+    <!-- teststep grid starts -->
+
+    <div id="AttachmentContainer">
+        <div class="viewAttachment">
+
+            <table id="AttachmentGrid" class="tableGrid" cellspacing="1" style="margin-top:15px">
+                <thead>
+                    <tr class="griDetails">
+                        <td style="width:7%;text-align:center">#</td>
+                        <td style="width:19%;">ATTACHMENT</td>
+                        <!--td style="width:17%">TEST CASE </td-->
+
+                        <td style="width:22%;cursor:pointer;">TEST STEP &nbsp;&nbsp;<img alt="" src="/images/drop-arrow.gif" style="margin-left:5px" /></td>
+                        <td style="width:11%">TYPE</td>
+
+                        <td style="width:18%">TESTER</td>
+                        <td style="width:13%">ROLE</td>
+                        <td style="border-right:none;width:10%;text-align:center">ACTION</td>
+                    </tr>
+                    <tr><td colspan="7" class="gridHeadingRow"><div id="testStepMultiSel" class="Mediumddl showTC">	</div></td></tr>
+                    <tr><td colspan="7"></td></tr>
+                    <tr><td colspan="7"></td></tr>
+                    <tr><td colspan="7"></td></tr>
+                    <tr><td colspan="7"></td></tr>
+
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div id="attachmentGrd"></div>
+
+            <div id="testCaseNameMultiSel" class="Mediumddl"></div>
+
+            <div id="divAttachmentPaging"></div>
+
+        </div>
+
+        <div id="AlertAttach" style="display:none">
+            <div id="" style="font-size:30px;color:#B8B8B8;">
+                No Attachment Available.
+            </div>
+        </div>
+
+    </div>
+
+    <div id="noTestPass" style="display:none">
+        <div id="noTP" style="font-size:30px;color:#B8B8B8;">
+            No Test Pass Available.
+        </div>
+    </div>
+
+    <div style="display: none;" id="divTestCaseCount">
+        <label>
+            Showing 0-0 of
+            total 0 Attachment(s)
+        </label> | <a style="color: rgb(152, 152, 152); cursor: pointer;" id="previous" disabled="" onclick="attachment.startIndexTDecrement();attachment.fillAttachmentListFromBuffer()">
+            Previous
+        </a> | <a style="color: rgb(152, 152, 152); cursor: pointer;" id="next" disabled="" onclick="attachment.startIndexTIncrement();attachment.fillAttachmentListFromBuffer()">
+            Next
+        </a>
+    </div>
+
+    <!-- Add new Attachment Div -->
+    <div class="AddAttachment" style="display:none">
+        <table  style="width:100%;margin-top:10px;padding-bottom:10px">
+
+            <tr style="width:100%">
+                <td style="width:50%">
+                    <table class="tableMargin" style="margin-top:-90px;">
+                        <tr>
+                            <td>
+                                <label class="mandatory">Attachment Name:<font color="red"><b>*</b></font></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input title="AttachmentName" type="text" id="AttachmentName" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 18px;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label >
+
+                                    Decription:
+                                </label>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea title="Description" id="attdesc" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 81px; margin-bottom: 10px;"></textarea>
+                            </td>
+                        </tr>
+                        <tr class="uploadContainer">
+                            <td>
+                                <label class="">
+
+                                    File Name:<font color="red"><b>*</b></font>
+                                </label>
+
+                            </td>
+                        </tr>
+                        <tr class="uploadContainer">
+                            <td>
+                                <input type="file" name="FileUpload1" id="f_UploadImage" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 30px;" /><br />
+
+                                @*<input type="submit" name="Submit" id="Submit" value="SendToDatabase" /><br />*@
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br />
+
+                    <br />
+
+                    <!--Removed attachment webpart-->
+                    <!--</fieldset>	-->
+                    <div id="previewContainer" style="display:none">
+                        <label>Preview:</label>
+                        <!--<div id="preview" style="width:250px;height:180px;background-color: silver; text-align:center;   ">-->
+                        @*<div id="preview" style="width:430px;height:180px;background-color:silver;border:1px #ccc solid">*@
+                        <div id="preview" style="width: 450px; height: 200px;">
+                     </div>
+                    </div>
+
+                </td>
+
+                <td style="width:50%">
+                    <div class="DivlblWithColon">
+                        <label class="mandatory">Select Test Step:<font color="red"><b>*</b></font></label>
+                    </div>
+                    <!--<div id="testStepName" class="Mediumddl">-->
+                    <div id="testStepName" class="Mediumddl">   </div>
+                </td>
+            </tr>
+        </table>
+
+        <!--a id="attDownload" class="btnNew1" style="cursor:pointer;padding:2px;margin-left:3px" target="_blank">
+                &nbsp;&nbsp;Download&nbsp;&nbsp;</a-->
+        <input id="attDownload" type="button" class="btnNew1" style="cursor:pointer;margin-left:3px" value="Open/View" />
+        <div style="float:right;padding-top:20px;margin-right:5px">
+            @*<input title="" class="btnNew1" id="attachOKbutton1" onclick="$('#attachOKbutton').click();" type="BUTTON" value="Save" />*@
+
+
+            <input title="" class="btnNew1" id="attachOKbutton1" onclick="attachment.newAttachment();" type="BUTTON" value="Save" />
+            <input title="" class="btnNew1" id="attachCancelButton" onclick="$('#idSpace').next().click();" type="BUTTON" value="Cancel" />
+        </div>
+        <!-- Update Button -->
+        <div id="btnUpdate" style="float:right;"></div>
+        <!-- Update Button -->
+
+    </div>
+
+    <div id="divConfirm"></div>
+    <div id="divAlert"></div>
+    <div id="divAlert1"></div>
+    <div id="divAlert2"></div>
+    <div id="divAlert3"></div>
+    <div id="divAlert4"></div>
+
+
+    <script type="text/javascript">
+            var urlvar = window.location.href;
+            if (urlvar.indexOf('source') == -1) {
+                //var newurl =urlvar.charAt(urlvar.indexOf(".aspx"));
+                var index = urlvar.indexOf(".aspx");
+                var str = "?source=" + urlvar.substr(0, index);
+                var newurl = urlvar.substr(0, index + 5) + str + urlvar.substr(index)
+                //alert("newurl"+newurl);
+                //trupti//window.location.href=newurl;
+            }
+            $(document).ready(function () {
+                attachment.init();
+            });
+
+            function trimText(str, len) {
+                if (str.length > len)
+                    return str.slice(0, len) + "...";
+                else
+                    return str;
+            }
+
+
+            function suppressJSError() {
+                return true;
+            }
+            window.onerror = suppressJSError;
+
+    </script>
+
+    <style type="text/css">
+        /*Style added by Ejaz Waquif DT:12/6/2013*/
+        #attachmentsOnClient b {
+            margin-right: 200px;
+        }
+
+        [title="AttachmentName"], [title="Description"] {
+            width: 430px !important;
+            border: 1px #ccc solid;
+            margin-bottom: 15px;
+            margin-top: 5px;
+        }
+
+        [title="AttachmentName"] {
+            height: 20px;
+        }
+
+        #testStepName .Mediumddl {
+            border: 1px #ccc solid !important;
+        }
+
+        #attachOKbutton {
+            display: none;
+        }
+
+        #idSpace + input {
+            display: none;
+        }
+
+        [title="Description"] {
+            height: 81px !important;
+            border: 1px #ccc solid;
+        }
+
+        #testCaseName {
+            width: 350px !important;
+            border: 1px #ccc solid;
+        }
+
+        .ms-fileinput {
+            width: 435px !important;
+            border: 1px #ccc solid;
+            margin-top: 5px;
+            background-color: white;
+            height: 25px !important;
+        }
+
+        a[id$="_testCaseNameMultiSel"] {
+            cursor: default;
+        }
+
+        #testCaseNameMultiSel div, #testStepMultiSel {
+            background-color: #dedbde;
+            padding: 5px;
+        }
+
+        #testCaseNameMultiSel {
+            position: absolute;
+            top: 377px;
+            left: 589px;
+            display: none;
+        }
+
+        #testStepMultiSel {
+            margin-left: 245px;
+            width: 472px;
+        }
+
+        #testCaseName {
+            width: 438px !important;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .pgHead {
+            font-size: 24px !important;
+        }
+
+        #testStepName .Mediumddl {
+            margin-top: 5px;
+            padding-left: 5px;
+            height: 365px;
+        }
+
+        .pedit {
+            background-image: none !important;
+        }
+
+        .pdelete {
+            background-image: none !important;
+            height: 25px;
+            padding-left: 5px;
+        }
+
+        .pedit img {
+            height: 25px;
+        }
+
+        .pdelete img {
+            height: 25px;
+            padding-left: 0px;
+            padding-top: 3px;
+        }
+
+        #divAttachmentPaging {
+            float: right;
+            padding-top: 20px;
+        }
+
+        #linkSN_testStepMultiSel {
+            display: none;
+            !important;
+        }
+
+
+        .prjHead, .tpHead {
+            display: none !important;
+        }
+    </style>
+</div>
+<!--End attachment html-->

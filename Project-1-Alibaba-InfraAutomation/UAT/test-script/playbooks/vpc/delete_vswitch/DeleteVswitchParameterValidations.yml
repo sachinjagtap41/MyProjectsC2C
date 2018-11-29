@@ -1,0 +1,105 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Delete Vswitch
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating delete vswitch 
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Delete vswitch when invalid vpcId is provided
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcIdInvalid }}'
+       purge_vswitches: '{{ deleteVswitch }}'                   
+       state: '{{ status }}'
+      register: delete_vswitch_result_1
+    - debug: var=delete_vswitch_result_1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+    # Task 2 :
+  - block:
+    - name: Delete vswitch when invalid vswitchId is provided
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       purge_vswitches: '{{ deleteVswitchInvalid }}'                   
+       state: '{{ status }}'
+      register: delete_vswitch_result_2
+    - debug: var=delete_vswitch_result_2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+  # Task 3 :
+  - block:
+    - name: Delete vswitch from the list when one vswitchId is invalid
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       purge_vswitches: '{{ deleteVswithFromTheListOneNotPresent }}'                   
+       state: '{{ status }}'                                        
+                          
+      register: delete_vswitch_result_3
+    - debug: var=delete_vswitch_result_3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  - pause:
+        seconds: 6                  
+
+     # Task 4 :
+  - block:
+    - name: Delete vswitch when valid vpcId, region, vswitch is provided
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       purge_vswitches: '{{ deleteVswitch }}'                   
+       state: '{{ status }}'                                        
+                          
+      register: delete_vswitch_result_4
+    - debug: var=delete_vswitch_result_4
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+                           
+    always:
+      - assert:
+         that:
+            - "'failed' in delete_vswitch_result_1"
+            - "'VPC not found' in delete_vswitch_result_1.msg[0]['status']"
+
+            - "'failed' in delete_vswitch_result_2"
+
+            - "'failed' in delete_vswitch_result_3"
+
+            - "'failed' not in delete_vswitch_result_4"
+            
+         msg: 'Test pass FAILED !!!'

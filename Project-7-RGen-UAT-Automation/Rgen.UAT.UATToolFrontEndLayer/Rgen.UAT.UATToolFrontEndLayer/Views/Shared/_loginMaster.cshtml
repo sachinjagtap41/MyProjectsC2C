@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/bootstrap/css/bootstrap-theme.css" rel="stylesheet" />
+    <link href="~/js/DashBoard/css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+    @*<script src="~/js/jquery-1.11.2.min.js"></script>
+        <script src="~/bootstrap/js/bootstrap.js"></script>*@
+
+
+    <script src="~/js/DashBoard/js/jquery-1.5.2.min.js"></script>
+    <script src="~/js/DashBoard/js/jquery-ui-1.8.11.custom.min.js"></script>
+    <script src="~/js/DashBoard/js/serviceLayer.js"></script>
+
+
+    <script src="~/js/Utility.js"></script>
+
+
+    <style type="text/css">
+        /* Sticky footer styles
+        -------------------------------------------------- */
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            /* Margin bottom by footer height */
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            background-color: rgba(44, 105, 158, 1);
+        }
+
+
+        /* Custom page CSS
+        -------------------------------------------------- */
+        /* Not required for template or sticky footer method. */
+
+        body > .container {
+            padding: 30px 15px 0;
+        }
+
+        .container .text-muted {
+            margin: 20px 0;
+        }
+
+        .footer > .container {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        code {
+            font-size: 80%;
+        }
+
+        .ui-widget {
+            font-family: "" !important;
+            font-size: unset !important;
+        }
+
+        #autoHideAlert {
+            height: auto !important;
+        }
+
+        select.form-control {
+            width: 261.5px !important;
+        }
+
+        .btn-block + .btn-block {
+            margin-top: 0px !important;
+        }
+
+        span.red, .msgSpan {
+            color: red;
+            padding-left: 5px;
+        }
+
+        .form-signin {
+            max-width: 380px;
+            padding: 15px 35px 15px !important;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* for Ribbon color and footer*/
+        .navbar-default{background-image:url('')!important;}
+        .text-muted{color:white!important}
+        .navbar, .navbar-default, .navbar-fixed-top{background-color:rgba(44, 105, 158, 1)!important}
+        /*End*/
+    </style>
+</head>
+<body>
+    <div style="text-align:center">
+        @*<nav class="navbar navbar-default">*@
+        @*<div class="container">*@
+        <img alt="Header"  src="~/images/new_ban4_withnewtext.png" />
+        @*</div>*@
+        @*</nav>*@
+    </div>
+
+
+
+
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <footer class="footer" style="bottom:auto !important">
+        @*<div class="container">*@
+            @*<p class="text-muted">Copyright ©2016 RGen Software Solutions (I) pvt ltd</p>*@
+            <img src='~/images/Footer_new.png' alt="Footer"  width="100%" />
+        @*</div>*@
+        
+    </footer>
+
+    <div id="autoHideAlert" style="display:none;">
+
+    </div>
+    <div id="DivHideAlert" style="display:none;">
+
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

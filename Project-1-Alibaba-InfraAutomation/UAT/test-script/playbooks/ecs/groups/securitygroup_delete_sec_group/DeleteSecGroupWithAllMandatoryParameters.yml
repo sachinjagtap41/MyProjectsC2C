@@ -1,0 +1,53 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify Security-Group is deleted with all the mandatory parameters
+#Ansible Playbook created by - Sachin J
+
+
+- name: delete security group with all mandatory parameters
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  
+# Task 1:
+
+
+  tasks:
+  
+  
+   - block: 
+   
+     - name: Scenario 1 - delete security group with all mandatory parameters
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ SGId }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+     always:
+     - assert:
+        that: 
+           - "'failed' not in result1" 
+          
+     
+     
+     
+     

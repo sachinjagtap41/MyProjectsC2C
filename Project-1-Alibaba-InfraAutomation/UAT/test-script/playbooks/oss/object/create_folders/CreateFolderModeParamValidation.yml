@@ -1,0 +1,95 @@
+#Ansible Module Name -- oss.py
+#Test Case : Create folder mode parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create folder mode parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+
+   - block:
+     - name: Scenario 1 - Create folder mode parameter validation with invalid value
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolderInvalid }}'
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - Create folder with blank mode parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: 
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 3 - Create folder without mode parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - Create folder with mode parameter as 'Mode'
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         Mode: '{{ modePutFolder }}' 
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+
+            - "'failed' in result_scn1"
+            - "'value of mode must be one of: create,delete,put,put_folder,list,delobj, got: public' in result_scn1.msg"
+            
+            - "'failed' in result_scn2"
+            - "'value of mode must be one of: create,delete,put,put_folder,list,delobj, got: None' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'missing required arguments: mode' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Mode' in result_scn4.msg"
+            
+         msg:  'Test pass FAILED !!!'
+           

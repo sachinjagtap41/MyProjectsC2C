@@ -1,0 +1,56 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Set load balancer status with invalid region
+#Ansible Playbook created by - Abha H
+---
+- name: Set load balancer status with invalid region
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Set load balancer with status invalid region
+   - block: 
+     - name:  Set load balancer with status invalid region
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionAlphaNo }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+       register: set_slb_status_1
+     - debug: var=set_slb_status_1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    # Task 2 - Set load balancer with status blank region
+   - block: 
+     - name: Set load balancer with status blank region
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: 
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBId }}'
+       register: set_slb_status_2
+     - debug: var=set_slb_status_2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in set_slb_status_1"
+            - "'Can not find endpoint to access.' in set_slb_status_1.msg[0]['Error Message']"
+
+            - "'failed' in set_slb_status_2"
+            - "'region is required' in set_slb_status_2.msg"
+         msg: 'Test pass FAILED !!!'
+

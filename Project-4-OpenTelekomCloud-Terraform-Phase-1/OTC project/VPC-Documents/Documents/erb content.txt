@@ -1,0 +1,27 @@
+# Resource
+
+
+<li<%= sidebar_current("docs-opentelekomcloud-resource-vpc-v1") %>>
+          <a href="#">Virtual Private Cloud Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-opentelekomcloud-resource-vpc-v1") %>>
+              <a href="/docs/providers/opentelekomcloud/r/vpc_v1.html">opentelekomcloud_vpc_v1</a>
+            </li>
+            </ul>
+        </li>
+
+---------------------------------------------------------------------------------------------------------------
+
+# Datasource
+
+
+
+<li<%= sidebar_current("docs-opentelekomcloud-datasource") %>>
+          <a href="#">Data Sources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-opentelekomcloud-datasource-vpc-v1") %>>
+              <a href="/docs/providers/opentelekomcloud/d/vpc_v1.html">opentelekomcloud_vpc_v1</a>
+            </li>
+            
+          </ul>
+        </li>

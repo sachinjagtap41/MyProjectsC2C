@@ -1,0 +1,45 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Modify load balancer Internet Spec with alias
+#Ansible Playbook created by - Abha H
+---
+- name: Modify load balancer Internet Spec with alias
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+   - block: 
+      - name: Modify load balancer Internet Spec with alias
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+      #   ecs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+      #   ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+      #   ecs_region
+          state: '{{ status }}'
+          ecs_slb: '{{ SLBId }}'
+          internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+          bandwidth: '{{ bandwidth }}'
+        register: create_slb_result
+      - debug: var=create_slb_result
+      - assert:
+          that:
+            - "create_slb_result.changed ==  True"
+          msg: 'Test pass PASSED!!! Server Load Balancer name is set successfully.'
+               
+     
+     rescue:
+     
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'EXPECTED - SUCCESS!!! 
+               Playbook FAILED due to improper input values
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+             

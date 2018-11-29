@@ -1,0 +1,139 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Instance Type parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+ 
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml   
+    
+    
+  tasks:
+  
+  # Task : 1
+  
+  - block:
+    - name: Validating - Invalid InstanceType Parameter Which Accepts InstanceType As dcs.123.small
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceTypeInvalid }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ InstanceTypeInvalid }}' is not a valid parameter"
+  
+  # Task : 2
+  
+  - block:
+    - name: Validating - Invalid InstanceType Parameter Which Accepts InstanceType As Null
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceTypeNull }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - '{{ InstanceTypeNull }}' is not a valid parameter"
+
+# Task : 3
+
+  - block:
+    - name: Validating - Invalid InstanceType Parameter Which Accepts InstanceType As ecs.n1.small
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceTypeIoOptimized }}'   # IoOptimized = True
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Faiure Expected "
+  
+  # Task : 4
+  
+  - block:
+    - name: Validating - Valid InstanceTypeParameter Which Accepts InstanceType As ecs.t1.small
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceTypeNonIoOptimized }}' # IoOptimized = false
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Expected Success"
+
+# Task : 5
+
+  - block:
+    - name: Validating - Invalid InstanceTypeParameter Which Accepts InstanceType As Default
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        #instance_type: '{{ InstanceType }}'   Default instance type
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    
+    rescue:
+    - debug: msg="Failure Expected - We can not create an instance without instance type parameter"

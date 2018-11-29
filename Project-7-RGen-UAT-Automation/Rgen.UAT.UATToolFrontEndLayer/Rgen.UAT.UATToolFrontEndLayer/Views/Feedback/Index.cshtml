@@ -1,0 +1,351 @@
+
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = " UAT Project Management: Feedback";
+}
+<head>
+    <link href="~/css/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
+    <link href="~/css/theme/blue/style/rte.css" rel="stylesheet" />
+    <script src="~/js/DashBoard/js/richtext_copy(1).js"></script>
+    <script src="~/js/Feedback/feedback.js"></script>
+    <script src="~/js/Report/html2xhtml.min.js"></script>
+
+    <style type="text/css">
+        .hyper {
+            padding-right: 7px;
+        }
+
+        .filter .ddl {
+            width: 155px;
+        }
+        
+   .rteBack {
+	background: #D3D3D3;
+	border: 1px outset;
+	letter-spacing: 0;
+	padding: 2px;
+    }
+
+   .rteBack tbody tr td, .rteBack tr td {
+	background: #D3D3D3;
+	padding: 0;
+    }
+    </style>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (isRootWeb) {
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg"
+                $("#goImg").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-export.jpg"
+                $("#expImg").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg"
+                $("#goImg1").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-export.jpg"
+                $("#expImg1").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg"
+                $("#goImg2").attr('src', src);
+            }
+            else {
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg"
+                $("#goImg").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-export.jpg"
+                $("#expImg").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg"
+                $("#goImg1").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-export.jpg"
+                $("#expImg1").attr('src', src);
+
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg"
+                $("#goImg2").attr('src', src);
+            }
+
+
+            feedback.isPortfolioOn = isPortfolioOn;
+            /*For tab1*/
+            $("#tab1FilterWithoutPortfolio").remove();
+            $("#tab1FilterWithoutPortfolio").show();
+
+            /*For tab2*/
+            $("#tab2FilterWithoutPortfolio").remove();
+            $("#tab2FilterWithoutPortfolio").show();
+
+
+            /*var beforeload = (new Date()).getTime();*/
+            feedback.init();/* by Mohini for resource file*/
+            feedback.showGrid();
+            $("#tabs").tabs();
+            $("#popUpRTE").css('position', 'static');
+
+            /*pageloadingtime(beforeload);*/
+            if (!isPortfolioOn)//:SD
+            {
+                $('#versionSelectTC').hide();
+                $('.clsVersion').hide();
+                $('.ddl').css('width', '200px');
+                $('#versionSelect').hide();
+            }
+
+            /*Added by Mohini for testStep feedback popup DT:28-05-2014*/
+            var url = window.location.href;
+            var val = url.toLowerCase().indexOf('tsfd=1');
+            var keyVal = new Array();
+            if (val != -1) {
+                $('#tabs ul li:eq(1) a').click();
+                keyVal = Main.getQuerystring('key').split(',');
+                /*$("#projSelect option").each(function(){
+                      if($(this).val() == keyVal[0])
+                          $("#projSelect option[value='"+keyVal[0]+"']").attr("selected",'true');
+                 });*/
+                var prjName = feedback.arrofProjectName[keyVal[0]];
+                $("#projSelect option[title='" + prjName + "']").attr("selected", 'true');
+                $("#projSelect").change();
+
+                if (isPortfolioOn) {
+                    $("#versionSelect option").each(function () {
+                        if ($(this).val() == keyVal[0])
+                            $("#versionSelect option[value='" + keyVal[0] + "']").attr("selected", 'true');
+                    });
+                    $("#versionSelect").change();
+                }
+                $("#testPasSelect option").each(function () {
+                    if ($(this).val() == keyVal[1])
+                        $("#testPasSelect option[value='" + keyVal[1] + "']").attr("selected", 'true');
+                });
+                $('#testPasSelect').change();
+                $("#testerSelect option").each(function () {
+                    if ($(this).val() == _spUserId)
+                        $("#testerSelect option[value='" + _spUserId + "']").attr("selected", 'true');
+                });
+                $("#testerSelect").change();
+                $("#roleSelect option").each(function () {
+                    if ($(this).val() == keyVal[2])
+                        $("#roleSelect option[value='" + keyVal[2] + "']").attr("selected", 'true');
+                });
+                feedback.showTestStep();
+            }
+            /******************************************************/
+        });
+
+    </script>
+
+    <link href="~/css/theme/blue/style/jQuery Styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+</head>
+
+<div class="box details" style="border-bottom:1px solid #B8B8B8">
+    <h1><span style="font-weight:bold;font-size:14px;">Feedback Details</span></h1>
+    <p class="clear"></p>
+    <!--  tabs HTML code starts here  -->
+    <div id="tabs" style="margin-bottom:8px;padding-left:0px;padding-right:0px">
+        <ul>
+            <li><a href="#tabs-1">Test Pass Feedback</a></li>
+            <li><a href="#tabs-2">Test Step Feedback</a></li>
+        </ul>
+        <div id="tabs-1">
+            <div class="filter" style="display:none;padding-left:0px;padding-right:0px" id="tab1FilterWithoutPortfolio">
+                <div>
+                    <label class="mandatory">Select Project :</label>&nbsp;<select id="projSelectTC" class="ddl" style="overflow:hidden" onchange="feedback.showTestPassForTCView()">
+                        <option value="-1">
+                            Select Project
+                        </option>
+                    </select><label>Select Test Pass : </label>
+                    <select id="testPasSelectTC" class="ddl" onchange="feedback.showTestersForTCView()">
+                        <option>
+                            Select Test Pass
+                        </option>
+                    </select>
+                    <label>Select Tester : </label>&nbsp;<select id="testerSelectTC" class="ddl" onchange="feedback.showRolesForTCView()">
+                        <option>
+                            Select Tester
+                        </option>
+                    </select>
+                    <label>Select Role : </label>&nbsp;<select id="roleSelectTC" class="ddl" onchange="">
+                        <option>
+                            Select Role
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <!--input type="button" value="Show" class="btnTemp" id="btnShowTC" onclick="Main.showLoading();setTimeout('feedback.showTestCase();',200);" style="width:90px;cursor:pointer"/-->
+                    <img id="goImg" title="Show Feedback" style="margin-top:-10px;cursor:pointer;margin-left:-1px" align="bottom" onclick="Main.showLoading();setTimeout('feedback.showTestCase();',200);" />
+                    <img id="expImg" title="Export To Excel" style="margin-top:-10px;cursor:pointer;;margin-left:10px" align="bottom" onclick="Main.showLoading();setTimeout('feedback.exportTestCase();',200);" />
+                    <!--input type="button" value="Export To Excel" class="btnTemp" id="btnShowTC" onclick="Main.showLoading();setTimeout('feedback.exportTestCase();',200);" style="width:90px;padding:0px;cursor:pointer"/-->
+                </div>
+            </div>
+            <!--Portfolio Filter container -->
+            <div class="filter" style="display:none;padding-left:0px;padding-right:0px;" id="tab1FilterWithPortfolio">
+                <label class="mandatory">Project :<font color="red">*</font></label>&nbsp;<select id="projSelectTC" class="ddl" style="overflow:hidden;margin-right:10px" onchange="feedback.showTestPassForTCView()">
+                    <option value="-1">
+                        Select Project
+                    </option>
+                </select>
+
+                <label class="clsVersion">Version : </label>
+                <select id="versionSelectTC" class="ddl" style="width:108px;margin-right:10px" onchange="feedback.changeTestPass();">
+                    <option>
+                        Select Version
+                    </option>
+                </select>
+
+                <label>Test Pass : </label>
+                <select id="testPasSelectTC" class="ddl" style="margin-right:10px" onchange="feedback.showTestersForTCView()">
+                    <option>
+                        Select Test Pass
+                    </option>
+                </select>
+                <label>Tester : </label>&nbsp;<select id="testerSelectTC" class="ddl" style="margin-right:10px" onchange="feedback.showRolesForTCView()">
+                    <option>
+                        Select Tester
+                    </option>
+                </select>
+                <label>Role : </label>&nbsp;<select id="roleSelectTC" class="ddl" style="margin-right:10px" onchange="">
+                    <option>
+                        Select Role
+                    </option>
+                </select>
+                <!--input type="button" value="Show" class="btnTemp" id="btnShowTC" onclick="Main.showLoading();setTimeout('feedback.showTestCase();',200);" style="width:90px;cursor:pointer"/-->
+                <img id="goImg1" title="Show Feedback" style="margin-top:1px;cursor:pointer;position:absolute" align="bottom" onclick="Main.showLoading();setTimeout('feedback.showTestCase();',200);" />
+                <img id="expImg1" title="Export To Excel" style="margin-top:1px;cursor:pointer;;margin-left:55px;position:absolute" align="bottom" onclick="Main.showLoading();setTimeout('feedback.exportTestCase();',200);" />
+
+                <!--input type="button" value="Export To Excel" class="btnTemp" id="btnShowTC" onclick="Main.showLoading();setTimeout('feedback.exportTestCase();',200);" style="width:90px;padding:0px;cursor:pointer"/-->
+            </div>
+            <!--End Portfolio Filter container -->
+
+            <div id="feedbackGridTC" style="overflow:auto"></div>
+            <div id="testCaseCount" class="pager"></div>
+        </div>
+
+        <div id="tabs-2">
+            <div class="filter" style="display:none;padding-left:0px;padding-right:0px" id="tab2FilterWithoutPortfolio">
+                <label class="mandatory">Select Project :</label>&nbsp;<select id="projSelect" class="ddl" style="overflow:hidden">
+                    <option>
+                        Select Project
+                    </option>
+                </select><label class="mandatory">
+                    Select
+                    Test Pass :
+                </label>
+                <select id="testPasSelect" class="ddl">
+                    <option>
+                        Select Test
+                        Pass
+                    </option>
+                </select>
+                <label class="mandatory">Select Tester :</label><select id="testerSelect" class="ddl" onchange="">
+                    <option>
+                        Select Tester
+                    </option>
+                </select>
+                <label class="mandatory">Select Role :</label>&nbsp;<select id="roleSelect" class="ddl" onchange="">
+                    <option>
+                        Select Role
+                    </option>
+                </select>
+                <input type="button" value="Show Feedback" class="btnTemp" id="btnShow" onclick="Main.showLoading();setTimeout('feedback.showTestStep();',200);" style="width:100px" />
+            </div>
+            <!--Portfolio Filter container -->
+            <div class="filter" style="display:none;padding-left:0px;padding-right:0px" id="tab2FilterWithPortfolio">
+                <label class="mandatory">Project :<font color="red">*</font></label>&nbsp;
+                <select id="projSelect" class="ddl" style="overflow:hidden">
+                    <option>
+                        Select Project
+                    </option>
+                </select>
+
+                <label class="clsVersion">Version : </label>
+                <select id="versionSelect" class="ddl" style="width:108px;margin-right:10px" onchange="">
+                    <option>
+                        Select Version
+                    </option>
+                </select>
+
+                <label class="mandatory">Test Pass :<font color="red">*</font></label>
+                <select id="testPasSelect" class="ddl">
+                    <option>
+                        Select Test
+                        Pass
+                    </option>
+                </select>
+
+                <label class="mandatory">Tester :<font color="red">*</font></label>&nbsp;
+                <select id="testerSelect" class="ddl" onchange="">
+                    <option>
+                        Select Tester
+                    </option>
+                </select>
+
+                <label class="mandatory">Role :<font color="red">*</font></label>&nbsp;
+                <select id="roleSelect" class="ddl" onchange="">
+                    <option>
+                        Select Role
+                    </option>
+                </select>
+                <!-- <input type="button" value="Show Feedback" class="btnTemp" id="btnShow" onclick="Main.showLoading();setTimeout('feedback.showTestStep();',200);" style="width:100px"/> -->
+                <img id="goImg2" src="" title="Show Feedback" style="cursor:pointer;position: absolute;margin-top:1px" align="bottom" onclick="Main.showLoading();setTimeout('feedback.showTestStep();',200);" />
+            </div>
+            <!--End of Portfolio Filter container -->
+            <div id="feedbackGrid" style="overflow:auto"></div>
+            <div id="testPassCount" class="pager"></div>
+        </div>
+    </div>
+
+    <!--Ankita: 8/13/2012 modified for bug id 2330-->
+    <div id="popUpRTE" style="display:none;overflow:auto" title="Feedback">
+        <div id="nextPrev" style="padding-bottom:5px;text-align:right"></div>
+        <div id="detailInfo" style="padding: 0px 0px 5px 0px"><!----></div>
+        <div id="containts" style="background-color:white;overflow:auto; height:300px; border:1px black solid; display:none"></div>
+        <div id="rteDiv" class="rte1Container">
+            <div></div>
+            <script type="text/javascript">
+                initRTE("../images/", "/palletes/", "", true);
+                writeRichText('rte1', feedback.rteText, 665, 300, true, false);
+            </script>
+        </div>
+    </div>
+    <div id="popUpRTETCView" style="display:none;overflow:auto;position:static" title="Feedback">
+        <div id="rteDiv1" class="rte2Container">
+            <div></div>
+            <script type="text/javascript">
+                initRTE("/images/", "/palletes/", "", true);
+                writeRichText('rte2', feedback.rteText, 465, 300, true, false);
+            </script>
+        </div>
+    </div>
+
+    <!-- Added by HRW  -->
+    <div id="parent" style="display:none">
+        <div style="overflow:hidden;" id="rteDiv2" class="rteExpContainer">
+            <div></div>
+           <script type="text/javascript">
+                if ((window.location.href).indexOf("palette") == -1) {
+                    var parameter1 = Main.getSiteUrl() + "/images/"; var parameter2 = Main.getSiteUrl() + "/palletes/"; initRTE(parameter1.toString(), parameter2.toString(), "", true); writeRichText("rteExp", "", 405, 68, false, false);
+                }
+            </script>
+        </div>
+    </div>
+</div>
+<div id="divAlert"></div>
+
+<div style="overflow:hidden;width:2px;height:2px" id="rteDiv3" class="rte3Container">
+    <div></div>
+   <script type="text/javascript">
+        if ((window.location.href).indexOf("palette") == -1) {
+            var parameter1 = Main.getSiteUrl() + "/images/";
+            var parameter2 = Main.getSiteUrl() + "/palletes/";
+            initRTE(parameter1.toString(), parameter2.toString(), "", true);
+            /*initRTE("../SiteAssets/js/RTE/images/", "../SiteAssets/js/RTE/",  "", true);*/
+            writeRichText('rte3', "", 610, 200, false, false);
+        }
+    </script>
+</div>
+

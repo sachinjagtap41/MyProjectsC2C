@@ -1,0 +1,215 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create database with database name parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create database with database name parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create database with invalid database name
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbNameInvalid }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 2 - create database without instance id parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 3 - create database with blank database name parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: 
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 4 - create database with database name parameter as Database name
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        Db_name: '{{ dbName }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 30
+
+   - block:
+     - name: Scenario 5 - create database with database name parameter having 64 characters
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName64Chars }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn5
+     - debug: var=result_scn5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+        seconds: 20
+
+   - block:
+     - name: Scenario 5.1 - delete database
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName64Chars }}'
+       register: result_del_scn5
+     - debug: var=result_del_scn5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+#   - block:
+#     - name: Scenario 6 - create database with database name parameter having more than 64 characters
+#       rds:
+#        acs_access_key: '{{ aliyun_acs_access_key }}'
+#        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+#        region: '{{ region }}'
+#        command: '{{ command }}'
+#        instance_id: '{{ instanceId }}'
+#        db_name: '{{ dbNameMoreThan64Chars }}'
+#        db_description: '{{ dbDescription }}'
+#        character_set_name: '{{ characterSetName }}'
+#       register: result_scn6
+#     - debug: var=result_scn6
+#     rescue:
+#      - fail:
+#          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+
+   - block:
+     - name: Scenario 6 - create database with database name parameter having 1 characters
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName1Chars }}'
+        db_description: '{{ dbDescription }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn6
+     - debug: var=result_scn6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+        seconds: 20
+
+   - block:
+     - name: Scenario 6.1 - delete database
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName1Chars }}'
+       register: result_del_scn6
+     - debug: var=result_del_scn6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+#            - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: crated' in result_scn1"
+            
+            - "'failed' in result_scn2"
+#            - "'' in result_scn2"
+            
+            - "'failed' in result_scn3"
+#            - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: None' in result_scn3"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Db_name' in result_scn4.msg"
+
+            - "'failed' not in result_scn5"
+#            - "'' in result_scn5"
+
+            - "'failed' not in result_del_scn5"
+#            - "'' in result_scn5"
+
+#            - "'failed' in result_scn6"
+#            - "'' in result_scn6"
+
+            - "'failed' not in result_scn6"
+#            - "'' in result_scn7"
+
+            - "'failed' not in result_del_scn6"
+#            - "'' in result_scn7"
+
+            
+         msg: 'Test pass FAILED !!!'
+               

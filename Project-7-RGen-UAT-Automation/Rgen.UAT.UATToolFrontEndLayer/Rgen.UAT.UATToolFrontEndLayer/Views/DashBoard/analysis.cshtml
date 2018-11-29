@@ -1,0 +1,182 @@
+﻿
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "UAT Project Management:Test pass analysis";
+}
+
+<p class="clear">
+</p>
+<div class="box details">
+    <h1><span style="font-weight:bold;font-size:14px;">Detailed Analysis</span></h1>
+    <p class="clear">
+        <!--<div id="bodyloader" class="loadingMainDiv"><img src="../SiteAssets/js/images/ajax-loaderFinal.gif" class="innerLoadImg"/></div>-->
+
+    </p>
+    <div class="proj-desc DivlblWithNoColon" style="background-color:white">
+        <div style="width:100%; direction:ltr; z-index:1">
+            <table style="width:100%">
+                <tr valign="top">
+                    <td style="width:30%">
+                        <table class="gridDetails " style="vertical-align:top;text-indent:5px" cellpadding="0" cellspacing="0">
+                            <thead style="text-indent:5px">
+                                <tr>
+                                    <td class="tblhd" style="width:30%" colspan="1">
+                                        <label>Select Project</label>
+                                    </td>
+                                    <td id="prjName" class="tblhd" style="width:70%" colspan="2"></td>
+                                </tr>
+
+                                <!-- Portfolio -->
+                                <tr id="trVersion" style="display:none">
+                                    <td class="tblhd" style="width:30%" colspan="1">
+                                        <label>Select Version</label>
+                                    </td>
+                                    <td id="versionName" class="tblhd" style="width:70%" colspan="2">
+                                        <select class="ddl" style="width:240px;" id="versionDD"></select>
+                                    </td>
+                                </tr>
+                                <!-- Portfolio -->
+
+                                <tr>
+                                    <td align="left" class="tblhd" style="width:30%" colspan="1">
+                                        <label>Select Test Pass</label>
+                                    </td>
+                                    <td id="slectTP" class="tblhd" style="width:70%" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td align="left" class="tblhd" style="width:30%" colspan="1">
+                                        <label>Select Tester</label>
+                                    </td>
+                                    <td id="slectTester" class="tblhd" style="width:70%" colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td align="left" class="tblhd" style="width:30%" colspan="1">
+                                        <label>Select Role</label>
+                                    </td>
+                                    <td id="SelectRole" class="tblhd" style="width:70%" colspan="2"></td>
+                                </tr>
+
+
+
+
+                            </thead>
+                        </table>
+                        <input type="button" onclick="Main.showLoading();setTimeout('Analysis.ExportExcel();',200);" id="btnShow" value="Export Test Case Statistics" class="btnNew1 tTipExportStatics" style="margin-top:5px" />
+
+                    </td>
+                    <td style="width:35%">
+                        <table style=" display:inline;width:100%">
+                            <tr><td id="testPassDet" colspan="3" align="center" style="font-weight:bold"></td></tr>
+                            <tr style="border-bottom-style:none;border-bottom-width:0px">
+                                <td style="width: 133px; height: 130px;"><div id="visualizationPass"></div></td>
+                                <td style="width: 133px; height: 130px;"><div id="visualizationFail"></div></td>
+                                <td style="width: 133px; height: 130px;"><div id="visualizationNC"></div></td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td id="divPassCount">Total Test Steps Passed:</td>
+                                <td id="divFailCount">Total Test Steps Failed:</td>
+                                <td id="divNCCount">Total Test Steps NC:</td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td id="divPassTCCount">Total Test Cases Passed:</td>
+                                <td id="divFailTCCount">Total Test Cases Failed:</td>
+                                <td id="divNCTCCount">Total Test Cases NC:</td>
+                            </tr>
+                            <tr style="text-align:center">
+                                <td colspan="3">
+                                    <strong>
+                                        Note:
+                                    </strong>Percentage values rounded to nearest
+                                    decimal.
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="width:25%">
+                        <table class="gridDetails" cellspacing="0px" cellpadding="0px" style="vertical-align:top; width:360px;table-layout:fixed;word-break:break-all">
+                            <thead style="text-indent:5px">
+                                <tr style="width:230px">
+                                    <td class="tblhd" style="height: 31px;width:160px">
+                                        <label>Total Test Cases</label>
+                                    </td>
+                                    <td id="totTestCase" style="height: 31px;border-right-width:0px"></td>
+                                </tr>
+                                <tr id="hideRow2" style="display:none;">
+                                    <td class="tblhd" style="height: 31px">
+                                        <label>Test Cases for this Tester</label>
+                                    </td>
+                                    <td id="snglTester2" style="height: 31px;border-right-width:0px"></td>
+                                </tr>
+                                <tr style="width:230px">
+                                    <td class="tblhd" style="height: 31px">
+                                        <label>Total Test Steps</label>
+                                    </td>
+                                    <td id="totTeSt" style="height: 31px;border-right-width:0px"></td>
+                                </tr>
+                                <tr id="hideRow" style="display:none;">
+                                    <td class="tblhd">
+                                        <label>Test Steps for this Tester</label>
+                                    </td>
+                                    <td id="snglTester" style="border-right-width:0px"></td>
+                                </tr>
+                                <tr>
+                                    <td class="tblhd" style="height: 31px">
+                                        <label>Total Testers</label>
+                                    </td>
+                                    <td id="totTester" style="height: 31px;border-right-width:0px"></td>
+                                </tr>
+                                <tr><td class="tblhd">Due Date</td><td id="dueDat" style="border-right-width:0px"></td></tr>
+                                <tr><td class="tblhd">Test Manager</td><td id="testMgr" style="border-right-width:0px"></td></tr>
+                                <tr><td class="tblhd clsLead">Version Lead</td><td id="projMrg" style="border-right-width:0px;border-bottom-width:0px"></td></tr>
+                            </thead>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <h1 id="TestDt">Tester Details(s)</h1>
+
+        <div id="barChart" style="width:100%; height:400px;">
+
+        </div>
+
+    </div>
+
+    <div id="Pagination" style="padding-left:5px;"></div>
+
+</div>
+<p class="box-ft"></p>
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript' src='~/js/DashBoard/js/jquery.gchart.js'></script>
+<script type='text/javascript' src='~/js/DashBoard/js/jquery.gchart.ext.min.js'></script>
+<script type='text/javascript' src='~/js/DashBoard/js/analysis.js'></script>
+<script type="text/javascript">
+    google.load('visualization', '1', { packages: ['gauge'] });
+    $(document).ready(function () {
+
+        Analysis.isPortfolioOn = isPortfolioOn;
+        if (isPortfolioOn)//:SD
+            $("#trVersion").show();
+        else
+            $('td.clsLead').text(Analysis.rsProject + ' Lead');
+
+        //End of Code added by Ejaz Waquif for Portfolio DT:2/3/2014
+
+
+        Main.showLoading();
+
+        var Urls = CheckUrl();
+        if (Urls.toLowerCase().indexOf('analysis') >= 0) {
+            Analysis.initAnalysis();
+            $('#btnShow').attr('title', 'Exports ' + Analysis.rsTestCase + ' statistics as per number of ' + Analysis.rsTester + 's assigned and number of ' + Analysis.rsTester + 's executed it with status Pass or Fail.');
+            $('.tTipExportStatics').betterTooltip();//added by Mohini for increasing the delay time of hover over text
+            initPagination();
+            Main.hideLoading();
+        }
+
+    });
+
+</script>

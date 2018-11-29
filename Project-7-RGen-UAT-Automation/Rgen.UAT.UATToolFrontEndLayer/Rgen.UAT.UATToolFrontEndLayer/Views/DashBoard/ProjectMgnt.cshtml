@@ -1,0 +1,343 @@
+﻿
+@{
+    Layout = "~/Views/Shared/UatAdminMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "UAT Project Management:Projects";
+}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <style type="text/css">
+        .tooltip {
+            display: none;
+            position: absolute;
+            border: 1px solid #000000;
+            background: #FFFFCC;
+            padding: 5px 5px;
+            margin-top: 10px;
+            font-size: 8pt;
+        }
+    </style>
+    <script type="text/javascript" src="~/js/Common/showgrid.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/leftnavlinks.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/Project.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+
+
+            /* for Removing Stakeholder */
+            var txtBox = $('#VersionStakeholder');
+            txtBox.keypress(function () { return false; })
+            txtBox.unbind('paste');
+            txtBox.bind('paste', function () { return false });
+            /* for Removing Stakeholder */
+
+
+
+
+            project.isPortfolioOn = isPortfolioOn;
+            g_MAX_LEN = 1000;
+            setTimeout('Main.showLoading();project.pageload();', 100);
+            CallAuto('VersionLead', 'HdnVersionLead', 'TooltipVersionLead', 'HdnVersionOrignalTxt')
+            //var x = setInterval(function () {
+            //    var txtBox = $('#VersionStakeholder');
+            //    var versionLead = $('#VersionLead');
+            //    //if (txtBox.length > 0 && txtBox != undefined) {
+            //    //    CallAutoMultiple('VersionStakeholder', 'HdnVersionStakeHolder');
+            //    //    clearInterval(x);
+            //    //}
+            //    if (versionLead.length > 0 && versionLead != undefined) {
+            //        CallAuto('VersionLead', 'HdnVersionLead')
+            //    }
+            //}, 1000);
+        });
+    </script>
+
+</head>
+<body>
+
+    <div id="RightPanel">
+        @* Start HTML *@
+
+        <div class="pgHead" style="margin-left:5px">Project Details</div>
+        <div id="pageTab" class="navTabs" style="margin-left:5px">
+            <h2>View All</h2>
+            <h2>Create New</h2>
+            <h2 style="display:none">Edit Project</h2>
+        </div>
+        <div id="countDiv" style="margin-top:7px;margin-right:7px;float:right;display:none">
+            <label style="font-size:14px">Total Records:</label>
+            <label id="labelCount" style="font-size:14px"></label>
+
+        </div>
+        <p class="clear"></p>
+        <!--Portfolio Grid -->
+        <div id="ProjectGrid" style="margin-left:3px" class="ProjectGridWithPortfolio1">
+
+            <table class="tableGrid" cellspacing="1" id="table1" style="width:948px;display:none;margin-top:13px">
+                <thead>
+                    <tr class="griDetails">
+                        <td style="width:5%" align="center">ID</td>
+                        <td style="width:25%">NAME</td>
+                        <td style="width:7%;padding-left: 6px">VERSION</td>
+                        <td style="width:15%">LEAD</td>
+                        <td style="width:7%">STATUS</td>
+                        <td style="width:33%">STAKEHOLDERS</td>
+                        <td align="center" style="border-right:none;width:10%">ACTION</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="gridHeadingRow"></td>
+                    </tr>
+                    <tr><td colspan="6"></td></tr>
+                    <tr><td colspan="6"></td></tr>
+                    <tr><td colspan="6"></td></tr>
+                    <tr><td colspan="6"></td></tr>
+                </thead>
+                <tbody id="showproject"></tbody>
+            </table>
+        </div>
+        <!--Portfolio Grid -->
+
+
+        <h3 id="noP" style="display:none;margin-left:5px;font-size:30px;color:#B8B8B8">
+            No Project(s) available!
+        </h3>
+        <div id="Pagination1" style="float:right;margin-top:20px"></div>
+
+        <!--div id="infoDiv" class="pager">
+        </div-->
+
+        <div id="Projectform" style="display:none;width:1000px;margin-left:5px;margin-top:10px" class="createFormWithPortfolio DivlblWithColon">
+
+            <div id="leftdiv" style="float:left;width:500px">
+                <div id="portfolioEnabledDiv">
+                    <label class="mandatory" id="lblGrpTmN">
+                        Group/Team Name:
+                    </label><font color="red"><b>*</b></font><img id="imgGrpTmN" class="masterTooltip" style="height: 20px;" src="~/images/icon-05.png" />
+                    <br />
+                    <select class="dropDown" id="group" style="width:333px">
+                        <option value="0">Select Group</option>
+                        <option>Default Group</option>
+                    </select>
+                    <a href="#" class="addNew addNew1" id="addGroup"><img title="Add Group" src="~/images/Admin/add.png" style="width:23px;height:23px;vertical-align:text-bottom;margin-left:3px" /></a>
+                    <a href="#" class="addNew1" id="deleteGroup" style="display:none" onclick="project.delGrpPort('Group')"><img title="Delete Group" src="~/images/Admin/Garbage1.png" style="width:23px;height:23px;vertical-align:text-bottom;margin-left:3px" /></a>
+                    <br />
+
+
+                    <label class="mandatory" id="lblPrtPrcN">
+                        Portfolio/Process Name:
+                    </label><font color="red"><b>*</b></font><img id="imgPrtPrcN" class="masterTooltip" style="height: 20px;" src="~/images/icon-05.png" />
+                    <br />
+                    <select class="dropDown" id="process" style="width:333px">
+                        <option value="0">Select Portfolio</option>
+                    </select>
+                    <a href="#" class="addNew addNew1" id="addPortfolio"><img title="Add Portfolio" src="~/images/Admin/add.png" style="width:23px;height:23px;vertical-align:text-bottom;margin-left:3px" /></a>
+                    <a href="#" class="addNew1" id="deletePortfolio" style="display:none" onclick="project.delGrpPort('Portfolio')"><img title="Delete Portfolio" src="~/images/Admin/Garbage1.png" style="width:23px;height:23px;vertical-align:text-bottom;margin-left:3px" /></a>
+
+                    <br />
+
+                    <label id="lblPNameStar" class="mandatory">Project Name:</label><font color="red"><b>*</b></font><br />
+                    <select class="dropDown" id="pName" style="width:333px">
+                        <option selected="selected" value="0">Select Project</option>
+                    </select>
+                    <a href="#" class="addNew addNew1" id="addProject"><img title="Add Project" src="~/images/Admin/add.png" style="width:23px;height:23px;vertical-align:text-bottom;margin-left:3px" /></a>
+
+                    <br />
+                </div>
+                <label class="mandatory">
+                    Version:
+                </label><font color="red"><b>*</b></font>
+                <br />
+                <input class="dropDown" id="version" style="border: 1px solid rgb(204, 204, 204);width:390px;height:18px" type="text" />
+                <br />
+
+                <label>Description:</label><br />
+                <textarea id="txtDescription" class="textArea" style="margin-bottom:10px;height:81px"></textarea><br />
+
+                <div style="float:left;width:45%">
+                    <label id="lblStartDate" class="mandatory">Start Date:</label><font color="red"><b>*</b></font><br />
+                    <input type="text" id="startDate" name="startDate" readonly="readonly" style="margin-right:8px" onkeydown="Main.preventBackspace()" />
+                </div>
+                <div style="float:left;width:55%">
+                    <label id="lblEndDate" class="mandatory">End Date:</label><font color="red"><b>*</b></font><br />
+                    <input type="text" id="endDate" name="endDate" readonly="readonly" style="margin-right:8px" onkeydown="Main.preventBackspace()" />
+                </div>
+
+                <!--div id="drillDownDetails" style="margin-top:5px"-->
+                <table cellspacing="0" style="margin-top:60px">
+                    <!--id = drillDownDetails-->
+                    <tr>
+                        <td style="height:5px;width:138px;display:none" id="testPassCount0">
+                            <b>
+                                Total Test Pass(es):
+                            </b>
+                        </td>
+                        <td style="height:5px;" id="testPassCount"></td>
+                    </tr>
+                </table>
+                <!--/div-->
+
+                <label id="lblPId" style="display:none;">
+                    Project #:
+                </label><br />
+                <input type="text" class="inputNew" id="txtPId" readonly="readonly" onkeydown="Main.preventBackspace()" style="background-color:#DEDFE7; display:none;margin-top:3px" />
+
+
+            </div>
+
+            <div id="rightdiv" style="float:right;width:500px">
+
+                <div id="pplLead" style="height:60px;margin-bottom:19px;margin-top:4px;">
+                    <label id="verLead" class="mandatory">Version Lead:</label><font color="red"><b>*</b></font>
+                    <br />
+                    <input class="dropDown ui-autocomplete" id="VersionLead" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 18px;position:static!important" type="text">
+                    <input id="HdnVersionLead" type="hidden">
+                    <input id="HdnVersionOrignalTxt" value="" type="hidden">
+                    <p style="font-size:12px">
+                        Please use the address book to
+
+                        add the Version Lead.
+                    </p>
+                </div>
+
+                <div id="pplStakeHolder" style="height:60px;margin-bottom:85px">
+                    <label id="vStakeh">Version Stakeholders:</label><br />
+                    <div id="VersionStakeholder" spellcheck="false" paste="return false;" style="width:390px;border:solid 1px #ccc;height:90px;min-height:80px;overflow-y:auto;overflow-x:hidden" contenteditable="true"></div>
+                    <div id="TooltipVersionLead" style="display:none;top:-178px!important;font-size:1.4em!important" data-tip="No results were found to match your search item."></div>
+                     <input id="HdnVersionStakeHolder" type="hidden"><img id="ImgMultipleStakeholder" onclick="MultipleStakeholder(event);" style="cursor:pointer;position:absolute;top:390px;right:220px;margin-right:0px!important" src="~/images/addressbook.gif" />
+                    <p id="notevStake" style="margin-bottom:5px;font-size:12px">
+                        A project can have maximum 20 Version Stakeholders.
+                    </p>
+                </div>
+
+
+                <label>Status:</label><br />
+                <select class="dropDown" id="status">
+                    <option id="Active" value="Active">Active</option>
+                    <option id="On Hold" value="On Hold">On Hold</option>
+                    <option id="Complete" value="Complete">Complete</option>
+                </select>
+
+                <table cellpadding="0" cellspacing="0">
+                    <tr><td><label id="prjUrl">Project URL:</label></td></tr>
+                    <tr>
+                        <td>
+                            <div style="border: solid 1px #ccc;float:left;width:375px;height:19px" id="divProjectUrl">
+                                &nbsp;
+                            </div>&nbsp;<a id="editProjectUrl" title="Add project URL" onclick="project.fUrlPopUp()"><img style="width: 30px; height: 30px;cursor:pointer" src="~/images/Admin/newedit.png" /></a>
+                        </td>
+                    </tr>
+
+                    <tr style="display:none">
+                        <td>
+                            <input type="hidden" id="url" /><br />
+                            <input type="hidden" id="hidPUrl" /><br />
+                            <input type="hidden" id="hidProjectPosition" />
+                        </td>
+                    </tr>
+                </table>
+
+                <table cellpadding="0" cellspacing="0" style="margin-bottom:30px">
+                    <tr><td><label id="appUrl">Application URL:</label></td></tr>
+                    <tr>
+                        <td>
+                            <div style="float:left;border: solid 1px #ccc; width: 375px;height:19px;" id="divApplicationUrl">
+                                &nbsp;
+                            </div>&nbsp;<a id="editApplicationUrl" title="Add Application URL" onclick="project.fUrlPopUp2()"><img style="width: 30px; height: 30px;cursor:pointer" src="~/images/Admin/newedit.png" /></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="hidden" id="hidAUrl" readonly="readonly" style="background-color:#DEDFE7;" />
+                            <input type="hidden" id="appUrl" />
+                            <input type="hidden" id="hid" />
+                        </td>
+                    </tr>
+
+                </table>
+
+                <br />
+                <div id="buttonsdiv" style="padding:2px;">
+                    <input type="button" value="Save" id="btnSave" onclick="Main.showLoading();setTimeout('project.btnSavePortfolio();',200);" class="btnNew1" style="margin-left:217px" />
+                    <input type="button" value="Cancel" id="btnClear" onclick="project.clearPortfolio();" class="btnNew1" style="margin-left:15px" />
+
+
+                    <input id="btnUpdate" name="Submit2" type="button" value="Update" class="btnNew1" style="margin-left:217px;display:none" onclick="Main.showLoading();setTimeout(' project.updatePortfolio();',200);" />
+                    <input id="btnCancel" type="button" value="Reset" class="btnNew1" style="margin-left:15px;display:none" onclick="project.cancelPortfolio();" />
+                </div>
+            </div>
+
+        </div>
+        <!--End of Project form for Portfolio -->
+
+        <div id="divConfirm">
+        </div>
+        <div id="divAlert">
+        </div>
+        <div id="divAlert2">
+        </div>
+        <div id="divAlert3">
+        </div>
+        <div id="divAlertForDelete">
+        </div>
+        <div id="divAddUserAlert">
+        </div>
+        <div id="viewStakeholder">
+        </div>
+        <div id="alertGrpPort">
+        </div>
+        <!--div id="pplLead" style="height:55px"/>
+        <div id="pplStakeHolder" style="height:55px"/-->
+
+
+        <div id="divUrlPopUp" title="Project URL" style="height:50px;display:none">
+            <label>
+                <b>
+                    URL:
+                </b>
+            </label><br />
+            <input type="text" id="actualURL" class="input" style="width: 299px" /><br /><br /><label>
+                <b>
+                    Alias:
+                </b>
+            </label><br />
+            <input type="text" id="aliasURL" class="input" style="width: 299px" /><br /><br /><label style="color:#FF3000" id="lblError"></label>
+        </div>
+        <div id="divUrlPopUp2" title="Application URL" style="height:50px;display:none">
+            <label>
+                <b>
+                    URL:
+                </b>
+            </label><br /><input type="text" id="actualURL2" class="input" style="width: 299px" /><br /><br /><label>
+                <b>
+                    Alias:
+                </b>
+            </label><br />
+            <input type="text" id="aliasURL2" class="input" style="width: 299px" /><br /><br /><label style="color:#FF3000" id="lblError2"></label>
+        </div>
+
+
+        <!-- Group and Portfolio and Project pop up -->
+        <div style="display: none">
+            <div id="divPortfolioPopUp" style="height:50px;display:block">
+                <label>
+                    <b id="lblPortfolioPopUp">
+                    </b>
+                </label>
+                <br />
+                <input type="text" id="txtPortfolioPopUp" class="input" style="width: 299px;margin-top:5px;" />
+                <br />
+                <label id="portfolioError" style="color: red"></label>
+            </div>
+        </div>
+        <!-- Group and Portfolio and Project pop up -->
+        @* END  *@
+    </div>
+
+
+   
+</body>
+

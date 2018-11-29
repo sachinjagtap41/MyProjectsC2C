@@ -1,0 +1,128 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create database with Description parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create database with Description parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+  
+   - pause :
+        seconds: 30  
+  
+   - block:
+     - name: Scenario 1 - create database without description parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 30
+        
+   - block:
+     - name: Scenario 1.1 - delete database
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+       register: result_del_scn1
+     - debug: var=result_del_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - pause :
+        seconds: 30
+        
+   - block:
+     - name: Scenario 2 - create database with blank description parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+        db_description: 
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 30
+
+   - block:
+     - name: Scenario 2.1 - delete database
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+       register: result_del_scn2
+     - debug: var=result_del_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no        
+        
+   - block:
+     - name: Scenario 3 - create database with 1 char in description parameter
+       rds:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ command }}'
+        instance_id: '{{ instanceId }}'
+        db_name: '{{ dbName }}'
+        db_description: '{{ dbDescription1Char }}'
+        character_set_name: '{{ characterSetName }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_del_scn1"
+#            - "'value of command must be one of: create,delete,replicate,grant,revoke,modify,reboot,switch, got: crated' in result_scn1"
+            
+            - "'failed' not in result_scn2"
+            - "'failed' not in result_del_scn2"
+#            - "'' in result_scn2"
+            
+            - "'failed' in result_scn3"
+            - "'The specified parameter \"DBDescription\" is not valid.' in result_scn3.msg[0]['Error Message']"
+            
+         msg: 'Test pass FAILED !!!'
+                       

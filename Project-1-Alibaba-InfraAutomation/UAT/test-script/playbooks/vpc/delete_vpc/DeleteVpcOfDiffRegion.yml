@@ -1,0 +1,38 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Delete VPC of different region
+#Ansible Playbook created by - Abha H
+---
+- name:  Delete VPC of different region
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 -  Delete VPC of different region
+   - block: 
+     - name:  Delete VPC of different region
+       ecs_vpc: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionDiffForVpc }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ vpcId }}'
+       register: delete_vpc
+     - debug: var=delete_vpc
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "delete_vpc.changed ==  false"
+            -  "'Vpc does not exist' in delete_vpc.msg"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ delete_vpc}}'
+            

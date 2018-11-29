@@ -1,0 +1,148 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Create Vswitch
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating create vswitch with description parameter validations
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Create vswitch with valid description parameter
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       vswitches: '{{ vswitches }}'                   
+       state: '{{ status }}'
+      register: create_vswitch_result_1
+    - debug: var=create_vswitch_result_1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  - pause: 
+     seconds: 6
+            
+  # Task 2 : 
+  - block:
+    - name: Create vswitch with description parameter less than 2 char
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       vswitches: '{{ vswitchDescriptionWithLessThan2Char }}'                   
+                         
+      register: create_vswitch_result_2
+    - debug: var=create_vswitch_result_2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  - pause: 
+     seconds: 6       
+            
+  # Task 3 : 
+  - block:
+    - name: Create vswitch with description parameter more than 256 char
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       vswitches: '{{ vswitchDescriptionWithMoreThan256Char }}'                   
+                         
+      register: create_vswitch_result_3
+    - debug: var=create_vswitch_result_3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  - pause: 
+     seconds: 6        
+#            
+#  # Task 4 : 
+#  - block:
+#    - name: Create vswitch with description parameter 256 char only
+#      ecs_vpc: 
+#       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+#       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+#       region: '{{ region }}'
+#       vpc_id: '{{ vpcId }}'
+#       vswitches: '{{ vswithDescription256CharOnly }}'  
+#                           
+#      register: create_vswitch_result_4
+#    - debug: var=create_vswitch_result_4
+#     
+#    rescue:
+#      - fail:
+#          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+#
+
+  # Task 5 :
+  - block:
+    - name: Create vswitch with description parameter as https:// char
+      ecs_vpc:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       vswitches: '{{ vswithDescriptionWithHttpsChar }}'
+
+      register: create_vswitch_result_5
+    - debug: var=create_vswitch_result_5
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+         that:
+            - "'failed' not in create_vswitch_result_1"
+            - "'failed' in create_vswitch_result_2"
+            - "'failed' in create_vswitch_result_3"
+          #  - "'failed' not in create_vswitch_result_4"
+            - "'failed' in create_vswitch_result_5"
+
+         msg: 'Test pass FAILED !!!'
+
+
+  post_tasks:
+     - name: Deleting newly created vswitch in Task 1
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ vpcId }}'
+        purge_vswitches: '{{ create_vswitch_result_1.VSwitchId[0] }}'
+        state: present
+       when:
+        - "'failed' not in create_vswitch_result_1"
+        
+     - pause:
+         seconds: 6
+         
+#     - name: Deleting newly created vswitch in Task 4
+#       ecs_vpc:
+#        acs_access_key: '{{ aliyun_acs_access_key }}'
+#        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+#        region: '{{ region }}'
+#        vpc_id: '{{ vpcId }}'
+#        purge_vswitches: '{{ create_vswitch_result_4.VSwitchId[0] }}'
+#        state: present
+#       when:
+#        - "'failed' not in create_vswitch_result_4"

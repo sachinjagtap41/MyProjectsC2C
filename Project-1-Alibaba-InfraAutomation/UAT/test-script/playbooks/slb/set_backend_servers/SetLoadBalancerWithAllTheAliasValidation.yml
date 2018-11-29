@@ -1,0 +1,64 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Set Backend Server
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Set Backend Server With Alias Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Scenario - 1 Set backend servers with all the alias parameter
+      ecs_slb: 
+       ecs_access_key: '{{ aliyun_acs_access_key }}'                # ecs_access_key   
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'         # ecs_secret_key  
+       #acs_region: '{{ region }}'                                   # acs_region
+       ecs_slb: '{{ loadBalancerId }}'                              # ecs_slb
+       backend_servers: '{{ backendServers }}'                     
+       state: '{{ status }}'                                        # state 
+                                     
+      register: SetBackendServerResult1
+    - debug: var=SetBackendServerResult1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+   
+   
+  - block:
+   # Task 2 :
+    - name: Scenario - 2 Set backend servers with all the alias parameter
+      ecs_slb: 
+       access_key: '{{ aliyun_acs_access_key }}'                # access_key      
+       secret_key: '{{ aliyun_acs_secret_access_key }}'         # secret_key   
+       #ecs_region: '{{ region }}'                               # ecs_region  
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServers }}'                     
+       status: '{{ status }}' 
+                                          
+      register: SetBackendServerResult2
+    - debug: var=SetBackendServerResult2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+    always:
+      - assert:
+         that:
+            - "'failed' not in SetBackendServerResult1"
+            - "'failed' not in SetBackendServerResult2"
+         msg: 'Test pass FAILED !!!'
+    
+ 

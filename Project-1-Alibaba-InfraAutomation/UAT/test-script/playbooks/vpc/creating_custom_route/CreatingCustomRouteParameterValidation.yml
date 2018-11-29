@@ -1,0 +1,174 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Creating Custom Route
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating creating custom route 
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  
+  # Task : 1          
+  - block:
+    - name: Create a custom route with valid parameters
+      ecs_vpc:  
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'  
+       route_entries: '{{ createCustomRoute }}' 
+       
+      register: create_route_entry_result_1
+    - debug: var=create_route_entry_result_1
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+
+  # Task 2 : 
+#  - block:
+#    - name: Creating custom route with invalid vpcId
+#      ecs_vpc: 
+#       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+#       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+#       region: '{{ region }}'
+#       vpc_id: '{{ vpcIdInvalid }}'   # Invalid vpcid
+#       route_entries: '{{ customRoute }}'
+#      register: create_route_entry_result_2
+#    - debug: var=create_route_entry_result_2
+#
+#    rescue:
+#      - fail:
+#          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+
+   
+  # Task 3 : 
+  - block: 
+    - name: Creating a custom route with invalid cidr block
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'   
+       route_entries: '{{ customRouteInvalidCidrBlock }}'
+      register: create_route_entry_result_3
+    - debug: var=create_route_entry_result_3
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+  # Task 4 : 
+  - block:
+    - name: Creating a custom route with invalid next hop type
+      ecs_vpc: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'   
+       route_entries: '{{ customRouteInvalidNextHopType }}'
+      register: create_route_entry_result_4
+    - debug: var=create_route_entry_result_4
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+            
+  # Task : 5          
+  - block:
+    - name: Creating a custom route with invalid instance id parameter
+      ecs_vpc:  
+       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'   
+       route_entries: '{{ customRouteInvalidInstaceId }}'
+      register: create_route_entry_result_5
+    - debug: var=create_route_entry_result_5
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+#  # Task 6 : 
+#  - block:
+#    - name: Creating a custom route without region parameter
+#      ecs_vpc:  
+#       acs_access_key: '{{ aliyun_acs_access_key }}'                 
+#       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'         
+#       #region: '{{ region }}'
+#       vpc_id: '{{ vpcId }}'   
+#       route_entries: '{{ customRoute }}'
+#      register: create_route_entry_result_6
+#    - debug: var=create_route_entry_result_6
+#
+#    rescue:
+#      - fail:
+#          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+    
+  # Task 7:      
+  - block: 
+    - name: Deleting a custom route
+      ecs_vpc:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       vpc_id: '{{ vpcId }}'
+       purge_routes: '{{ deleteCreatedCustomRoute }}'
+        
+       
+      register: delete_custom_route_result_1
+    - debug: var=delete_custom_route_result_1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no   
+         
+    always:
+      - assert:
+         that:
+            - "'failed' not in create_route_entry_result_1"
+
+           # - "'failed' in create_route_entry_result_2"
+            #- "'vpc_id is not valid' in create_route_entry_result_2.msg[0]['Error Message']"
+
+            - "'failed' in create_route_entry_result_3"
+            #- "'RouteTableId or VpcId does not exist' in create_route_entry_result_3.msg[0]['Error Message']"
+
+            - "'failed' in create_route_entry_result_4"
+            #- "'RouteTableId or VpcId does not exist' in create_route_entry_result_4.msg[0]['Error Message']"
+
+            - "'failed' in create_route_entry_result_5"
+#
+#            - "'failed' in create_route_entry_result_6"
+#            - "'region is required' in create_route_entry_result_6.msg"
+#            
+            - "'failed' not in delete_custom_route_result_1"
+            
+        
+         msg: 'Test pass FAILED !!!'
+
+
+
+    
+
+                           
+              
+  
+                             

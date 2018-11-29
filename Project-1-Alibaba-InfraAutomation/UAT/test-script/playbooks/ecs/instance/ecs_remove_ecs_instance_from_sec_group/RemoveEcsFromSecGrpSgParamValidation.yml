@@ -1,0 +1,43 @@
+#Ansible Module Name - ECS
+#Test Case : Remove ECS Instance From Security Group - sg_action param validation
+#Ansible Playbook created by - Jogesh N
+---
+- name: Remove ECS Instance From Security Group - sg_action param validation
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+         
+  tasks:
+   - block: 
+      - name: Remove ECS Instance From Security Group - sg_action param validation
+        ecs: 
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          group_id: '{{ sgGroup }}'
+          instance_ids: '{{ ecsInstanceId }}'
+          sg_action: '{{ sgInvalid }}'
+      
+        register: result
+
+      - debug: var=result
+     rescue: 
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "result.changed ==  false"
+            -  "'To perform join_security_group or leave_security_group operation,sg_action must be either join or leave respectively' in result.msg"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ result}}'
+    

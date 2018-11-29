@@ -1,0 +1,434 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : Create Instance
+# Ansible Playbook created by - Sachin Jagtap
+
+
+
+
+######  Create Instance  ######
+
+
+# Region parameter
+Hongkong_region: cn-hongkong
+RegionValid: cn-beijing
+RegionInvalid: cn-india   # Invalid
+RegionNull:               # Null
+       
+     
+# Zone_id parameter 
+    
+ZoneValid: cn-beijing-b     # Valid
+ZoneInvalid: invalidvalue   # Invalid
+ZoneNull:                   # Null
+Hongkong_zone: cn-hongkong-b
+
+
+# Image id
+
+ImageIdValid : ubuntu1404_64_40G_cloudinit_20160727.raw
+ImageIdInvalid: ubuntu14064_40G_cloudinit_20160727.raw
+linux_image_id: ubuntu1404_64_40G_cloudinit_20160727.raw
+unsubscribed_image_id: m-62vo0p7h4
+unavailable_inage_id: m-sachine98354Tb
+
+
+
+# Instance Type
+
+InstanceType: ecs.t1.small
+
+# I/O optimized Instant Type
+I_O_optimized_instance_type: ecs.n1.small # 1. ecs.n1.tiny  2. ecs.n1.small 3.ecs.n1.medium 4. ecs.n1.large
+Invalid_I_O_optimized_instance_type: ecs.n1.xtrasmall
+
+# Not I/O Optimized Instant Type
+Not_I_O_optimized_instance_type: ecs.t1.small # 1. ecs.s1.small  2. ecs.s1.medium 3. ecs.s1.large 
+
+#Instances Names
+
+InstanceName : Click2CloudTestingTeam
+windows_instance_name: click2cloud_windows_instance
+linux_instance_name: click2cloud_linux_instance
+
+# Description
+
+Instance_Description: Click2Cloud Testing Team
+   
+# Host Name
+
+HostName: Click2CloudTestingTeam
+host_name: Click2Cloud-JOGESH
+# Password
+
+Password: Click2Cloud@123 
+
+# Security Group
+Hongkong_SecurityGroupId: sg-62nv4gfxg
+
+# State parameter
+
+StateValid: present
+StateInvalid: create      # Invalid
+
+
+# Security Group : State: Join
+security_group_state_join: join
+
+# Security Group : State: remove
+security_group_state_remove: remove
+
+
+
+######## Allocate Public Ip ########
+
+
+AllocatePublicIpTrue: true
+AllocatePublicIpFalse: false
+AllocatePublicIpNull:
+AllocatePublicIpInvalid: yes
+
+
+
+    
+######## Allocate Public Ip ########
+
+InstanceNamePublicIp : ValidatingAutoRenewParameter
+DescriptionPublicIp: Validating AutoRenew Parameter 
+ChargeTypePrepaid: Prepaid
+ChargeTypePostpaid: Postpaid
+PeriodValid: 3
+PeriodInvalid: 13
+AutoRenewTrue: True
+AutoRenewFalse: False
+AutoRenewInvalidZero: 0
+AutoRenewInvalidOne: 1
+
+
+
+
+
+######## Count parameter ########   
+
+CountValid: 2
+Count100: 100  # It is not feasible to test this Scenario,So we believe on API for this Scenario.
+CountInvalid: -5
+CountMoreThan100: 102 # It is not feasible to test this Scenario,So we believe on API for this Scenario.
+
+
+######## Description parameter ######## 
+
+
+
+DescriptionURL: http://www.gmail.com
+DescriptionNumerals: 12563
+DescriptionNull: 
+DescriptionLessThan2Char: d
+Description256CharOnly: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomi
+DescriptionMoreThan256Char: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiGenomiGenomi
+DescriptionSpecialChar: Instance @ creation .with (Special)=characters
+DescriptionValid: Alibaba continues to put its
+
+
+######## HostName parameter ######## 
+
+
+HostNameNull: 
+HostNameOtherSpecialChar: host@12345$               # Other Special Characters
+HostNameSpecialChar: hostname.hostname1_hostname2   # Sepcial characters
+HostNameAlphanumeric: Hostname123                         # AlphaNumeric
+HostNameValid: hostname                                   # Invalid
+HostNameLessThan2Chars: h                            # Less than 2 characters
+HostNameMoreThan128Chars: hostnamehostnamehostnamehostnamehostname
+HostName128CharOnly: HostnameHostnameHostnameHostna
+HostNameWithDotInStarting: .HostName
+HostNameWith2Dot: Host..Name
+
+
+######## ids parameter ######## 
+
+idsValid: Usedtoensuretheidempotenceoftherequestcontains64ASCIIcharacters # Valid ids parameter
+idsInvalid:  # Invalid ids parameter
+idsNull:          # Null
+
+
+######## Image id parameter ######## 
+
+ImageInvalid: ck12356         # Invalid
+ImageNull:                    # Null
+ImageValid: ubuntu1404_64_40G_cloudinit_20160727.raw
+
+
+######## Instance Charge Type parameter ######## 
+
+
+InstanceChargeTypePrepaid: Prepaid # This parameter could not be Tested, As it requires Prepaid Account
+InstanceChargeTypePostpaid: Postpaid
+InstanceChargeTypeInvalid: Paid
+
+
+######## Instance Name parameter ######## 
+
+
+InstanceNameUrl: http://www.gmail.com         # url
+InstanceNameAlphanumeric: Instance1234        # Alphanumeric
+InstanceNameSpecialChar: In.stance_name-here  # Specialcharacters
+InstanceNameOtherSpecialChar: In%stance@9/dd0 # Other Special Characters
+InstanceNameNull:                             # Null
+InstanceNameDefault:                          # Default
+InstanceNameValid: InstanceNameValidation
+InstanceNameLessThan2Char:  I                 # Invalid
+InstanceNameMoreThan128Char: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiGenomiGenomi
+InstanceName128CharOnly: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomi
+
+
+
+######## Instance Tag parameter ######## 
+
+
+
+ # Valid InstanceTags Parameter
+    
+instance_tagsValid:
+  - tag_key: create_test_1
+    tag_value: '0.01'
+  - tag_key: create_test_2
+    tag_value: '0.02'
+      
+ # Invalid InstanceTags Parameter
+    
+instance_tagsInvalidTagValue:
+  - tag_key: test_1
+    tag_value: 0.01
+  - tag_key: test_2
+    tag_value: 0.02
+      
+  # Invalid InstanceTags Parameter
+    
+instance_tagsInvalidNullTagValue:
+  - tag_key: create_test_1
+    tag_value: 
+  - tag_key: create_test_2
+    tag_value: 
+      
+  # Invalid InstanceTags Parameter
+    
+instance_tagsInvalidNullTagKey:
+  - tag_key: 
+    tag_value: '0.01'
+  - tag_key: 
+    tag_value: '0.02'
+      
+  # Invalid InstanceTags Parameter
+    
+instance_tagsInvalidTagKeyAndTagValueNull:
+  - tag_key: 
+    tag_value: 
+  - tag_key: 
+    tag_value: 
+      
+  # Invalid InstanceTags Parameter
+    
+instance_tagsInvalidTagKeyValidValue:
+  - tag_key: 'create_test_1'
+    tag_value: '0.01'
+  - tag_key: 'create_test_2'
+    tag_value: '0.02'
+      
+  # Invalid InstanceTags Parameter
+    
+Instance_tagsInvalidTagKeyAndTagValue:
+  - tag_key: "create_test_1"
+    tag_value: "0.01"
+  - tag_key: "create_test_2"
+    tag_value: "0.02" 
+    state: present
+    
+
+######## Instance Type parameter ######## 
+
+
+
+InstanceTypeInvalid: dcs.123.small
+InstanceTypeNull:     # Null
+InstanceTypeDefault:  # Default
+InstanceTypeIoOptimized: ecs.n1.small   
+InstanceTypeNonIoOptimized: ecs.t1.small
+
+
+######## Internet data parameter ######## 
+
+   # Test-Case : 1
+    
+InternetDataAllParametersDefault: 
+    
+    # Test-Case : 2
+    
+InternetDataPayByTrafficInvalidDefaultBandWidthOut:    
+    charge_type: PayByTraffic
+    max_bandwidth_in: 150
+      
+    # Test-Case : 3  
+    
+InternetDataPayByTrafficDefaultMaxIn:      
+     charge_type: PayByTraffic
+     max_bandwidth_out: 50
+      
+    # Test-Case : 4  
+    
+InternetDataPayByTrafficAllDefaultParameters:      
+     charge_type: PayByTraffic
+      
+    # Test-Case : 5  
+    
+InternetDataPayByBandwidthDefaultMaxIn:      
+     charge_type: PayByBandwidth
+     max_bandwidth_out: 99
+      
+    # Test-Case : 6  
+    
+InternetDataPayByBandwidhtDefaultMaxOut:      
+     charge_type: PayByBandwidth
+     max_bandwidth_in: 198
+
+
+######## password parameter ######## 
+
+
+#PasswordSpecialSymbol: PassWord123   # Special symbol   # can not include special symbol as it does not allow to run playbook
+PasswordValidSpecialChar: Password@123
+PasswordValid: PassWord123
+PasswordMoreThan30Char: ALIBABAScloudcomputingunitAliyunandAmericant
+Password30CharOnly: ALIBABAScloudcomputingunit1234
+PasswordLessThan8Char: Pass12
+Password8CharOnly: Pass1234
+PasswordNull:                                # Null character
+PasswordAlphabeticCharOnly: Password
+
+
+
+######## password parameter ######## 
+
+
+PeriodParameter: 3
+PeriodChargeTypePrepaid: Prepaid
+PeriodChargeTypePostpaid: Postpaid
+PeriodChargeTypeNull:                   # Null
+PeriodChargeTypeInvalid: Paid           # Invalid
+
+
+######## SecurityGroup parameter ######## 
+
+
+GroupIdValid: sg-25y6ag32b    # Valid
+GroupIdInvalid: sa-12546kll   # Invalid
+GroupIdNull:                  # Null
+
+
+SecurityGroupSystemDisk:
+        disk_category: cloud
+        disk_size: 50
+        
+        
+        
+
+######## Io optimized ######## 
+
+
+InstanceTypeGeneration1: ecs.t1.small
+InstanceTypeGeneration2: ecs.n1.tiny
+
+IoOptimizedNone: false                # None
+IoOptimized: true                     # Optimized
+IoOptimizedInvalid: NoOptimized       # Invalid
+    
+   
+######## Volumes ########   
+
+
+ValidVolumeSnapshot: 
+      -   device_category: cloud_efficiency
+          #device_size: 20
+          device_name: volume1
+          device_description: volume 1 description comes here
+          snapshot_id: d-62i536pnf
+          
+
+ValidVolume:
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume1
+          device_description: volume 1 description comes here
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume2
+          device_description: volume 2 description comes here
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume3
+          device_description: volume 3 description comes here
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume4
+          device_description: volume 4 description comes here 
+InvalidVolume:
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume1
+          device_description: volume 1 description comes here
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume2
+          device_description: volume 2 description comes here
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume3
+          device_description: volume 3 description comes here
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume4
+          device_description: volume 4 description comes here 
+       -  device_category: cloud_efficiency
+          device_size: 20
+          device_name: volume5
+          device_description: volume 5 description comes here 
+                    
+          
+######## System Disk ########                  
+ # Cloud Parameters
+    
+SystemDiskSizeLessThan40: 
+     disk_category: cloud
+     disk_size: 30
+     disk_name: DiskName
+     disk_description: Invalid System Disk Size
+SystemDiskSizeMoreThan500: 
+     disk_category: cloud
+     disk_size: 550
+     disk_name: DiskName
+     disk_description: Invalid System Disk Size
+SystemDiskSizeValid: 
+     disk_category: cloud
+     disk_size: 50
+     disk_name: DiskName
+     disk_description: Valid System Disk Size
+SystemDiskSizeNull: 
+     disk_category: cloud
+     disk_size: 
+     disk_name: DiskName
+     disk_description: Valid System Disk Size
+SystemDiskSizeDefault: 
+     disk_name: DiskName
+     disk_description: Valid System Disk Size
+     
+     
+     
+     
+######## Bind Eip ########           
+     
+  
+VswithForBindEip: vsw-2zeliy6eatzoqqye8ybzc 
+BindEip: eip-2zeidxnx72p6dwvkpp2u7
+InstanceTypeBindEip: ecs.n1.small
+InternetDataBindEip: 
+        charge_type: PayByTraffic
+IoOptimizedVswithAndBindEip: True

@@ -1,0 +1,39 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : delete account in Postgre instance
+#Ansible Playbook created by - Abha H
+---
+- name: delete account in Postgre instance
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:         
+   - block :
+      - name: Scenario 1 - delete account in Postgre instance
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceIdPostgre }}'
+          account_name: dbusr  
+        register: result_scn1
+      - debug: var=result_scn1
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:  
+         that:
+
+            - "'failed' in result_scn1"
+            - "'The operation is not permitted due to type of the instance.' in result_scn1.msg[0]['Error Message']"
+         msg: 'Test pass FAILED !!!'
+                   

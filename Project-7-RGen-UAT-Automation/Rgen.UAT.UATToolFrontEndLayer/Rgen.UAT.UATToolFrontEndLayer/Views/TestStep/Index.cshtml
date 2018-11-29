@@ -1,0 +1,357 @@
+﻿@{
+    Layout = "~/Views/Shared/UatAdminMaster.cshtml";
+}
+@{
+    ViewBag.Title = "UAT Project Management:Test Steps";
+}
+<div id="RightPanel">
+
+
+
+    <div class="pgHead">Test Step Details</div>
+    <div class="prjHead" id="projectName"></div>
+    <div class="tpHead" id="testPassName"></div>
+
+    <table class="rgTableBread">
+        <tr>
+            <td id="groupTitle"><label class="rgBCTitle"></label></td>
+            <td id="portfolioTitle"><label class="rgBCTitle"></label></td>
+            <td id="projectTitle"><label class="rgBCTitle"></label></td>
+            <td id="versionTitle"><label class="rgBCTitle"></label></td>
+            <td id="TestPassTitle"><label class="rgBCTitle"></label></td>
+
+        </tr>
+        <tr>
+            <td id="groupHead" style="cursor:pointer"><label class="rgBCHead">Group</label><div id="assoGroups" class="headDD" style="height:auto;-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="grpul" class="headul"></ul></div></td>
+            <td id="portfolioHead" style="cursor:pointer">
+                <label class="rgBCHead">
+                    Portfolio
+                </label><div id="assoPortfolios" class="headDD"><ul style="list-style: none;" id="portful" class="headul"></ul></div>
+            </td>
+            <td id="projectHead" style="cursor:pointer"><label class="rgBCHead">Project</label><div id="assoProjects" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;z-index:1;"><ul style="list-style: none;" id="prjctul" class="headul"></ul></div></td>
+            <td id="versionHead" style="cursor:pointer"><label class="rgBCHead">Version</label><div id="assoVersions" class="headDD"><ul style="list-style: none;" id="versul" class="headul"></ul></div></td>
+            <td id="TestPassHead" style="cursor:pointer">
+                <label class="rgBCHead">
+                    Test
+                    Pass
+                </label><div id="assoTP" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="tpul" class="headul"></ul></div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="navTabs" style="float:left">
+        <h2 style="color:#000000">View All</h2>
+        <h2>Create New</h2>
+        <h2 id="impexpTS" style="display:none">Import/Export Test Steps</h2>
+        <h2 style="display:none;color:#000000">Edit Test step</h2>
+    </div>
+    <div id="countDiv" style="margin-top:7px;margin-right:7px;float:right;display:none">
+        <label style="font-size:14px">Total Records:</label>
+        <label id="labelCount" style="font-size:14px"></label>
+    </div>
+
+    <p class="clear"></p>
+
+    <!-- teststep grid starts -->
+    <div id="testStepGrid">
+
+        <table class="tableGrid" cellspacing="1" style="display:none;padding-top:10px">
+            <thead>
+                <tr class="griDetails">
+                    <td align="center" style="width:3%;padding-left:0px;"><input class="mslChk" id="chkbxSelectAll" onclick="selectAll()" type="checkbox" /></td>
+                    <td style="width:8%">SEQUENCE</td>
+                    <td style="width:23%">TEST STEP</td>
+                    <td style="width:23%;" id="assoTestcase">
+                        ASSOCIATED TEST CASE 
+                    </td>
+                    <td style="width:22%">EXPECTED RESULT</td>
+                    <td style="width:11%">ATTACHMENT</td>
+                    <td align="center" style="border-right:none;width:10%">ACTION</td>
+
+                </tr>
+                <tr>
+                    <td colspan="7" class="gridHeadingRow"><div id="assotestcases" class="Mediumddl showTC" style="">	</div></td>
+                </tr>
+                <tr><td colspan="7"></td></tr>
+                <tr><td colspan="7"></td></tr>
+                <tr><td colspan="7"></td></tr>
+                <tr><td colspan="7"></td></tr>
+            </thead>
+            <tbody id="showTestSteps"></tbody>
+
+        </table>
+
+        <div style="padding-top:20px"><input type="button" value="Delete selected" id="btnDelete" class="btnNew1" style="float:left;margin-left:0;" onclick="Main.showLoading();setTimeout('teststep.delTestSteps();',200);" /></div>
+        <div id="Pagination" style="float:right;"></div>
+    </div>
+
+    <div id="noTP" style="font-size:30px;color:#B8B8B8;display:none">
+        No
+        Test Step(s) Available.
+    </div>
+
+    <div class="pager" style="display:none">
+        <div id="ActionCount" style="display:none"></div>
+    </div>
+
+    <!-- teststep grid ends -->
+    <!-- input form starts -->
+    <div id="testStepinput" style="display:none" class="DivlblWithColon">
+        <div style="float:left;width:480px;height:170px">
+            <label style="float:left" class="mandatory">Select Test Case:</label><font color="red" style="vertical-align:top"><b>*</b>&nbsp;</font><img id="selTestCase" src="/images/icon-05.png" title="Please select single testcase for teststep sequence configuration." style="height:20px;" />
+            <div id="testCaseName" class="Mediumddl" style="margin-top:-6px"></div>
+        </div>
+
+        <div style="float:right;width:450px;height:170px">
+            <label class="mandatory">Assign Role:</label><font color="red"><b>*</b></font>
+            <div id="role" class="Mediumddl"></div>
+        </div>
+
+        <div style="float:left;padding-top:30px">
+            <label id="lblPNameStar" class="mandatory">Test Step Details:<span></span> </label><font color="red"><b>*</b></font>
+            <textarea id="testStep" class="desc  textAreaFont" style="height:47px;display:none;"></textarea>
+            <div style="overflow:hidden;" id="rteDiv" class="rte1Container">
+                <div></div>
+                <script type="text/javascript">
+                    if ((window.location.href).indexOf("palette") == -1) { 
+                    var parameter1 = Main.getSiteUrl() + "/images/";
+                    var parameter2 = Main.getSiteUrl() + "/palletes/";
+                  //  debugger
+                        initRTE(parameter1.toString(), parameter2.toString(), "", true);
+                        writeRichText('rte1', "", 480, 150, false, false);
+                    }
+                </script>
+            </div>
+        </div>
+        <div style="float:right;padding-top:30px">
+            <label id="lblExpRes">Expected Result: </label><label style="float:right;">
+                <a style="margin-right:3px;text-decoration:underline;color:#0066FF;cursor:pointer" onclick="teststep.popUpForExpected();">
+                    <i>
+                        Click here to Edit/Preview
+                    </i>
+                </a>
+            </label>
+            <div id="expectedResultWithImage" class="pasteImage" contentEditable="true" style="height:150px;width:450px;border:1px #ccc solid;overflow:auto" onmouseover="teststep.enableHyperlink(this);"></div>
+        </div>
+        <!-- buttons -->
+        <div style="float:right;padding-top:15px">
+            <input type="button" value="Save" id="btnSave" class="btnNew1" onclick="Main.showLoading();setTimeout('teststep.saveTestStep();',200);" />
+            <input type="button" value="Cancel" id="btnCancelNew" class="btnNew1" onclick="teststep.clearFields();" />
+            <input type="button" value="Update" id="btnUpdate" class="btnNew1" onclick="Main.showLoading();setTimeout('teststep.updateTestStep();',200);" style="display:none" />
+            <input type="button" value="Reset" id="reset" class="btnNew1" onclick="teststep.reset();" style="display:none" />
+        </div>
+
+        <div id="clipBrdImage" style="display:none" title="Expected Result">
+            <div id="expectedResultPreview" class="pasteImage" style="height:500px;width:600px;border:1px #ccc solid;background-color:white;overflow:auto" contentEditable="true"></div>
+        </div>
+
+
+        <div id="divStatus">
+            <label style="display:none"><b>Status:</b></label>
+            <select style="display:none" name="Select0" class="Mediumddl" id="status" disabled="disabled"></select>
+        </div>
+
+        <div id="divAlert"></div>
+        <div id="divConfirm"></div>
+        <div id="divHtml" style="display:none"></div>
+        <div id="divImage"></div>
+        <div id="divAlert2"></div>
+        <div id="divAlert3"></div>
+        <div id="divAlert4"></div>
+
+
+        <input type="text" class="inputNew" id="teststepid2" readonly="readonly" style="display:none;" onkeydown="Main.preventBackspace()" />
+
+    </div>
+    <!-- input form ends -->
+    <!-- import/export template starts -->
+    <div id="impExpTemplate" style="display:none">
+        <div id="divUpload"><input type="file" id="upload" style="display:none" /></div>
+        <div style="padding-bottom:10px;font-size:16px">
+            Please use the
+            downloaded template to import.
+        </div>
+        <!-- id="dnldTemp" onclick="Main.showLoading();setTimeout('exp.openTSExcel();',200);" class="btnNew1">
+        Download Template</p>
+        <p id="impTestStep" onclick="Main.showLoading();setTimeout('impTS.importExcel();',200)" style="display:inline; cursor:pointer; background-color:#f3f3f3; color:#ff6600; border:3px #ffc40d solid;padding:3px 5px 3px 5px">
+        Import Test Step(s)</p-->
+        <span id="dnldTemp" onclick="Main.showLoading();setTimeout('exp.openTSExcel();',200);" class="btnNew1" style="width:120px;">
+            Download Template
+        </span>&nbsp;
+        <span id="impTestStep" onclick="Main.showLoading();setTimeout('impTS.importExcel();',200)" class="btnNew1" style="width:120px;">
+            Import Test Step(s)
+        </span>
+
+
+        <div id="divExprt" style="padding:40px 0px 10px 0px;font-size:16px">
+            Please click to export all the test steps within the test pass.
+        </div>
+        <!--p id="expTestStep" onclick="Main.showLoading();setTimeout('exportteststep.ExportExcel();',200);" style="display:inline; cursor:pointer; background-color:#f3f3f3; color:#ff6600; border:3px #ffc40d solid;padding:3px 5px 3px 5px">
+        Export Test Step(s)</p-->
+        <span id="expTestStep" onclick="Main.showLoading();setTimeout('exportteststep.ExportExcel();',200);" class="btnNew1" style="width:120px">
+            Export Test Step(s)
+        </span>
+
+
+        <div id="paraStep" style="position:absolute;margin-top:40px">
+            <p style="font-size:16px;margin-bottom:6px">
+                Please follow below
+                steps to Import Test Step(s):
+            </p>
+            <p>&nbsp;&nbsp;1. Download a Template using &#39;Download Template&#39; button.</p>
+            <p>&nbsp;&nbsp;2. Populate data of Test Steps as directed in template.</p>
+            <p>&nbsp;&nbsp;3. Save Template in local drive.</p>
+            <p>
+                &nbsp;&nbsp;4. Upload this saved template using &#39;Import Test Step(s)&#39;
+                button.
+            </p>
+            <p style="margin-top:8px">
+                Download <a style="color:#0066FF;text-decoration:underline; cursor:pointer" target='_blank' id="downloadPdf" href="../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Test Step Template.pdf">
+                    File
+                </a> for detailed guidelines.
+            </p>
+        </div>
+        <!-- to paste into rte -->
+        <div id="rteDiv1" class="rte2Container">
+            <div></div>
+            <script type="text/javascript">
+                if ((window.location.href).indexOf("palette") == -1) {
+                    var parameter1 = Main.getSiteUrl() + "/images/";
+                    var parameter2 = Main.getSiteUrl() + "/palletes/";
+                    //     debugger
+                    initRTE(parameter1.toString(), parameter2.toString(), "", true);
+                    writeRichText('rte2', "", 0, 0, false, false);
+                }
+            </script>
+        </div>
+
+    </div>
+    <!-- import/export template ends -->
+
+
+
+</div>
+<script type="text/javascript">
+
+	function trimText(str,len)
+	{
+		if(str.length>len)
+		   return str.slice(0,len)+"...";
+		else
+		   return str;
+	}
+
+	//$(document).one("ready", function () {
+	   
+	//});
+
+	//var wasReady = false;
+    //$(document).ready(function () {
+       
+    //});
+
+	$(document).ready(function () {
+	    if ((window.location.href).indexOf("palette.html") != -1) { return; }
+
+	    if (isRootWeb)
+	        $("#downloadPdf").attr('href', '../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Test Step Template.pdf');
+	    else
+	        $("#downloadPdf").attr('href', '../../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Test Step Template.pdf');
+
+	    if (resource.isConfig.toLowerCase() == 'true') {
+	        /************Added by Mohini for resource file********/
+	        teststep.gCongfigRole = resource.gPageSpecialTerms['Role'] != undefined ? resource.gPageSpecialTerms['Role'] : "Role";
+	        teststep.gConfigTestPass = resource.gPageSpecialTerms['Test Pass'] != undefined ? resource.gPageSpecialTerms['Test Pass'] : "Test Pass";
+	        teststep.gConfigTester = resource.gPageSpecialTerms['Tester'] != undefined ? resource.gPageSpecialTerms['Tester'] : "Tester";
+	        teststep.gConfigProject = resource.gPageSpecialTerms['Project'] != undefined ? resource.gPageSpecialTerms['Project'] : "Project";
+	        teststep.gConfigTestStep = resource.gPageSpecialTerms['Test Step'] != undefined ? resource.gPageSpecialTerms['Test Step'] : "Test Step";
+	        teststep.gConfigTestCase = resource.gPageSpecialTerms['Test Case'] != undefined ? resource.gPageSpecialTerms['Test Case'] : "Test Case";
+	        teststep.gConfigExpectedResult = resource.gPageSpecialTerms['Expected Result'] != undefined ? resource.gPageSpecialTerms['Expected Result'] : "Expected Result";
+	        teststep.gConfigStatus = resource.gPageSpecialTerms['Status'] != undefined ? resource.gPageSpecialTerms['Status'] : "Status";
+	        teststep.gConfigAttachment = resource.gPageSpecialTerms['Attachment'] != undefined ? resource.gPageSpecialTerms['Attachment'] : "Attachment";
+	        teststep.gCongfigRoles = resource.gPageSpecialTerms['Role(s)'] != undefined ? resource.gPageSpecialTerms['Role(s)'] : "Role(s)";
+	        teststep.gConfigGroup = resource.gPageSpecialTerms['Group'] != undefined ? resource.gPageSpecialTerms['Group'] : "Group";
+	        teststep.gConfigPortfolio = resource.gPageSpecialTerms['Portfolio'] != undefined ? resource.gPageSpecialTerms['Portfolio'] : "Portfolio";
+	        teststep.gConfigVersion = resource.gPageSpecialTerms['Version'] != undefined ? resource.gPageSpecialTerms['Version'] : "Version";
+	    }
+
+	    Main.showLoading();
+
+	    $('#navHeading tr:eq(5) td').attr('class', 'activeNav');
+	    $('#navHeading tr:eq(5) td img').attr('src', '/images/Admin/b_List View.png');
+
+	    $('#rte1').css('border', '1px #ccc solid'); // Test Step input div
+	    $('#navHeading tr:eq(4) td:eq(1)').css('background-color', '#FFFFFF');
+
+	    //paste image feature starts
+	    if (navigator.appName == "Microsoft Internet Explorer") {
+	        var ctrlDown = false;
+	        var ctrlKey = 17, vKey = 86, cKey = 67;
+	        $(document).keydown(function (e) {
+	            if (e.keyCode == ctrlKey) ctrlDown = true;
+	        }).keyup(function (e) {
+	            if (e.keyCode == ctrlKey) ctrlDown = false;
+	        });
+	        $("#expectedResultWithImage").bind("paste", function (e) { e.preventDefault(); });
+	        $("#expectedResultWithImage").keyup(function (e) {
+	            if (ctrlDown && e.keyCode == vKey) {
+	                // JS: To make sure data in clipboard is in image format
+	                ClipData.GetClipBoard(this);
+	            }
+	        });
+	        $("#expectedResultPreview").bind("paste", function (e) { e.preventDefault(); });
+	        $("#expectedResultPreview").keyup(function (e) {
+	            if (ctrlDown && e.keyCode == vKey) {
+	                // JS: To make sure data in clipboard is in image format
+	                ClipData.GetClipBoard(this);
+	            }
+	        });
+	    }
+	    //paste image feature ends
+
+	    //setTimeout("teststep.onPageLoad();", 200);
+	    teststep.onPageLoad();
+	    /* Modified for bug 10536 */
+	    $("#testStepGrid thead tr td:eq(3)").click(function (e) {
+	        e.stopPropagation();
+	        $("#assotestcases").slideToggle("fast");
+	    });
+	    $('#assotestcases').click(function (e) {
+	        e.stopPropagation();
+	    });
+	    $(document).click(function () {
+	        $('#assotestcases').slideUp();
+	    });
+	    /****/
+
+	    navigation.changeLinks();
+	    $('#btnDelete').attr('title', 'Deletes all ' + teststep.gConfigTestStep + 's of the currently selected ' + teststep.gConfigTestCase + '(s).');//For Hover Over Text Added By Mohini
+	    //Portfolio Code :Ejaz DT:1/22/2014
+
+	    /*For Bug Id 1167*/
+	    $('#projectHead').click(function (e) {
+	        if ($('#assoProjects').height() >= 400)
+	            $('#assoProjects').css('overflow-y', 'auto');
+	    });
+	    /*For Bug Id 11663*/
+	    $('#TestPassHead').click(function (e) {
+	        if ($('#assoTP').height() >= 400)
+	            $('#assoTP').css('overflow-y', 'auto');
+	    });
+	 //   debugger
+	    Main.hideLoading();
+	});
+
+    function selectAll()
+    {
+    	if($("#chkbxSelectAll").attr("checked"))
+    	{
+    		$(".chkBoxTS").attr("checked",true);
+    	}
+    	else
+    	{
+    		$(".chkBoxTS").attr("checked",false);
+    	}
+    }
+
+</script>

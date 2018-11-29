@@ -1,0 +1,142 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for System Disk Parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+    
+  
+  tasks:
+  
+   # Cloud Parameters
+   # Task : 1
+   
+  - block:  
+    - name: Validating - Invalid Cloud Parameter Which Accepts Value As 30
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        system_disk: '{{ SystemDiskSizeLessThan40 }}'
+         
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected - System disk size is less than 40"
+  
+   # Task : 2
+  
+  - block:  
+    - name: Validating - Invalid Cloud Parameter Which Accepts Value As 550
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        system_disk: '{{ SystemDiskSizeMoreThan500 }}'
+        
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Failure Expected - System disk size is more than 500"
+  
+  # Task : 3
+ 
+  - block:  
+    - name: Validating - Valid Cloud Parameter Which Accepts Value As 50
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        system_disk: '{{ SystemDiskSizeValid }}'
+                
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Expected - Success"
+  
+  # Task : 4
+ 
+  - block:  
+    - name: Validating - Valid Cloud Parameter Which Accepts Value As Null
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        system_disk: '{{ SystemDiskSizeNull }}'
+        
+      register: result
+    - debug: var=result
+   
+    rescue: 
+    - debug: msg="Expected - Success"
+  
+  # Task : 5
+ 
+  - block:  
+    - name: Validating - Valid Cloud Parameter Which Accepts Value As Default
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        system_disk: '{{ SystemDiskSizeDefault }}'
+        
+        
+      register: result
+    - debug: var=result
+     
+    rescue: 
+    - debug: msg="Expected - Success"
+    

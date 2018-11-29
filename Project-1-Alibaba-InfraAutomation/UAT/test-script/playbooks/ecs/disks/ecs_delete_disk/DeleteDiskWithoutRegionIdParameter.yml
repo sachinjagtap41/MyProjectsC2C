@@ -1,0 +1,51 @@
+# Ansible Module Name - ECS_Disk
+# Interface : DeleteDisk
+# Playbook Contains Test-Cases for delete disk 
+# Playbook created by : Sachin J
+
+
+- name: Delete disk without region parameter
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../../vars/alicloud-creds.yml
+     
+          
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+
+    - name: Delete disk without region parameter
+
+      ecs_disk:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+       # acs_region: '{{ region }}'   Without disk_id parameter
+        id: '{{ diskId }}'  
+        status: '{{ diskStatusDel }}'
+       
+
+   
+      register: result1
+    - debug: var=result1
+
+    rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+    always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+         
+    
+
+

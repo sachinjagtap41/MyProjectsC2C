@@ -1,0 +1,102 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify that Playbook is throwing an error when user is trying to create Security Group with invalid Security Group Description
+#Ansible Playbook created by - Jogesh N
+---
+- name: Create Security Group invalid Security Group Description
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+ 
+  tasks:
+   - block: 
+   # Start1
+     - name: Negative Scenario 1-Create Security Group With invalid Security Group Description
+       ecs_group:
+        name: '{{ SGName }}' 
+        description: '{{ SGDescriptionInvalid }}' 
+        
+        # We considered "Security Group Name" as mandatory parameter for ECS_GROUP Module as per FSD where 
+         # as API doesnt required "Security Group Name" as Mandatory. 
+       
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+      
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   ### End1  
+   
+   
+   # Start2
+   - block:   
+     - name: Negative Scenario 2-Create Security Group With invalid Security Group Description
+       ecs_group:
+        name: '{{ SGName }}' 
+        description: '{{ SGDescriptionInvalid1 }}' 
+        
+        # We considered "Security Group Name" as mandatory parameter for ECS_GROUP Module as per FSD where 
+         # as API doesnt required "Security Group Name" as Mandatory. 
+       
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+      
+       register: result2
+     - debug: var=result2
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     ### End2  
+     
+     
+     # Start3
+   - block:   
+     - name: Negative Scenario 3-Create Security Group With invalid Security Group Description
+       ecs_group:
+        name: '{{ SGName }}' 
+        description: '{{ SGDescriptionInvalid2 }}' 
+        
+        # We considered "Security Group Name" as mandatory parameter for ECS_GROUP Module as per FSD where 
+         # as API doesnt required "Security Group Name" as Mandatory. 
+       
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+      
+       register: result3
+     - debug: var=result3
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     ### End3 
+     
+     always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+           - "'The specified parameter \"Description\" is not valid.' in result1.msg[2]" 
+           - "'failed' in result2" 
+           - "'The specified parameter \"Description\" is not valid.' in result2.msg[2]" 
+           - "'failed' in result3" 
+           - "'The specified parameter \"Description\" is not valid.' in result3.msg[2]" 
+          
+          

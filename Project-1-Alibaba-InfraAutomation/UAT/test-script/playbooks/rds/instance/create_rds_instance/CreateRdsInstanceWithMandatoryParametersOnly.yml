@@ -1,0 +1,67 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create Rds instance with mandatory parameters
+#Ansible Playbook created by - Sachin J
+---
+
+- name: Create RDS instance with mandatory parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+   - ../../../vars/alicloud-creds.yml
+   - ../../vars/test-environment.yml
+   - ../../vars/general-parameters.yml
+  tasks:
+   - block:
+     - name: Scenario 1 - Create an RDS instance
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         #command: '{{ command }}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+        
+       register: result_scn1
+     - debug: var=result_scn1
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+      
+      
+  # Task : 2
+      
+   - block: 
+     - name: Scenario 2 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn1.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn2
+     - debug: var=result_scn2
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+      
+     always: 
+      - assert: 
+         that: 
+          - "'failed' not in result_scn1" 
+          - "'failed' not in result_scn2" 
+         msg: 'Test pass FAILED !!!'   

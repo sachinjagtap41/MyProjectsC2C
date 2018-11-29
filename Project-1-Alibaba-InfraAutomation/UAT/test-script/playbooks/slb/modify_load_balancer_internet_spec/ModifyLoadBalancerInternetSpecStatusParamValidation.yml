@@ -1,0 +1,60 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Status Parameter
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Status Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Validating invalid status Parameter with nos
+   - block: 
+     - name: Validating Region Parameter with nos
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusInvalid }}'
+        load_balancer_id: '{{ SLBId }}'
+        internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+        bandwidth: '{{ bandwidth }}'
+       register: create_slb_result
+     - debug: var=create_slb_result
+     rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+    
+     # Task 2 - Validating blank status Parameter
+   - block: 
+     - name: Validating Region Parameter with spl chars
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: 
+        load_balancer_id: '{{ SLBId }}'
+        internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+        bandwidth: '{{ bandwidth }}'
+       register: create_slb_result
+     - debug: var=create_slb_result
+     rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"

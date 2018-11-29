@@ -1,0 +1,56 @@
+# Configure the OpenStack Provider
+provider "opentelekomcloud" {
+  user_name   = "lizhonghua"
+  domain_name = "OTC00000000001000010501"
+  password    = "slob@1234"
+  auth_url    = "https://iam.eu-de.otc.t-systems.com/v3"
+  region      = "eu-de"
+  tenant_id = "87a56a48977e42068f70ad3280c50f0e"
+  //tenant_name  ="eu-de_Nordea"
+}
+
+//to create subnet resource
+resource "opentelekomcloud_vpc_v1" "click2cloud-sachin" {
+  name = "sachin-test-vpc"
+  cidr = "192.168.0.0/16"
+}
+
+
+variable "subnet_name" {
+  default = "sachin-test-subnet"
+}
+
+variable "subnet_cidr" {
+  default = "192.168.0.0/24"
+}
+
+variable "subnet_gateway_ip" {
+  default = "192.168.0.1"
+}
+
+variable "subnet_availability_zone" {
+  default = "eu-de"
+}
+
+
+resource "opentelekomcloud_subnet_v1" "click2cloud-subnet-sachin" {
+ name = "sachin-test-subnet",
+ cidr = "192.168.0.0/24",
+gateway_ip = "192.168.0.1",
+vpc_id = "173bc158-5530-4606-9cbb-382cf79de92a",
+availability_zone = "eu-de"
+
+}
+
+data "opentelekomcloud_subnet_ids_v1" "by_id1" {
+  vpc_id ="81880a88-0859-41e3-a3e1-d7b70decba89"
+}
+
+data "opentelekomcloud_subnet_v1" "by_id" {
+  count = "${length(data.opentelekomcloud_subnet_ids_v1.by_id1.ids)}"
+  id    = "${data.opentelekomcloud_subnet_ids_v1.by_id1.ids[count.index]}"
+ }
+
+output "seb_data" {
+  value = "${data.opentelekomcloud_subnet_v1.by_id.*.cidr}"
+}

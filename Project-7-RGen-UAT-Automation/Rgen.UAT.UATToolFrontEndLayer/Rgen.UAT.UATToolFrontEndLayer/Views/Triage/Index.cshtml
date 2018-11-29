@@ -1,0 +1,310 @@
+
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+
+}
+
+@{
+    ViewBag.Title = " UAT Project Management: Triage";
+}
+<head>
+    <script src="~/js/Triage/Triage.js"></script>
+    <script src="~/js/Report/jquery.tinyscrollbar.min.js"></script>
+    <script src="~/js/Report/richtext_copy(1).js"></script>
+    <script src="~/js/Report/html2xhtml.min.js"></script>
+    <script src="~/js/Report/JSLINQ.js"></script>
+
+    <link href="~/css/theme/blue/style/jScrollbar.jquery.css" rel="stylesheet" />
+    <link href="~/css/theme/blue/style/rte.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (isRootWeb) {
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg";
+                var src1 = "/css/theme/" + themeColor + "/images/cmd-export.jpg";
+            }
+            else {
+                var src = "/css/theme/" + themeColor + "/images/cmd-go.jpg";
+                var src1 = "/css/theme/" + themeColor + "/images/cmd-export.jpg";
+            }
+            $('#btnGo').attr('src', src);
+            $('#btnExp').attr('src', src1);
+            Triage.isPortfolioOn = isPortfolioOn;
+
+            if (Triage.isPortfolioOn)  //Code for the Enabled portfolio featue  Triage.isPortfolioOn /*Code changed to remain the version field even if the portfolio is disabled  Ejaz Waquif DT: 2-12-2014  */
+            {
+                $("#filterWithPortfolio").show();
+                $("#filterWithoutPortfolio").remove();
+            }
+            else {
+                $("#filterWithPortfolio").remove();
+                $("#filterWithoutPortfolio").show();
+                $('img[title="Show"]').css('margin-left', '20px');
+                $('img[title="Export To Excel"]').css('margin-left', '5px');
+            }
+
+            Main.showLoading();
+            //security.applySecurity(_spUserId,$('#userW').text());
+            Triage.init();
+            $('#scrollbar1').tinyscrollbar({ size: 'auto', sizethumb: 'auto' });
+            Main.hideLoading();
+        });
+
+        var interval = setInterval(function () {
+            var ele = $('#Owner');
+            if (ele.length > 0) {
+                CallAuto('Owner', 'Auto_Hdn', 'TooltipVersionLead', 'Auto_Otxt')
+                $('#Owner').blur(function () {
+                    var x = $(this).val();
+                    var y = $('#Auto_Otxt').val();
+                    $('#TooltipVersionLead').hide();
+                     if (x=="") {
+                        $('#TooltipVersionLead').hide();
+                    }
+                   else if (x != y && y != "") {
+                        $('#TooltipVersionLead').show();
+
+                    }
+                });
+                clearInterval(interval);
+            }
+        }, 1000)
+
+    </script>
+</head>
+
+<!--Copyright � 2012 RGen Solutions . All Rights Reserved.
+Contact : support@rgensolutions.com -->
+
+<style type="text/css">
+    .filter .ddl {
+        width: 210px;
+    }
+
+    .input {
+        border: solid 1px #ccc;
+        padding: 2px;
+        width: 300px;
+        font-size: 12px;
+    }
+
+    .labelName {
+        display: block;
+        font-weight: bold;
+        color: #333;
+        padding: 5px 0px 1px 0px;
+    }
+
+    input {
+        font-family: 'Segoe UI';
+    }
+    /* shilpa 16 apr */
+    #scenario a {
+        color: blue;
+        text-decoration: underline;
+    }
+
+    #dvTriage .selectedRow {
+        background-color: #eee !important;
+    }
+</style>
+<link href="~/css/theme/blue/style/jQuery Styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+<!-- Right Side Detail Grid: START-->
+<div id="teststepsbind" style="display:none;"></div>
+<div class="box details">
+    <h1>
+        <span style="font-weight:bold;font-size:14px">Triage</span>
+    </h1>
+    <span style="float:right;margin-top:10px;">
+        <img id="btnGo" alt="" title="Show" style="cursor: pointer;top: 11px" onclick="Main.showLoading();setTimeout('Triage.showTesterData();',200);" src="" />
+        <img id="btnExp" alt="" title="Export To Excel" style="top:1px;left:-58px ; cursor: pointer;" onclick="Main.showLoading();setTimeout('CreateExcelSheet();',200);" src="" />
+    </span>
+    <p class="clear"></p>
+    <!--<div id="bodyloader" class="loadingMainDiv"><img src="../SiteAssets/images/ajax-loaderFinal.gif" class="innerLoadImg" alt="Waiting.."/></div>-->
+    <div class="filter" id="filterWithoutPortfolio">
+        <div style="position:relative;float:left">
+            <label class="mandatory">Select Project:</label>&nbsp;<select id="projSelect" class="ddl" style="width:240px">
+                <option>
+                    Project Name
+                </option>
+            </select>
+
+            <!--<label>Select Test Pass: <font color="red"><b>*</b></font></label>-->
+            <label>Select Test Pass: </label>
+            <select id="scenSelect" class="ddl" style="width:200px"></select>
+            <label>Select Tester: </label>&nbsp;<select id="tester" class="ddl" style="width:200px"></select>
+            <label>Role:</label>&nbsp;<select id="roleList" class="ddl" style="width: 160px"></select>
+        </div>
+        <p id="FailTPmg" style="width: 317px; font-size: 10px; float: right;margin-top:3px;margin-right:27px">
+            <b>Note:</b>This page shows only all &#39;Fail&#39; results for all Test Passes.
+        </p>
+
+    </div>
+
+    <!--Portfolio Filter Container -->
+    <div class="filter" id="filterWithPortfolio" style="display:none">
+        <div style="float:left">
+            <label class="mandatory">Project:<font color="red">*</font></label>&nbsp;<select id="projSelect" class="ddl" style="width: 200px">
+                <option>
+                    Project Name
+                </option>
+            </select>
+
+            <label>Version: </label>
+            <select id="versionSelect" class="ddl" style="width: 160px">
+                <option>
+                    Select Version
+                </option>
+            </select>
+
+            <!--<label>Select Test Pass: <font color="red"><b>*</b></font></label>-->
+            <label>Test Pass: </label>
+            <select id="scenSelect" class="ddl" style="width: 200px"></select>
+            <label>Tester: </label>&nbsp;<select id="tester" class="ddl" style="width: 160px"></select>
+            <label>Role:</label>&nbsp;<select id="roleList" class="ddl" style="width: 160px;margin-right:0px"></select>
+            <!--<input type="button" onclick="Main.showLoading();setTimeout('Triage.showTesterData();',200);" id="btnShow" value="Show" class="btnTemp" style="width:55px;cursor:pointer;margin-left:45px"/>-->
+            <!--img alt="" title="Show"  style="margin-top: -10px; margin-left: -8px; cursor: pointer;top: 11px" onclick="Main.showLoading();setTimeout('Triage.showTesterData();',200);" src="../SiteAssets/images/cmd-go.jpg"/-->
+        </div>
+        <p id="FailTPmg" style="width: 317px; font-size: 10px; float: right;margin-top:3px;">
+            <b>Note:</b>This page shows only all &#39;Fail&#39; results for all Test Passes.
+        </p>
+    </div>
+    <!--Portfolio Filter Container -->
+
+    <div class="clear"></div>
+    <div id="dvProjectDetails" style="display:none;" class="proj-desc">
+        <h2 id="projectName">Project - No Project Available<span> (#ID: )</span></h2>
+        <p id="projDesc" style="width:100%"></p>
+        <h2 style="width:100%" id="hTestPass">Test Pass Details</h2><br />
+        <div id="thisScenario" style="width:100%;"></div>
+    </div>
+    <!-- test caes section starts here -->
+    <h4 id="hTestCase" style="display:none">Test Step(s)</h4>
+    <div id="testStepDetails">
+    </div>
+    <div id="Pagination" style="margin-top:5px;float:right"></div>
+</div>
+<p class="box-ft"></p>
+<!-- Right Side Detail Grid: END-->
+<div id="dialog" title="Project Select"></div>
+<!-- Right Panel : END-->
+
+<div id="divAlert" style="display:none;">
+
+</div>
+<div id="dvTriage" title="Triage" style="display:none;" class="lblDiv">
+    <table>
+        <tr>
+            <td><label class="labelName mandatory" id="bug">Bug:<font color="red">*</font></label></td>
+            <td><input type="radio" name="Bug" value="Yes" onchange="Triage.BugClick();">Yes</input>&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="Bug" value="No" onchange="Triage.noBugClick();">No</input></td>
+        </tr>
+        <tr>
+            <td><label class="labelName">Triage Details:</label></td>
+            <td><textarea id="details" style="height:80px; width:300px;border:1px #ccc solid"></textarea></td>
+        </tr>
+
+        <tr id="ownertr">
+            <td><label id="AutoDiv" class="labelName">Owner:</label></td>
+            <td>
+                <input type="text" id="Owner" style="position:static!important; width:300px;" class="ui-autocomplete textBox" />
+                <div id="TooltipVersionLead" style="display:none;top:-30px!important;font-size:1.4em!important" data-tip="No results were found to match your search item."></div>
+                <input type="hidden" id="Auto_Hdn" />
+                <input type="hidden" value="" id="Auto_Otxt" />
+            </td>
+        </tr>
+        <!-- Added by shilpa -->
+        <tr>
+            <td><label class="labelName">Testing Date:</label></td>
+            <td><input type="text" readonly="readonly" id="testingDate" class="input" /></td>
+        </tr>
+        <!-- -->
+        <tr>
+            <td><label class="labelName">Status:</label></td>
+            <td>
+                <select id="status" style="border:solid 1px #ccc;padding:1px;width:175px;margin-right:1em;font-family:'Lucida Sans Unicode', 'Lucida Grande', 'sans-serif';">
+                    <option>
+                        Select Status
+                    </option>
+                    <option>Triaged</option>
+                    <option>Resolved</option>
+                    <option>
+                        Closed
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr id="priottr">
+            <td><label class="labelName">Priority:</label></td>
+            <td>
+                <select id="priority" style="border:solid 1px #ccc;padding:1px;width:175px;margin-right:1em;font-family:'Lucida Sans Unicode', 'Lucida Grande', 'sans-serif';">
+                    <option>
+                        Select Priority
+                    </option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>
+                        3
+                    </option>
+                    <option>4</option>
+                </select>
+            </td>
+        </tr>
+        <tr id="severttr">
+            <td><label class="labelName">Severity:</label></td>
+            <td>
+                <select id="severity" style="border:solid 1px #ccc;padding:1px;width:175px;margin-right:1em;font-family:'Lucida Sans Unicode', 'Lucida Grande', 'sans-serif';">
+                    <option>
+                        Select Severity
+                    </option>
+                    <option>Critical</option>
+                    <option>High</option>
+                    <option>
+                        Medium
+                    </option>
+                    <option>Low</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label class="labelName">Date Closed:</label></td>
+            <td><input type="text" id="closedDate" name="closedDate" readonly="readonly" onkeydown="Main.preventBackspace()" style="width:140px;border:1px #ccc solid;" /></td>
+        </tr>
+        <tr id="vstbugtr">
+            <td><label class="labelName mandatory" id="vstfb">VSTF Bug # / Title:<font color="red">*</font></label></td>
+            <td><input type="text" id="title" class="input" /></td>
+        </tr>
+        <tr id="vstfbuglinktr">
+            <td><label class="labelName">VSTF Bug Link (URL):</label></td>
+            <td><input type="text" id="url" class="input" /></td>
+        </tr>
+    </table>
+</div>
+<div id="dvTemp" style="display:none;">
+
+</div>
+
+
+<div style="overflow:hidden;width:2px;height:2px" id="rteDiv" class="rte1Container">
+    <div></div>
+   <script type="text/javascript">
+        if ((window.location.href).indexOf("palette") == -1) {
+        var parameter1 = Main.getSiteUrl() + "/images/";
+        var parameter2 = Main.getSiteUrl() + "/palletes/";
+        initRTE(parameter1.toString(), parameter2.toString(), "", true);
+        //initRTE("../SiteAssets/js/RTE/images/", "../SiteAssets/js/RTE/",  "", true);
+        writeRichText('rte1', "", 610, 200, false, false);
+        }
+    </script>
+</div>
+<div id="parentExp">
+    <div id="expectedResultWithImage" class="pasteImage" style="display:none"></div>
+    <div id="divExp"></div>
+    <div id="divAct"></div>
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,40 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Modify EIP with alias
+#Ansible Playbook created by - Abha H
+---
+- name: Modify EIP with alias
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+   - block: 
+     - name: Modify EIP with alias
+       ecs_vpc_net: 
+        ecs_access_key: '{{ aliyun_acs_access_key }}'
+       #access_key: '{{ aliyun_acs_access_key }}'
+        ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+       #secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+       #ecs_region: '{{ region }}'
+        state: '{{ status }}'
+        bandwidth: '{{ bandwidth }}'
+        allocation_id: '{{ allocationId }}'
+       register: result
+     - debug: var=result
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in result"
+
+         msg: 'Test pass FAILED !!!'
+
+    

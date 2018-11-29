@@ -1,0 +1,108 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Add Backend Server
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Add Backend Server With State Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 :
+  
+  - block:
+    - name: Validating status parameter as state
+      ecs_slb:
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'      
+      # region: '{{ region }}'                                
+       load_balancer_id: '{{ loadBalancerId }}'                           
+       backend_servers: '{{ backendServers }}'                     
+       state: '{{ status }}' 
+                                        
+      register: AddBackendServerResult1
+    - debug: var=AddBackendServerResult1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+        
+    
+  - block:
+    # Task 2:
+    - name: Validating state as default parameter
+      ecs_slb:
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'      
+      # region: '{{ region }}'                                
+       load_balancer_id: '{{ loadBalancerId }}'                           
+       backend_servers: '{{ backendServers }}'                     
+                                    
+      register: AddBackendServerResult2
+    - debug: var=AddBackendServerResult2
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+  - block: 
+    # Task 3:
+    - name: Validating state parameter as status
+      ecs_slb:
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'      
+      # region: '{{ region }}'                                
+       load_balancer_id: '{{ loadBalancerId }}'                           
+       backend_servers: '{{ backendServers }}'                     
+       status: '{{ status }}'    
+                                     
+      register: AddBackendServerResult3
+    - debug: var=AddBackendServerResult3
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+    
+  - block: 
+    # Task 4:
+    - name: Validating state parameter as status invalid
+      ecs_slb: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'              
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'      
+      # region: '{{ region }}'                                
+       load_balancer_id: '{{ loadBalancerId }}'                           
+       backend_servers: '{{ backendServers }}'                     
+       status: '{{ statusInvalid }}'                                        
+                                     
+      register: AddBackendServerResult4
+    - debug: var=AddBackendServerResult4
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    always:
+     - assert:  
+         that:
+            - "'failed' not in AddBackendServerResult1"
+            
+            - "'failed' not in AddBackendServerResult2"
+        
+            - "'failed' not in AddBackendServerResult3"
+          
+            - "'failed' in AddBackendServerResult4"
+        
+         msg: 'Test pass FAILED !!!'         
+             
+    

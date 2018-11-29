@@ -1,0 +1,351 @@
+# Ansible Module Name - ECS
+# Interface : CreateInstance
+# Playbook Contains Test-Cases for host_name parameter
+# Playbook created by : Sachin J
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+    
+  tasks:
+  
+   # Task : 1
+  
+  - block:
+    - name: Validating - Valid Host Name As Null Parameter
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameNull }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_1
+    - debug: var=create_instance_result_1
+
+    rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+       
+  - pause:
+        seconds: 15      
+ 
+ # Task : 2
+ 
+  - block:
+    - name: Validating - Invalid host_name Parameter Which Accepts Other Special Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameOtherSpecialChar }}'  # Invalid
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_2
+    - debug: var=create_instance_result_2
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+ # Task : 3
+ 
+  - block:
+    - name: Validating - Valid host_name Parameter Which Accepts Special Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameSpecialChar }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_3
+    - debug: var=create_instance_result_3
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+  # Task : 4
+  
+  - block:
+    - name: Validating - Valid host_name Parameter Which Accepts Default Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        #host_name: '{{ host_name }}'   Default characters
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_4
+    - debug: var=create_instance_result_4
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+ # Task : 5
+ 
+  - block:
+    - name: Validating - Valid host_name Parameter Which Accepts AlphaNumeric Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameAlphanumeric }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_5
+    - debug: var=create_instance_result_5
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+  # Task : 6
+  
+  - block:
+    - name: Validating - Valid host_name Parameter Which Accepts Valid Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameValid }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_6
+    - debug: var=create_instance_result_6
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+  # Task : 7
+  
+  - block:
+    - name: Validating - Invalid host_name Parameter Which Accepts Less Than 2 Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameLessThan2Chars }}'   # Invalid
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_7
+    - debug: var=create_instance_result_7
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+ # Task : 8
+ 
+  - block:
+    - name: Validating - Invalid host_name Parameter Which Accepts More Than 128 Characters
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameMoreThan128Chars }}'    # Invalid
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_8
+    - debug: var=create_instance_result_8
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+ # Task : 9
+ 
+  - block:
+    - name: Validating - Valid host_name Parameter Which Accepts 128 Characters Only
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name128CharOnly }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_9
+    - debug: var=create_instance_result_9
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+# Task : 10
+
+  - block:
+    - name: Validating - Invalid host_name Parameter Which Accepts Dot At The Begining
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameWithDotInStarting }}'   # Invalid
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_10
+    - debug: var=create_instance_result_10
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+ # Task : 11
+ 
+  - block:
+    - name: Validating - Invalid host_name Parameter Which Accepts 2 Consecutive Dot
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        zone: '{{ zone }}'
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_nameWith2Dot }}'    # Invalid
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_11
+    - debug: var=create_instance_result_11
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+
+    always:
+     - assert:
+         that:
+            - "'failed' not in create_instance_result_1"
+
+            - "'failed' in create_instance_result_2"
+            - "'hostname is not valid.' in create_instance_result_2.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_3"
+            - "'hostname is not valid.' in create_instance_result_3.msg[0]['Error Message']"
+
+            - "'failed' not in create_instance_result_4"
+
+            - "'failed' in create_instance_result_5"
+            - "'hostname is not valid.' in create_instance_result_5.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_6"
+            - "'hostname is not valid.' in create_instance_result_6.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_7"
+            - "'hostname is not valid.' in create_instance_result_7.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_8"
+            - "'hostname is not valid.' in create_instance_result_8.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_9"
+            - "'hostname is not valid.' in create_instance_result_9.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_10"
+            - "'hostname is not valid.' in create_instance_result_10.msg[0]['Error Message']"
+
+            - "'failed' in create_instance_result_11"
+            - "'The specified parameter \"HostName\" is not valid.' in create_instance_result_11.msg[0]['Error Message']"
+         msg: 'Test pass FAILED !!!'
+  - pause:
+      seconds: 15     
+   
+  post_tasks:
+
+   - name: Deleting newly created instance Task 1
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result_1.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result_1"
+
+   - name: Deleting newly created instance Task 4
+     ecs:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       instance_id: '{{ create_instance_result_4.result[0].instance_id }}'
+       status: absent
+     when:
+        - "'failed' not in create_instance_result_4"

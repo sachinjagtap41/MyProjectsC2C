@@ -1,0 +1,531 @@
+﻿
+@{
+    Layout = "~/Views/Shared/UatAdminMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "Create New";
+}
+
+<head>
+    <title>
+        UAT Project Management: Test Pass
+    </title>
+</head>
+
+
+
+<body>
+
+    <div id="RightPanel">
+
+
+        <script src="~/js/TestPass/html2canvas.js"></script>
+        <script src="~/js/TestPass/jquery.plugin.html2canvas.js"></script>
+
+
+        <script type="text/javascript">
+
+            function trimText(str, len) {
+                if (str.length > len)
+                    return str.slice(0, len) + "...";
+                else
+                    return str;
+            }
+
+            $(document).ready(function () {
+                Main.showLoading();
+
+
+                $('#navHeading tr:eq(2) td').attr('class', 'activeNav');
+                $('#navHeading tr:eq(2) td img').attr('src', '../SiteAssets/images/Admin/b_Medium Thumbnail View.png');
+
+                $('#navTestPasses').css('background-color', '#FFFFFF');
+
+                $("a[title='Browse']").css("margin-right", "25px");
+
+                $(".ms-inputuserfield").css('border', '1px #ccc solid');
+                $("a[title='Check Names']").css('display', 'none');
+                $("div[title=tester]").css("height", "22px");
+                $("#testerDiv").bind("contextmenu", function (e) { return false; });
+                $("#dialodPeoPic").bind("contextmenu", function (e) { return false; });
+
+                setTimeout('testpass.onPageLoad();', 200);
+
+
+                $('#pageTab h2:eq(0)').click(function () {
+                    $("#begTest").show();
+                    $("#testResult").show();
+                    testpass.pagination();
+                    if (testpass.countVal == 00) {
+                        $("#countDiv").css('display', 'none');
+                    }
+                    else {
+                        $("#countDiv").css('display', '');
+                        $("#labelCount").html(testpass.countVal);
+                    }
+
+                    $('#pageTab h2:eq(2)').hide();
+                    $('#TestPassForm').hide();
+                    $('#pageTab h2:eq(1)').show();
+                    $('#pageTab h2:eq(1)').css('color', '#7F7F7F');
+                    $('#pageTab h2:eq(0)').css('color', '#000000');
+                    testpass.clearFields();
+                    $('#divTpId').hide();
+                    document.getElementById('btnUpdate').style.display = "none";
+                    document.getElementById('btnReset').style.display = "none";
+                    document.getElementById('btnSave').style.display = "inline";
+                    document.getElementById('btnCancel').style.display = "inline";
+                    document.getElementById('drillDownDetails').style.display = "none";
+                    $("a[title='Browse']").eq(0).show();
+                });
+
+                $('#pageTab h2:eq(1)').click(function () {
+                    if (show.projectId == "") {
+                        testpass.alertBox2('Sorry! No ' + testpass.gConfigProject + ' is available for selected ' + testpass.gConfigPortfolio + ' !Please create the ' + testpass.gConfigProject + ' First.');
+                        testpass.noPrjFlag = 1;
+                    }
+
+                    testpass.IsSave = true;
+                    $('#testPassGrid').hide();
+                    $('#countDiv').hide();
+                    $('#noP').hide();
+                    $('#Pagination1').hide();
+                    $('#TestPassForm').show();
+                    $('#pageTab h2:eq(0)').css('color', '#7F7F7F');
+                    $('#pageTab h2:eq(1)').css('color', '#000000');
+                    testpass.clearFields();
+                    $('#pageTab h2:eq(2)').hide();
+                    document.getElementById('btnUpdate').style.display = "none";
+                    document.getElementById('btnReset').style.display = "none";
+                    document.getElementById('btnSave').style.display = "inline";
+                    document.getElementById('btnCancel').style.display = "inline";
+                    document.getElementById('drillDownDetails').style.display = "none";
+                    document.getElementById('divTpId').style.display = "none";
+                    $("#begTest").hide();
+                    $("#testResult").hide();
+
+                });
+
+                Main.hideLoading();
+
+                //To open the project in Edit mode if user redirect from dashboard to project page :Ejaz Waquif DT:2/19/2014
+                var url = window.location.href;
+                var isEdit = url.toLowerCase().indexOf('edit=1') != -1 ? true : false;
+                var keyVal = '';
+
+                var temp = url.indexOf("tpid");
+                if (temp != -1) {
+                    keyVal = Main.getQuerystring('tpid');
+                }
+                if (isEdit && keyVal != '') {
+                    var editInterval = setInterval(function () {
+
+                        if (!($("#" + keyVal).html() == "" || $("#" + keyVal).html() == undefined || $("#" + keyVal).html() == null)) {
+                            clearInterval(editInterval);
+                            $("#" + keyVal).children().eq(5).children().eq(0).click();
+
+                        }
+
+                    }, 1000);
+
+                }
+                //End of To open the project in Edit mode if user redirect from dashboard to project page :Ejaz Waquif DT:2/19/2014
+
+                /*For Bug Id 1167*/
+                $('#projectHead').click(function (e) {
+                    if ($('#assoProjects').height() >= 400)
+                        $('#assoProjects').css('overflow-y', 'auto');
+                });
+
+            });
+
+
+        </script>
+
+        <div class="pgHead">Test Pass Details</div>
+        <div class="prjHead" id="projectName" style="display: none;" projID="1056">Project1</div>
+        <table class="rgTableBread" style="display: table;">
+            <tbody>
+                <tr>
+                    <td id="groupTitle"><label title="Default Group" class="rgBCTitle">Default Group</label></td>
+                    <td id="portfolioTitle"><label title="Default Portfolio" class="rgBCTitle">Default Portfolio</label></td>
+                    <td id="projectTitle"><label title="TTSH_CRIO" class="rgBCTitle">TTSH_CRIO</label></td>
+                    <td id="versionTitle"><label title="1.0" class="rgBCTitle">1.0</label></td>
+                </tr>
+
+                <tr>
+                    <td id="groupHead" style="cursor: pointer;"><label title="" class="rgBCHead">Group<img style="padding-top: 5px; float: right;" src="/images/drop-arrow.gif"></label><div class="headDD" id="assoGroups" style="height: auto; -ms-overflow-y: auto; max-height: 400px;"><ul class="headul" id="grpul" style="list-style: none;"><li title="Default Group" class="liselected">Default Group</li><li title="MBI">MBI</li><li title="Click2Cloud">Click2Cloud</li><li title="Medical">Medical</li><li title="Demo Sachin">Demo Sachin</li></ul></div></td>
+                    <td id="portfolioHead" style="cursor: pointer;"><label title="" class="rgBCHead">Portfolio<img style="padding-top: 5px; float: right;" src="/images/drop-arrow.gif"></label><div class="headDD" id="assoPortfolios"><ul class="headul" id="portful" style="list-style: none;"><li title="Default Portfolio" class="liselected">Default Portfolio</li></ul></div></td>
+                    <td id="projectHead" style="cursor: pointer;"><label title="" class="rgBCHead">Project<img style="padding-top: 5px; float: right;" src="/images/drop-arrow.gif"></label><div class="headDD" id="assoProjects" style="-ms-overflow-y: auto; max-height: 400px;"><ul class="headul" id="prjctul" style="list-style: none;"><li title="TTSH_CRIO" class="liselected">TTSH_CRIO</li></ul></div></td>
+                    <td id="versionHead" style="cursor: pointer;"><label title="" class="rgBCHead">Version<img style="padding-top: 5px; float: right;" src="/images/drop-arrow.gif"></label><div class="headDD" id="assoVersions"><ul class="headul" id="versul" style="list-style: none;"><li title="1.0" class="liselected">1.0</li></ul></div></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="navTabs" id="pageTab">
+            <h2 style="color: rgb(127, 127, 127);">View All</h2>
+            <h2 style="color: rgb(0, 0, 0);">Create New</h2>
+            <h2 style="display: none;">Edit Test Pass</h2>
+        </div>
+        <div id="countDiv" style="margin-top: 7px; margin-right: 7px; float: right; display: none;">
+            <label style="font-size: 14px;">Total Records:</label>
+            <label id="labelCount" style="font-size: 14px;">01</label>
+
+        </div>
+        <p class="clear"></p>
+        <!--div id="newTPImg"></div-->
+        <!--div id="Pagination1" ></div-->
+        <div id="testPassGrid" style="display: none;">
+
+            <table class="tableGrid" style="width: 950px; margin-top: 8px;" cellspacing="1">
+                <thead>
+                    <tr class="griDetails">
+                        <td align="center" style="width: 9%;">ID</td>
+                        <td style="width: 35%;">NAME</td>
+                        <td style="width: 20%;">TEST MANAGER</td>
+                        <td style="width: 13%;">START DATE</td>
+                        <td style="width: 13%;">END DATE</td>
+                        <td align="center" style="width: 10%; border-right-color: currentColor; border-right-width: medium; border-right-style: none;">ACTION</td>
+                    </tr>
+                    <tr>
+                        <td class="gridHeadingRow" colspan="6"></td>
+                    </tr>
+                    <tr><td colspan="6"></td></tr>
+                    <tr><td colspan="6"></td></tr>
+                    <tr><td colspan="6"></td></tr>
+                    <tr><td colspan="6"></td></tr>
+                </thead>
+                <tbody id="showTestPass"><tr class="rowSelected" id="2066" onclick="testpass.selectRow1(2066);"><td class="center" valign="top"><span>2066</span></td><td align="left" class="rowSelected" valign="top"><span title="Test Pass1">Test Pass1</span></td><td align="left" valign="top"><span title="Swati Gangrade">Swati Gangrade</span></td><td align="left" valign="top"><span>10/13/2016</span></td><td align="left" valign="top"><span>10/31/2016</span></td><td align="center" valign="top"> <a title="Edit Test Pass Details" style="cursor: pointer;" onclick="Main.showLoading();setTimeout('testpass.fillForm(2066)',200);"><img style="width: 25px; height: 25px; padding-right: 3px;" src="../SiteAssets/images/Admin/Edit1.png" a="" <=""> <a title="Delete Test Pass" style="cursor: pointer;" onclick="testpass.delTestPass(2066);"><img style="width: 25px; height: 25px;" src="../SiteAssets/images/Admin/Garbage1.png"></a></td></tr></tbody>
+            </table>
+        </div>
+        <h3 id="noP" style="color: rgb(184, 184, 184); font-size: 30px; display: none;">No Test Pass(es) available!</h3>
+        <div id="Pagination1" style="margin-top: 20px; float: right; display: none;"><div class="pagination"><span class="current prev">Prev</span><span class="current">1</span><span class="current next">Next</span></div></div>
+        <input class="btnNew1" id="begTest" style="width: 190px; height: 30px; margin-top: 20px; display: none;" onclick="testpass.validationbeforeSendingEmail(0);" type="button" value="Send Email to Begin Testing">&nbsp;&nbsp;
+        <input class="btnNew1" id="testResult" style="width: 170px; height: 30px; margin-top: 20px; display: none;" onclick="testpass.validationbeforeSendingEmail(1);" type="button" value="Send Test Results Email">
+        <!--div class="pager"><div id="testpassCount"></div>
+        </div-->
+
+
+        <div class="DivlblWithColon" id="TestPassForm" style="width: 950px; padding-top: 5px;">
+            <div id="leftdiv" style="width: 450px; float: left;">
+
+                <label class="mandatory" id="lblPNameStar">Test Pass Name:<font color="red"><b>*</b></font></label><br>
+                <input class="textBox" id="testPasNm" type="text"><br />
+
+
+                <label>Description:</label><br>
+                <textarea class="textArea" id="desc" style="height: 90px;"></textarea><br>
+
+                <label>Status:</label><br>
+                <select class="dropDown2" id="status"><option value="Active">Active</option><option value="On Hold">On Hold</option><option value="Complete">Complete</option></select><br>
+
+                <div id="divTpId" style="display: none;">
+                    <label id="lblPIDStar">Test Pass ID: </label>
+                    <input id="testPasID" style="border: 1px solid rgb(255, 255, 255); background-color: rgb(255, 255, 255);" type="text" readonly="readonly">
+                </div>
+
+                <label style="display: none;"><b>Project Lead:</b></label>
+                <input class="inputNew" id="prjLead" style="display: none; background-color: rgb(222, 223, 231);" type="text" readonly="readonly"><br>
+
+                <div id="drillDownDetails" style="display: none;">
+                    <table style="width: 256px; margin-top: 30px;" cellspacing="0" cellpadding="0">
+                        <tbody>
+                            <tr>
+                                <td id="testCaseCount" style="height: 5px;">
+                                    Total Test Case(s):
+                                </td>
+                            </tr>
+                            <!---<tr><td style="height: 5px" id="testStepCount"><b>Total Test Step(s):</b></td></tr>-->
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div id="rightdiv" style="width: 450px; float: right;">
+
+                @*<div id="testerDiv" style="height: 50px; margin-bottom: 28px;">
+                        <label title="Please use the address book to add the Test Manager." class="mandatory">Test Manager:<font color="red"><b>*</b></font></label>
+                        <span id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2" aria-live="polite" aria-relevant="all" style="width: 450px; height: 20px; display: inline-block;" showentitydisplaytextintextbox="1" eeaftercallbackclientscript="" invalidate="false" allowtypein="false" showdatavalidationerrorborder="false" prefercontenteditablediv="true" moreitemstext="More Names..." nomatchestext="<No Matching Names>" value="" removetext="Remove" editoroldvalue="">
+                            <input name="ctl00$ctl00$midPannel$ContentPlaceHolder1$Child_ContentPlaceHolder1$PeopleEditorUser2$hiddenSpanData" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_hiddenSpanData" type="hidden" value=""><input name="ctl00$ctl00$midPannel$ContentPlaceHolder1$Child_ContentPlaceHolder1$PeopleEditorUser2$OriginalEntities" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_OriginalEntities" type="hidden" value="<Entities />"><input name="ctl00$ctl00$midPannel$ContentPlaceHolder1$Child_ContentPlaceHolder1$PeopleEditorUser2$HiddenEntityKey" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_HiddenEntityKey" type="hidden"><input name="ctl00$ctl00$midPannel$ContentPlaceHolder1$Child_ContentPlaceHolder1$PeopleEditorUser2$HiddenEntityDisplayText" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_HiddenEntityDisplayText" type="hidden"><table class="ms-usereditor" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_OuterTable" style="width: 450px; border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr valign="bottom">
+                                        <td valign="top" style="width: 88%;">
+                                            <table style="width: 100%; table-layout: fixed;" cellspacing="0" cellpadding="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_containerCell"><div tabindex="0" title="tester" class="ms-inputuserfield ms-inputBox" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_upLevelDiv" role="textbox" aria-haspopup="true" style="border: 1px solid rgb(204, 204, 204); height: 22px; -ms-overflow-x: hidden; -ms-word-wrap: break-word;" contenteditable="true" spellcheck="false" aria-multiline="true" onkeydown="return onKeyDownRw('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2', 3, false, event);" onkeyup="return onKeyUpRw('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');" onclick="onClickRw(true, true,event,'ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');" onchange="updateControlValue('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');" ondragstart="canEvt(event);" oncopy="docopy('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2',event);" onpaste="dopaste('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2',event);" onfocusin="StoreOldValue('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2'); saveOldEntities('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2'); Sys.UI.DomElement.addCssClass(this, 'ms-inputBoxActive');" onfocusout="if(typeof(ExternalCustomControlCallback)=='function'){ if(ShouldCallCustomCallBack('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2',event)){if(!ValidatePickerControl('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2')){ShowValidationError();return false;}else {ExternalCustomControlCallback('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');}}} Sys.UI.DomElement.removeCssClass(this, 'ms-inputBoxActive');" name="upLevelDiv" prefercontenteditablediv="true" rows="1" autopostback="0">&nbsp;</div><textarea name="ctl00$ctl00$midPannel$ContentPlaceHolder1$Child_ContentPlaceHolder1$PeopleEditorUser2$downlevelTextBox" title="tester" class="ms-inputuserfield ms-inputBox" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_downlevelTextBox" style="border: 1px solid rgb(204, 204, 204); width: 100%; display: none; position: absolute;" onkeydown="return onKeyDownRw('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2', 3, false, event);" onkeyup="return onKeyUpRw('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');" onfocus="StoreOldValue('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2'); saveOldEntities('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2'); Sys.UI.DomElement.addCssClass(this, 'ms-inputBoxActive');" onblur="if(typeof(ExternalCustomControlCallback)=='function'){ if(ShouldCallCustomCallBack('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2',event)){if(!ValidatePickerControl('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2')){ShowValidationError();return false;}else {ExternalCustomControlCallback('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');}}} Sys.UI.DomElement.removeCssClass(this, 'ms-inputBoxActive');" onchange="updateControlValue('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2');" rows="1" cols="20" autopostback="0" renderascontenteditablediv="true"></textarea></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td align="center" nowrap="true" valign="top" style="padding-left: 5px; float: right;"><a title="Check Names" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_checkNames" style="display: none;" onclick=" if(!ValidatePickerControl('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2')){ ShowValidationError(); return false;} var arg=getUplevel('ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2'); var ctx='ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2' ;EntityEditorSetWaitCursor(ctx);WebForm_DoCallback('ctl00$ctl00$midPannel$ContentPlaceHolder1$Child_ContentPlaceHolder1$PeopleEditorUser2',arg,EntityEditorHandleCheckNameResult,ctx,EntityEditorHandleCheckNameError,true);return false;" href="javascript:"><img title="Check Names" alt="Check Names" src="/_layouts/15/images/checknames.png"></a>&nbsp;<a title="Browse" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_browse" style="margin-right: 25px;" onclick="__Dialog__ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2(); return false;" href="javascript:"><img title="Browse" alt="Browse" src="/_layouts/15/images/addressbook.gif"></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><span class="ms-error" id="ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_errorLabel"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </span>
+                        <p>Please use the address book to add the Test Manager.</p>
+                    </div>*@
+
+
+
+
+                <div id="AutoDiv" style="height: 50px; margin-bottom: 28px;">
+                    <label title="Please use the address book to add the Test Manager." class="mandatory">Test Manager:<font color="red"><b>*</b></font></label>
+                    @*<input class="ui-autocomplete" id="testPasmng" type="text">
+                        <input  id="hdnPasmng" type="hidden"><br>*@
+
+                    <input type="text" id="Auto" style="position:static!important" class="ui-autocomplete textBox" />
+                    <input type="hidden" id="Auto_Hdn" />
+
+                </div>
+
+
+                <div style="margin-bottom: 35px;">
+                    <label class="mandatory" id="lblStartDate" style="margin-right: 150px;">Start Date:<font color="red"><b>*</b></font></label><br>
+                    <input name="startDate" class="date hasDatepicker" id="startDate" style="border: 1px solid rgb(204, 204, 204); margin-right: 5px;" type="text" readonly="readonly"><img title="Select Date" class="ui-datepicker-trigger" style="margin-right: 35px; margin-left: 10px;" alt="..." src="/css/theme/blue/images/Calendar-Logo.gif"><br>
+                </div>
+
+                <div>
+                    <label class="mandatory" id="lblEndDate">End Date:<font color="red"><b>*</b></font></label><br>
+                    <input name="endDate" class="date hasDatepicker" id="endDate" style="border: 1px solid rgb(204, 204, 204); margin-right: 5px;" type="text" readonly="readonly"><img title="Select Date" class="ui-datepicker-trigger" style="margin-left: 10px;" alt="..." src="/css/theme/blue/images/Calendar-Logo.gif"><br>
+
+                </div>
+                <br>
+
+                <div id="buttonsdiv" style="padding: 2px;">
+                    <input class="btnNew1" id="btnSave" style="margin-top: 170px; margin-left: 235px; display: inline;" onclick="Main.showLoading();setTimeout('testpass.validation(\'tester\');',200);" type="button" value="Save">
+                    <input class="btnNew1" id="btnCancel" style="margin-top: 170px; margin-left: 15px; display: inline;" onclick="testpass.clearFields();" type="button" value="Cancel">
+
+                    <input name="Submit2" class="btnNew1" id="btnUpdate" style="margin-top: 170px; margin-left: 235px; display: none;" onclick="Main.showLoading();setTimeout('testpass.validation(\'tester\');',200);" type="button" value="Update">
+                    <input class="btnNew1" id="btnReset" style="margin-top: 170px; margin-left: 15px; display: none;" onclick="testpass.buffer();" type="button" value="Reset">
+                </div>
+
+            </div>
+        </div>
+        <input class="inputNew" id="projectNames" style="display: none; background-color: rgb(222, 223, 231);" type="text" readonly="readonly"><br>
+        <div id="divAlert"></div>
+        <div id="divAlert2"></div>
+        <div id="divAlert3"></div>
+        <div id="divConfirm"></div>
+        <div id="divAddUserAlert"></div>
+        <input name="Hidden1" id="hid" type="hidden">
+        <input id="hiddenMailId" type="hidden">
+
+        <div id="pieChart" style="width: 350px; height: 138px; margin-left: 130px; display: none; z-index: 1;"></div>
+        <div id="myactImg" style="display: none; z-index: 1;">
+            <div id="divTester" style="width: 800px; margin-top: 500px; float: left;">
+                <div class="dashboard dashmyAct" style="width: 735px; margin-left: -12px; float: left;">
+                    <h3 class="h3DbDa" style="padding-bottom: 15px; padding-left: 5px;">My Activities</h3>
+
+                    <div class="scroll-pane" id="spanMA" style="width: 735px; height: 205px; margin-left: 5px;">
+                        <table class="gridDetails celebsMAWithoutPortfolio" id="celebsMA" cellspacing="0">
+                            <thead>
+                                <tr>
+
+                                    <td class="tblhd1" style="width: 10%;" onclick="DashBoard.SortMyActivity('ProjectName',$(this))">
+                                        Project
+                                    </td>
+                                    <td class="tblhd1" style="width: 11%; display: none;" onclick="DashBoard.SortMyActivity('Version',$(this))">
+                                        Version
+                                    </td>
+
+
+                                    <td class="tblhd1" style="width: 10%;" onclick="DashBoard.SortMyActivity('TestPassName',$(this))">
+                                        Test Pass
+                                    </td>
+                                    <td class="tblhd1" style="width: 9%;" onclick="DashBoard.SortMyActivity('Role',$(this))">
+                                        Role
+                                    </td>
+                                    <td class="tblhd1 sorted daysrm" style='width: 7%; background-image: url("../SiteAssets/images/Sort-asc.png");' onclick="DashBoard.SortMyActivity('DaysRemaining',$(this))">
+                                        Days<br> Left
+                                    </td>
+                                    <td class="tblhd1 nc" style="width: 5%;" onclick="DashBoard.SortMyActivity('NC',$(this))">
+                                        #<br>NC
+                                    </td>
+                                    <td class="tblhd1" style="width: 6%;" onclick="DashBoard.SortMyActivity('Pass',$(this))">
+                                        # <br>Pass
+                                    </td>
+                                    <td class="tblhd1" style="width: 5%;" onclick="DashBoard.SortMyActivity('Fail',$(this))">
+                                        # <br>Fail
+                                    </td>
+                                    <td class="tblhd1" style="width: 15%;" onclick="DashBoard.SortMyActivity('Action',$(this))">
+                                        Action
+                                    </td>
+                                    <td class="tblhd1 offtesting tTipdash" id="offLinetest" style="width: 10%;">
+                                        Offline Testing<img style="background-position: right; width: 20px; padding-top: 2px; float: right; cursor: pointer; background-repeat: no-repeat; align: center;" onclick="DashBoard.helpTextOnTempalteUse();" src="../SiteAssets/images/icon-05.png">
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="myact"></tbody>
+                        </table>
+
+
+                        <!-- if the Portfolio feature is on use this table :Ejaz Waquif DT:1/27/2014 -->
+                        <table class="gridDetails celebsMAWithPortfolio" id="celebsMA" cellspacing="0">
+                            <thead>
+                                <tr>
+
+                                    <td class="tblhd1" style="width: 10%;" onclick="DashBoard.SortMyActivity('ProjectName',$(this))">
+                                        Project
+                                    </td>
+                                    <td class="tblhd1" style="width: 11%;" onclick="DashBoard.SortMyActivity('Version',$(this))">
+                                        Version
+                                    </td>
+
+                                    <td class="tblhd1" style="width: 10%;" onclick="DashBoard.SortMyActivity('TestPassName',$(this))">
+                                        Test Pass
+                                    </td>
+                                    <td class="tblhd1" style="width: 9%;" onclick="DashBoard.SortMyActivity('Role',$(this))">
+                                        Role
+                                    </td>
+                                    <td class="tblhd1 sorted daysrm" style='width: 7%; background-image: url("../SiteAssets/images/Sort-asc.png");' onclick="DashBoard.SortMyActivity('DaysRemaining',$(this))">
+                                        Days<br> Left
+                                    </td>
+                                    <td class="tblhd1 nc" style="width: 5%;" onclick="DashBoard.SortMyActivity('NC',$(this))">
+                                        #<br>NC
+                                    </td>
+                                    <td class="tblhd1" style="width: 6%;" onclick="DashBoard.SortMyActivity('Pass',$(this))">
+                                        # <br>Pass
+                                    </td>
+                                    <td class="tblhd1" style="width: 5%;" onclick="DashBoard.SortMyActivity('Fail',$(this))">
+                                        # <br>Fail
+                                    </td>
+                                    <td class="tblhd1" style="width: 15%;" onclick="DashBoard.SortMyActivity('Action',$(this))">
+                                        Action
+                                    </td>
+                                    <td class="tblhd1 offtesting tTipdash" id="offLinetest" style="width: 10%;">
+                                        Offline Testing<img style="background-position: right; width: 20px; padding-top: 2px; float: right; cursor: pointer; background-repeat: no-repeat; align: center;" onclick="DashBoard.helpTextOnTempalteUse();" src="../SiteAssets/images/icon-05.png">
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="myact"></tbody>
+                        </table>
+                        <!--End of: if the Portfolio feature is on use this table :Ejaz Waquif DT:1/27/2014 -->
+                    </div>
+                    <span style="clear: both;"></span>
+                    <div id="MyActPagination" style="padding-left: 5px; margin-right: 2px; float: right;"></div>
+                </div>
+            </div>
+        </div>
+        <div title="Prerequesites for Active-X" id="activeX-OutlookLI" style="margin-bottom: 15px; display: none;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img width="20" height="20" id="imgActivex" alt="" src="../SiteAssets/images/Information.png"><span style="margin-left: 5px; vertical-align: top;">
+                                <b>
+                                    Please add website in Local Intranet Zone list. If already
+                                    added, please remove it and add again.
+                                </b>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 5px; vertical-align: top;">
+                                <b>
+                                    Steps to add website to Local Intranet Zone list of Internet
+                                    Explorer:
+                                </b>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 30px;">
+                                <b>Step1 :</b> Go to Tools &gt;
+                                Internet options &gt; Security &gt; Local Intranet Zone
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 30px;">
+                                <b>Step2 :</b> Select Sites &gt;
+                                Click Advanced and add current url in to the list.
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 30px;">
+                                <b>Step2 :</b> Refresh the
+                                browser
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div title="Prerequesites for Active-X" id="activeX-OutlookAL" style="margin-bottom: 15px; display: none;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img width="20" height="20" id="imgActivex" alt="" src="../SiteAssets/images/Information.png"><span style="margin-left: 5px; vertical-align: top;">
+                                <b>Please set 'User Authentication' to 'Automatic Logon'.</b>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 5px; vertical-align: top;">
+                                <b>
+                                    Steps to set 'User Authentication' to 'Automatic Logon'of
+                                    Internet Explorer:
+                                </b>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 30px;">
+                                <b>Step1 :</b> Click Custom Level
+                                &gt; Select 'Automatic logon with current user and password' and
+                                click ok.
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span style="margin-left: 30px;">
+                                <b>Step2 :</b> Refresh the
+                                browser
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        var interval = setInterval(function () {
+            var ele = $('#Auto');
+            if (ele.length > 0) {
+                CallAuto('Auto', 'Auto_Hdn')
+                clearInterval(interval);
+            }
+        }, 1000)
+    </script>
+
+</body>

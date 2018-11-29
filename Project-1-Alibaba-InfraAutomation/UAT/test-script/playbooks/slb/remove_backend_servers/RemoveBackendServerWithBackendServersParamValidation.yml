@@ -1,0 +1,84 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Remove Backend Server
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Remove Backend Servers Backend Servers Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Scenario - 1 Remove backend servers without backend server parameter
+      ecs_slb:
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+      # acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       #backend_servers: '{{ backendServersWithoutServerId }}'    # Without serverId parameter
+       state: '{{ statusAbsent }}'       
+                                     
+      register: RemoveBackendServerResult1
+    - debug: var=RemoveBackendServerResult1
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    
+  - block: 
+    # Task 2 :
+    - name: Scenario - 2 Remove backend servers with list of dict datatype
+      ecs_slb: 
+       ecs_access_key: '{{ aliyun_acs_access_key }}'            
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'       
+       #acs_region: '{{ region }}'                                
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServersWithListDataType }}'        # Backend server as dict List data type
+       state: '{{ statusAbsent }}'       
+                                     
+      register: RemoveBackendServerResult2
+    - debug: var=RemoveBackendServerResult2
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+  - block:
+    # Task 3 :
+    - name: Scenario - 3 Remove backend servers with invalid backend server
+      ecs_slb:
+       ecs_access_key: '{{ aliyun_acs_access_key }}'
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+       #acs_region: '{{ region }}'
+       ecs_slb: '{{ loadBalancerId }}'
+       backend_servers: '{{ backendServersWithInvalidServer }}'        # Backend server with invalid server id
+       state: '{{ statusAbsent }}'
+
+      register: RemoveBackendServerResult3
+    - debug: var=RemoveBackendServerResult3
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+    always:
+      - assert:
+         that:
+            - "'failed' in RemoveBackendServerResult1"
+            - "'failed' in RemoveBackendServerResult2"
+            - "'failed' in RemoveBackendServerResult3"
+         msg: 'Test pass FAILED !!!'
+    
+    
+    
+    

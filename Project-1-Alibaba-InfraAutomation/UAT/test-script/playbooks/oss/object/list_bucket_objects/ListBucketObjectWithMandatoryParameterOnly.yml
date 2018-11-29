@@ -1,0 +1,41 @@
+#Ansible Module Name -- oss.py
+#Test Case : List bucket object with mandatory parameters
+#Ansible Playbook created by - Sachin J
+---
+- name: List bucket objects
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+    
+  # Task : 1
+  tasks:
+   - block:
+     - name: Scenario - 1 list bucket objects with mandatory parameters
+       oss:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        mode: '{{ modeBucketList }}'
+        bucket: '{{ bucketForList }}'
+        region: '{{ regionOfListBucket }}' 
+       
+       register: result
+     - debug: var=result
+    
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result"
+           
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values.
+               REASON: {{ result }}'

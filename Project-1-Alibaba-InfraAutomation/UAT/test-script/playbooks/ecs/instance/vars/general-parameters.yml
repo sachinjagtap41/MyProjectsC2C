@@ -1,0 +1,148 @@
+regionInvalid: cn-india   # Invalid
+regionNull:               # Null
+
+
+
+zoneInvalid: invalidvalue   # Invalid
+zoneNull:                   # Null
+
+
+
+invalidAccessKeyId: dfdfdfsdf
+invalid_acs_secret_access_key: khlsldj
+acs_access_key_invalid: dfsdfd
+
+
+unavailableImageId: m-sachine98354Tb
+
+
+#Instances Names
+instanceName : Uat_c2c_ansible
+instanceNameLinux: Uat_c2c_ansible
+
+
+
+# description
+description: Created using UAT script
+  
+# Host Name
+host_name: UatAnsible
+
+# password
+password: Uat@ansible 
+
+
+
+
+######## description parameter ######## 
+descriptionURL: http://www.gmail.com
+descriptionNumerals: 12563
+descriptionNull: 
+descriptionLessThan2Char: d
+description256CharOnly: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomi
+descriptionMoreThan256Char: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiGenomiGenomi
+descriptionSpecialChar: Instance @ creation .with (Special)=characters
+descriptionValid: Alibaba continues to put its
+
+######## host_name parameter ######## 
+host_nameNull: 
+host_nameOtherSpecialChar: host@12345$               # Other Special Characters
+host_nameSpecialChar: host_name.host_name1_host_name2   # Sepcial characters
+host_nameAlphanumeric: host_name123                         # AlphaNumeric
+host_nameValid: host_name                                   # Invalid
+host_nameLessThan2Chars: h                            # Less than 2 characters
+host_nameMoreThan128Chars: host_namehost_namehost_namehost_namehost_name
+host_name128CharOnly: host_namehost_namehost_nameHostna
+host_nameWithDotInStarting: .host_name
+host_nameWith2Dot: Host..Name
+
+######## ids parameter ######## 
+idsValid: Usedtoensuretheidempotenceoftherequestcontains6dfdacteru # Valid ids parameter
+idsInvalid:  # Invalid ids parameter
+idsNull:          # Null
+private_ip:
+
+
+
+
+
+######## Instance Name parameter ######## 
+instanceNameUrl: http://www.gmail.com         # url
+instanceNameAlphanumeric: Instance1234        # Alphanumeric
+instanceNameSpecialChar: In.stance_name-here  # Specialcharacters
+instanceNameOtherSpecialChar: In%stance@9/dd0 # Other Special Characters
+instanceNameNull:                             # Null
+instanceNameDefault:                          # Default
+instanceNameValid: instanceNameValidation
+instanceNameLessThan2Char:  I                 # Invalid
+instanceNameMoreThan128Char: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiGenomiGenomi
+instanceName128CharOnly: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomi
+
+######## Instance Tag parameter ######## 
+# Valid InstanceTags Parameter
+instance_tagsValid:
+  - tag_key: create_test_1
+    tag_value: '0.01'
+  - tag_key: create_test_2
+    tag_value: '0.02'
+      
+# Invalid InstanceTags Parameter
+instance_tagsInvalidTagValue:
+  - tag_key: test_1
+    tag_value: 0.01
+  - tag_key: test_2
+    tag_value: 0.02
+      
+# Invalid InstanceTags Parameter
+instance_tagsInvalidNullTagValue:
+  - tag_key: create_test_1
+    tag_value: 
+  - tag_key: create_test_2
+    tag_value: 
+      
+# Invalid InstanceTags Parameter
+instance_tagsInvalidNullTagKey:
+  - tag_key: 
+    tag_value: '0.01'
+  - tag_key: 
+    tag_value: '0.02'
+      
+# Invalid InstanceTags Parameter
+instance_tagsInvalidTagKeyAndTagValueNull:
+  - tag_key: 
+    tag_value: 
+  - tag_key: 
+    tag_value: 
+      
+# Invalid InstanceTags Parameter
+instance_tagsInvalidTagKeyValidValue:
+  - tag_key: 'create_test_1'
+    tag_value: '0.01'
+  - tag_key: 'create_test_2'
+    tag_value: '0.02'
+      
+# Invalid InstanceTags Parameter
+instance_tagsInvalidTagKeyAndTagValue:
+  - tag_key: "create_test_1"
+    tag_value: "0.01"
+  - tag_key: "create_test_2"
+    tag_value: "0.02" 
+    
+    
+######## password parameter ######## 
+passwordSpecialSymbol:   #  yaml file doest not read special symbols
+passwordValidSpecialChar: password@123
+passwordValid: password123
+passwordMoreThan30Char: ALIBABAScloudcomputingunitAliyunandAmericant
+password30CharOnly: ALIBABAScloudcomputingunit1234
+passwordLessThan8Char: Pass12
+password8CharOnly: Pass1234
+passwordNull:                                # Null character
+passwordAlphabeticCharOnly: password
+
+
+
+ecsInstanceIdInvalid: i-2ze8nlr4wk220yudda9f  # Invalid    
+    
+    
+    

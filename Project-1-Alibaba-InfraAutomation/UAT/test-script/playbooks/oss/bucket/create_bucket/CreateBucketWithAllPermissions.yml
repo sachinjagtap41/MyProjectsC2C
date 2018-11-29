@@ -1,0 +1,38 @@
+#Ansible Module Name -- oss.py
+#Test Case : Create bucket with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Create bucket with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permissionsAll }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+#            - "'value of permission must be one of: private,public-read,public-read-write, got: ['Private', 'Public Read', 'Public Read/Write']' in result_scn1.msg"
+         msg: 'Test pass FAILED !!!'
+              
+               

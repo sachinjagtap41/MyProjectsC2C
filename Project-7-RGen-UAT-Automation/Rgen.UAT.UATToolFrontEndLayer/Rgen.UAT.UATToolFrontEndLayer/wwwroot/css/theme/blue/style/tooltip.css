@@ -1,0 +1,13 @@
+﻿.tip 
+{
+    /* tooltip container box*/ 
+    width: auto;
+    font-size:5pt;
+    padding: 5px 5px;
+    background: #FFFFCC;
+    position:absolute;
+    border:solid 1px #000000;
+    z-index:1000;
+    margin-top:10px;
+}
+

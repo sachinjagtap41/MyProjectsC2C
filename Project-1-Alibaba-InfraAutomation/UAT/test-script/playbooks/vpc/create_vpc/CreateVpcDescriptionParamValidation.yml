@@ -1,0 +1,454 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : create VPC - VPC Description Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: create VPC - VPC Description Param Validation
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - create VPC - VPC Description Param Validation with nos
+   - block:
+     - name: Scenario 1 - create VPC - VPC Description Param Validation with nos
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ descriptionNos }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc1
+     - debug: var=create_vpc1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   # deleting vswitch which was created in Scenario1
+   - block:
+     - name: Scenario 11 - Delete vswitch which created in Scenario 1
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ create_vpc1.result[0]["VpcId"] }}'
+        purge_vswitches: '{{ create_vpc1.result[1][0]["VSwitchId"] }}'
+        state: '{{ status }}'
+       register: delete_vswitch1
+     - debug: var=delete_vswitch1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+   # delete vpc which was created in Scenario1
+   - block:
+     - name: Scenario 11 - Delete VPC which created in Scenario 1
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ create_vpc1.result[0]["VpcId"] }}'
+       register: delete_vpc1
+     - debug: var=delete_vpc1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 2 - create VPC - VPC Description Param Validation with special characters
+   - block:
+     - name: Scenario 2 - create VPC - VPC Description Param Validation with special characters
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName}}'
+        description: '{{ descriptionSplChars }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc2
+     - debug: var=create_vpc2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   # deleting vswitch which was created in Scenario2
+   - block:
+     - name: Scenario 21 - Delete vswitch which created in Scenario 2
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ create_vpc2.result[0]["VpcId"] }}'
+        purge_vswitches: '{{ create_vpc2.result[1][0]["VSwitchId"] }}'
+        state: '{{ status }}'
+       register: delete_vswitch2
+     - debug: var=delete_vswitch2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+   # delete vpc which was created in Scenario2
+   - block:
+     - name: Scenario 21 - Delete VPC which created in Scenario 2
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ create_vpc2.result[0].VpcId }}'
+       register: delete_vpc2
+     - debug: var=delete_vpc2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 3 - create VPC - VPC Description Param Validation with http
+   - block:
+     - name: Scenario 3 - create VPC - VPC Description Param Validation with http
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ descriptionInvalid }}'
+        vswitches: '{{ vswitches }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc3
+     - debug: var=create_vpc3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 4 - create VPC - VPC Description Param Validation with alphanumeric values
+   - block:
+     - name: Scenario 4 - create VPC - VPC Description Param Validation with alphanumeric values
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ descriptionAlphaNos }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc4
+     - debug: var=create_vpc4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # deleting vswitch which was created in Scenario4
+   - block:
+     - name: Scenario 41 - Delete vswitch which created in Scenario 4
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ create_vpc4.result[0]["VpcId"] }}'
+        purge_vswitches: '{{ create_vpc4.result[1][0]["VSwitchId"] }}'
+        state: '{{ status }}'
+       register: delete_vswitch4
+     - debug: var=delete_vswitch4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # delete vpc which was created in Scenario4
+   - block:
+     - name: Scenario 41 - Delete VPC which created in Scenario 4
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ create_vpc4.result[0].VpcId }}'
+       register: delete_vpc4
+     - debug: var=delete_vpc4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 5 - create VPC - VPC Description Param Validation with only 1 character
+   - block:
+     - name: Scenario 5 - create VPC - VPC Description Param Validation with only 1 character
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ descriptionWith1Char }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc5
+     - debug: var=create_vpc5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 6 - create VPC - VPC Description Param Validation with exact 256 characters
+   - block:
+     - name: Scenario 6 - create VPC - VPC Description Param Validation with exact 256 characters
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ descriptionWithExact256Chars }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc6
+     - debug: var=create_vpc6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # deleting vswitch which was created in Scenario6
+   - block:
+     - name: Scenario 61 - Delete vswitch which created in Scenario 6
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ create_vpc6.result[0]["VpcId"] }}'
+        purge_vswitches: '{{ create_vpc6.result[1][0]["VSwitchId"] }}'
+        state: '{{ status }}'
+       register: delete_vswitch6
+     - debug: var=delete_vswitch6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+   # delete vpc which was created in Scenario6
+   - block:
+     - name: Scenario 61 - Delete VPC which created in Scenario 6
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ create_vpc6.result[0].VpcId }}'
+       register: delete_vpc6
+     - debug: var=delete_vpc6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 7 - create VPC - VPC Description Param Validation with more than 256 characters
+   - block:
+     - name: Scenario 7 - create VPC - VPC Description Param Validation with more than 256 characters
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ descriptionWithMoreThan256Chars }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc7
+     - debug: var=create_vpc7
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+   # Task 8 - create VPC - VPC Description Param Validation as blank
+   - block:
+     - name: Scenario 8 - Create VPC - VPC Description Param Validation as blank
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description:
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc8
+     - debug: var=create_vpc8
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # deleting vswitch which was created in Scenario8
+   - block:
+     - name: Scenario 81 - Delete vswitch which created in Scenario 8
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        vpc_id: '{{ create_vpc8.result[0]["VpcId"] }}'
+        purge_vswitches: '{{ create_vpc8.result[1][0]["VSwitchId"] }}'
+        state: '{{ status }}'
+       register: delete_vswitch8
+     - debug: var=delete_vswitch8
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+   # delete vpc which was created in Scenario8
+   - block:
+     - name: Scenario 81 - Delete VPC which created in Scenario 8
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ create_vpc8.result[0].VpcId }}'
+       register: delete_vpc8
+     - debug: var=delete_vpc8
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       seconds: 6
+
+
+  # Task 9 - create VPC - description Param Validation as Description
+   - block:
+     - name: Scenario 9 - create VPC - description Validation as Description
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcNameNos }}'
+        Description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc9
+     - debug: var=create_vpc9
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in create_vpc1"
+            - "'failed' not in delete_vswitch1"
+            - "'failed' not in delete_vpc1"
+
+            - "'failed' not in create_vpc2"
+            - "'failed' not in delete_vswitch2"
+            - "'failed' not in delete_vpc2"
+
+            - "'failed' in create_vpc3"
+            
+
+            - "'failed' not in create_vpc4"
+            - "'failed' not in delete_vswitch4"
+            - "'failed' not in delete_vpc4"
+
+            - "'failed' in create_vpc5"
+            
+
+            - "'failed' not in create_vpc6"
+            - "'failed' not in delete_vswitch6"
+            - "'failed' not in delete_vpc6"
+
+            - "'failed' in create_vpc7"
+            
+
+            - "'failed' not in create_vpc8"
+            - "'failed' not in delete_vswitch8"
+            - "'failed' not in delete_vpc8"
+
+            - "'failed' in create_vpc9"
+            
+
+         msg: 'Test pass FAILED !!!'

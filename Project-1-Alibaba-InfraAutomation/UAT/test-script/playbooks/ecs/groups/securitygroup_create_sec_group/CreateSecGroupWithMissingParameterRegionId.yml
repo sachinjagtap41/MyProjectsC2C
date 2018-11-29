@@ -1,0 +1,41 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case :  Verify that playbook is throwing an error if user does not provide region ID
+#Ansible Playbook created by - Jogesh N
+
+---
+- name: Create Security Group With missing Parameter region Id
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block:
+     - name: Scenario - 1 Create Security Group With missing Parameter region Id
+       ecs_group:
+         
+         name: '{{ SGName1 }}'# valid Group Name
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         #region: '{{ region }}' 
+        
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     ### End3 
+     
+     always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+           - "'region is required' in result1.msg" 
+           

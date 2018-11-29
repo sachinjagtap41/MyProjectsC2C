@@ -1,0 +1,84 @@
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "Yammer";
+}
+<script src="https://assets.yammer.com/assets/platform_embed.js"></script>
+<script>
+    $(document).ready(function () {
+        yam.connect.embedFeed({
+            container: "#embedded-feed",
+            network: "rgensolutions.com",
+            feedType: "group",
+            feedId: "4441208",
+            config:
+                {
+                    use_sso: true
+                     , header: false
+                     , footer: false
+                     , showOpenGraphPreview: false
+                }
+        });
+
+    });
+</script>
+<style type="text/css">
+    .Notecss {
+        width: 100%;
+        height: auto;
+        background-color: rgb(1, 188, 243);
+    }
+
+    .NoteHeader {
+        color: white;
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-right: 10px;
+        margin-left: 150px;
+        padding-top: 10px;
+    }
+
+    .Noteclosebtn {
+        float: right;
+        cursor: pointer;
+    }
+
+    .NoteP {
+        margin-left: 150px;
+        color: #454545;
+        font-size: 13px;
+    }
+
+    .yj-hd h3 {
+        background-color: rgb(0, 114, 197) !important;
+        border: none !important;
+    }
+</style>
+<div id="rightDiv">
+    <div id="Notediv" class="Notecss">
+        <img id="imgNote" style="float:left" alt="Note" src="/images/Note-02.png" />
+        <h4 class="NoteHeader">
+            If you face trouble with opening of this page/viewing
+            the yammer conversations, please make sure to follow below steps.
+            <a id="closebtn" class="Noteclosebtn" title="Close" onclick="$('#Notediv').hide();">
+                X
+            </a>
+        </h4>
+        <p class="NoteP">
+            1. In Internet Explorer, on the <b>Tools</b> menu, click <b>
+                Internet
+                options.
+            </b><br />
+            2. Click the <b>Security</b> tab, click <b>Trusted sites</b>, and then
+            click Sites.<br />
+            3. Enter <b>https://*.microsoft.com</b>, click <b>Add</b>.<br />
+            4. Enter <b>www.yammer.com</b>, click <b>Add</b> and then click <b>Close</b>.<br />
+            5. Make sure that the <b>Enable Protected Mode</b> check box isn&#39;t
+            selected.<br />
+            6. Close all web browsers, and then try again with a new session.<br /><br />
+        </p>
+    </div>
+    <div id="embedded-feed" style="height:800px;width:100%;"></div>
+</div>

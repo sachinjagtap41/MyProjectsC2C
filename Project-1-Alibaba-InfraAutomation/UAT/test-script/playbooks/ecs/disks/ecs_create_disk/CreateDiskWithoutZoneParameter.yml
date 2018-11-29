@@ -1,0 +1,54 @@
+# Ansible Module Name - ECS_Disk
+# Interface : CreateDisk
+# Playbook Contains Test-Cases for create disk parameter
+# Playbook created by : Sachin J
+
+
+- name: create disk without zoneid parameter
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../../vars/alicloud-creds.yml
+      
+     
+          
+  tasks:
+  
+   # Task: 1
+  
+  - block:
+    - name: Scenario 1 - create disk without zoneid parameter
+      ecs_disk:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        #zone: '{{ zone }}'         Create disk without zone parameter
+        #disk_name: '{{ disk_name }}'
+        disk_category: '{{ diskCategoryCloud }}'
+        #description: '{{ description }}'
+        size: '{{ size }}'
+        #status: '{{ status }}'
+        disk_tags: '{{ diskTags }}'  
+
+      
+      register: result1
+    - debug: var=result1
+
+    rescue:
+    - debug: msg="Failure Expected - We can not create a disk without region parameter"
+    
+
+    always:
+     - assert:
+        that: 
+          - "'failed' in result1" 
+
+    
+
+
+  

@@ -1,0 +1,62 @@
+#Ansible Module Name -- ecs_slb_vsg.py
+#Test Case : Delete Vserver Group
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating delete vserver group
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+    # Task : 1 Delete vserver group with invalid vsergroupid
+  - block:
+    - name: Scenario 1 - Delete vserver group with invalid vsergroupid
+      ecs_slb_vsg: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       vserver_group_id: '{{ vserverGroupInvalid }}'
+       load_balancer_id: '{{ loadBalancerId }}'
+       status: '{{ statusAbsent }}'
+        
+      register: delete_vsg_result_scn1
+    - debug: var=delete_vsg_result_scn1
+    
+    rescue:
+       - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+         when: no
+    
+  - block:
+    # Task : 2 Delete vserver group with valid vsergroupid
+    - name: Scenario 2 - Delete vserver group with valid vsergroupid
+      ecs_slb_vsg: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       vserver_group_id: '{{ vserverGroupIdDelete }}'
+       load_balancer_id: '{{ loadBalancerId }}'
+       status: '{{ statusAbsent }}'
+        
+      register: delete_vsg_result_scn2
+    - debug: var=delete_vsg_result_scn2
+    
+    rescue:
+       - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+         when: no
+
+    always:
+     - assert:
+        that:
+           - "'failed' in delete_vsg_result_scn1"
+
+           - "'failed' not in delete_vsg_result_scn2"
+
+        msg: 'Test pass FAILED !!!'
+    
+ 

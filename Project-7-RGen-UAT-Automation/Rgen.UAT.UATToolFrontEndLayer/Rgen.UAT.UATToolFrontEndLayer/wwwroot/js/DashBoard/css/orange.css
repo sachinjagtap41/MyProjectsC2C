@@ -1,0 +1,53 @@
+﻿@charset "utf-8";
+/* CSS Document */
+html{background-image:url("../images/bg.jpg");background-position:top center;background-repeat:no-repeat; background-color:none;} 
+bg{background-image:url("../images/bg.jpg");background-position:top center;background-repeat:no-repeat;} 
+
+a{color:#000;}
+a:hover{color:#1f2275;}
+a:focus {outline: none;}
+
+.nav ul li a{display:inline-block;padding:12px 20px;font-size:13px;font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;font-weight:normal;}
+.nav ul li a:hover, .nav ul li a.active{color:#4044b0 /*#1f2275;*/}
+
+.nav .user span b{font-weight:normal;color:#1f2275;}
+
+.col-lft .box-ft a{color:#1f2275;}
+.col-lft .box-ft a:hover{color:#000;}
+
+.orange{color:#1f2275;}
+ 
+.col-rgt .box a.new{color:#1f2275;}
+.col-rgt .box a.new:hover{color:#000;}
+
+/*
+table.gridDetails td a.proj{color:#1f2275;}
+table.gridDetails td a.proj:hover{color:#000;}
+*/
+
+a.pedit{background-image:url('/images/icon-edit.jpg');background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.pdelete{background-image:url("/images/icon-delete.jpg");background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+
+a.healthok{background-image:url("../icon-health-ok.jpg");background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.healthgood{background-image:url("../icon-health-good.jpg");background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+a.healthbad{background-image:url("../icon-health-bad.jpg");background-position:center center;background-repeat:no-repeat;width:25px;height:25px;display:inline-block;}
+
+.pager a{padding:0px 10px;display:inline-block;color:#1f2275;}
+.pager a:hover{padding:0px 10px;display:inline-block;color:#F30;}
+
+div#tabs{width:1220px;padding:8px;border:solid 1px #ccc;overflow:hidden;}
+div#rstnav {width:1016px;}
+div#rstnav a.t1, div#rstnav a.t2, div#rstnav a.t3, div#rstnav a.t4,div#rstnav a.t5,div#rstnav a.t6{width:90px;display:inline-block;padding:6px;text-align:center;background-image:url("../images/bg-tab.jpg");background-position:0px 0px;background-repeat:repeat-x;border:solid 1px #ccc;border-bottom:none;}
+div#rstnav a.t1:hover, div#rstnav a.t2:hover,div#rstnav a.t3:hover, div#rstnav a.t4:hover, div#rstnav a.t5:hover,div#rstnav a.t6:hover, div#rstnav a.t1hover, div#rstnav a.t2hover, div#rstnav a.t3hover, div#rstnav a.t4hover, div#rstnav a.t5hover, div#rstnav a.t6hover {width:90px;display:inline-block;text-align:center;background-image:url("../images/bg-tab.jpg");background-position:0px -31px;background-repeat:repeat-x;color:#000;border-bottom:solid 1px #ffe08d;}
+
+div#tabs h3{color:#1f2275;font-size:14px;font-weight:bold;padding:0px 0px 5px 0px;float:left;}
+div#tabs p{padding:2px 0px 5px 0px;}
+
+.addNew{color:#1f2275;}
+.addNew:hover{color:#f30;}
+
+.col-rgt .breadcrums a{color:#1f2275;}
+.col-rgt .breadcrums a:hover{color:#000;}
+
+
+

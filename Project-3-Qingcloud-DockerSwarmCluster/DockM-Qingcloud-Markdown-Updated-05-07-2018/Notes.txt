@@ -1,0 +1,5 @@
+Basic TestCases are present at location
+
+http://srvtfs17:8080/tfs/click2cloud-china/Qing-Cloud-App-Center/Qing-Cloud-App-Center%20Team/_git/dockm-docs
+
+-----------------------------------------------------------------------------------------

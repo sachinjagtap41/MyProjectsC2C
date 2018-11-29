@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta name="GENERATOR" content="Microsoft SharePoint" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <meta http-equiv="Expires" content="0" />
+
+
+    <link href="~/js/DashBoard/css/corev15.css" rel="stylesheet" type="text/css" />
+    <link href="~/js/DashBoard/css/orange.css" rel="stylesheet" type="text/css">
+    <link href="~/js/DashBoard/css/style.css" rel="stylesheet" type="text/css">
+    <link href="~/js/DashBoard/css/tooltip.css" rel="stylesheet" type="text/css">
+    <link href="~/js/DashBoard/css/pagination.css" rel="stylesheet" type="text/css">
+    <link href="~/js/DashBoard/css/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css">
+    @*<link href="~/js/DashBoard/css/rte.css" rel="stylesheet" type="text/css" />*@
+    <link href="~/css/Custom.css" rel="stylesheet" />
+    
+
+    <script type="text/javascript" src="https://static.sharepointonline.com/bld/_layouts/15/16.0.5729.1207/1033/initstrings.js"></script>
+
+    <script type="text/javascript" src="~/js/DashBoard/js/jquery-1.5.2.min.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/jquery-ui-1.8.11.custom.min.js"></script>
+
+    @*<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+
+    <script src="~/js/DashBoard/js/init.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/Resource.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/security.js"></script>
+    @*<script type="text/javascript" src="~/js/DashBoard/js/jPoint.min.js"></script>*@
+    
+    <script type="text/javascript" src="~/js/DashBoard/js/main.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/AddUsers.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/jquery.betterTooltip.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/Formatting.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/jquery.pagination.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/serviceLayer.js"></script>
+    <script src="~/js/Utility.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/DashBoard/js/msajaxbundle.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/multiselect.js"></script>
+    <script type="text/javascript" src="~/js/Common/UserInfo.js"></script>
+
+
+    @* for common Page *@
+
+    <script type="text/javascript" src="~/js/Common/showgrid.js"></script>
+
+    @* End *@
+
+    @* for Stakeholder Page *@
+
+    <script type="text/javascript" src="~/js/StakeholderDashboard/Elycharts/raphael.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/Elycharts/elycharts.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/Elycharts/elychartsTemplates.js"></script>
+    
+    <script type="text/javascript" src="~/js/StakeholderDashboard/more-show.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/scenario-show.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/tab-gui.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/Elycharts/raphael.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/report_newDesign_harshal.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/report_Consolidate1.js"></script>
+    <script type="text/javascript" src="~/js/StakeholderDashboard/ExportToPPT.js"></script>
+    @* End *@
+
+
+
+
+
+
+
+    @* for TestPass Page *@
+    <script type="text/javascript" src="~/js/TestPass/CreateDD.js"></script>
+    <script type="text/javascript" src="~/js/TestPass/TestPass.js"></script>
+    
+    <script type="text/javascript" src="~/js/TestPass/html2canvas.js"></script>
+    <script type="text/javascript" src="~/js/TestPass/jquery.plugin.html2canvas.js"></script>
+    
+    @* End *@
+
+
+    @*Test Step*@
+    <script type="text/javascript" src="~/js/TestStep/teststep.js"></script>
+    <script type="text/javascript" src="~/js/Configuration/tryconfiguration.js"></script>
+    <script type="text/javascript" src="~/js/Common/multiselectddl.js"></script>
+    <script type="text/javascript" src="~/js/TestStep/copyimagewithdata.js"></script>
+    @*End*@
+
+
+
+
+
+
+
+
+
+    
+    <script type="text/javascript" src="~/js/DashBoard/js/dashboard.js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/richtext_copy(1).js"></script>
+    <script type="text/javascript" src="~/js/DashBoard/js/html2xhtml.min.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        themeColor = "blue";
+        var isRootWeb = true;
+        var isPortfolioOn = true;
+        var currentUserEmailID = null;
+        var currentUserFullName = null;
+        var currentUserLogInName = null;
+        var currentUserSPUserID = null;
+        var currentUser = "";
+        //var sipUrl = 'harshal.wadaskar@rgensoft.com';
+        var sipUrl = 'contact@click2cloud.net';
+        var nameCtrl = null;
+        var _spUserId = '';
+        gPortfolioID = '';
+
+        $(document).ready(function () {
+
+            if (!func._checkIfUserLoginorNot()) {
+                func.redictFailed();
+                                return false;
+            }
+            else {
+                _spUserId = func.GetSPUserId();
+                // _spUserId = '19';
+                Main.pageLoad();
+                /*show login user in ribbon*/
+                   UserInfo.showUserName();
+
+
+                var Urls = CheckUrl();
+                if (Urls.toLowerCase()=='dashboard') {
+                    customPageLoad();
+                }
+                if (themeColor == "blue") {
+                    $('span[title="Open Menu"] a').mouseenter(function () {
+                        $('span[title="Open Menu"]').css('background-color', '#e7e8ff');
+                    });
+                    $('span[title="Open Menu"] a').mouseleave(function () {
+                        $('span[title="Open Menu"]').css('background-color', 'white');
+                    });
+                }
+            }
+
+
+        });
+
+        /*Added for Yammer and Lync integration*/
+        function ShowOOUI() {
+            try {
+                if (!nameCtrl) {
+                    return;
+                }
+                nameCtrl.ShowOOUI(sipUrl, 0, 15, 15);
+            }
+            catch (ex) {
+            }
+        }
+
+        function HideOOUI() {
+            try {
+                if (!nameCtrl) {
+                    return;
+                }
+                nameCtrl.HideOOUI();
+            }
+            catch (ex) {
+            }
+        }
+    </script>
+
+    <style type="text/css">
+        /***********************trupti : log in user in ribbon*/
+        .userNameDiv {
+            position: relative;
+            color: #0F0;
+            font-weight: bold;
+            /*extra*/
+            margin-bottom: 10px;
+            padding-left: 20px;
+            white-space: nowrap;
+            display: inline-block; /*important*/
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .userWDiv:hover {
+            background-color: #e7e8ff;
+            border-right: 1px solid #ccc;
+        }
+
+        .logOutDiv:hover {
+            background-color: #e7e8ff;
+        }
+
+        .userWDiv {
+            padding: 10px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+        .logOutDiv {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 5px;
+            z-index: 100; /* Thanks Diego for pointing out the typo here */
+            background-color: white;
+            display: none;
+            /*extra*/
+            padding: 5px 10px 0px 10px;
+            border-radius: 0px 0px 5px 5px;
+        }
+
+        /**********trupti***********/
+        .tTip {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+
+        .ms-support-icon {
+            float: left;
+            margin-right: 0.5em;
+            cursor: pointer;
+            background-image: url(/images/lync-support.png);
+            background-repeat: no-repeat;
+            background-position: bottom left;
+            padding: 15px 0px 0px 20px;
+        }
+
+        .ms-imnlink {
+            padding: 0px 0px 0px 0px !important;
+        }
+
+        ms-imnSpan1 {
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="overflow-y: scroll !important;overflow-x: auto !important">
+    <form enctype="multipart/form-data">
+
+
+
+        <div id="activeX-form" title="Prerequesites for Active-X" style="display:none; margin-bottom:15px;">
+            <table>
+                <tr>
+                    <td>
+                        <img id="imgActivex" src="/images/Information.png" alt="" style="height:20px;width:20px;" /><span style="vertical-align:top; margin-left:5px">
+                            <b>Steps to enable Active-X settings of Internet Explorer:</b>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="margin-left:30px">
+                            <b>Step1 :</b> Go to Tools &gt;
+                            Internet options &gt; Security &gt; Local Intranet Zone
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="margin-left:30px">
+                            <b>Step2 :</b> Select Sites &gt;
+                            Click Advanced and add current url in to the list.
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="margin-left:30px">
+                            <b>Step3 :</b> Go to Local
+                            Intranet Zone &gt; Custom level and enable ‘Initialize and
+                            script Active-X controls not marked as safe for scripting’ setting.
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="margin-left:30px">
+                            <b>Step4 :</b> Refresh the
+                            browser
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span style="margin-left:30px;text-align:left;">
+                            <b>Note:</b>
+                            Enabling Active-x in your browser will not harm your
+                            software security in any manner.
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="wrapper-hd" style="background-size: 100% 100%;">
+
+            <div class="header" style="padding-left: 20px;">
+                <a class="adv" style="border: currentColor; height: 90px; cursor: default;" href="#">
+                    <img style="width: 1005px;" alt="Customized banner goes here" src="~/images/theme/banner-dashboard.jpg" complete="complete">
+                </a>
+                <a class="logo" style="float: left; cursor: default;" href="#">
+                    <img style="padding-bottom: 6px; padding-left: 20px; margin-top: 5px;" alt="logo" src="~/images/logo-c2c.png">
+
+                </a>
+            </div>
+            <table style="width:100%" class="ribbonTbl">
+                <tr style="height: 43px;">
+                    <td style="width: 80%; padding-left: 8px;">
+                        <div class="nav">
+                            <ul style="width:1000px">
+                                @*<li><a id="dash" href="/Views/Dashboard/Index.cshtml" class="tTip">Dashboard</a></li>*@
+                                <li><a id="dash" href="/Dashboard/Index" class="tTip">Dashboard</a></li>
+                                <li id="tabTestManagement">
+                                    <a id="testMgnt" href="/Dashboard/ProjectMgnt" class="tTip">Test Management</a>
+                                </li>
+                                <li><a id="rpt" href="/Report/Index" class="tTip">Reports</a></li>
+                                <li><a id="qury" href="/Query/Index" class="tTip">Query</a></li>
+                                <li><a href="/Feedback/Index" id="fee" class="tTip">Feedback</a></li>
+                                <li><a id="sync" style="color: gray" class="tTip">Sync</a></li>
+                                <li><a id="config" href="/Configuration/Index" class="tTip">Configuration</a></li>
+                                <li><a id="trig" href="/Triage/Index" class="tTip">Triage</a></li>
+                                <li><a id="dashStak" href="/StakeholderDashboard/Index" class="tTip">Stakeholder Dashboard</a></li>
+                                <li><img id="yammer" src="/images/Yammerlogo.png" style="padding:12px 7px 0px 5px;cursor:pointer;width:23px" /></li>
+                                <li>
+                                    <div class="ms-support" onmouseover="ShowOOUI()" onmouseout="HideOOUI()">
+                                        <div class="ms-support-icon" id="indicator" onclick="window.open('sip:contact@click2cloud.net', '_self');" style="margin-right:0px;">
+                                            <span class="ms-imnSpan1">
+                                                <a class="ms-imnlink" onclick="IMNImageOnClick(event);return false;" href="#">
+                                                    <span id="indicatorImg" class="ms-spimn-presenceWrapper ms-imnImg ms-spimn-imgSize-10x10" style="position:relative;white-space:nowrap;overflow:hidden">
+                                                        <img id="StatusImg" style="max-width:none !important; cursor:pointer;" class="ms-spimn-img ms-spimn-presence-offline-10x10x32" src='/images/spimn.png' />
+                                                    </span>
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </td>
+                    <td align="left">
+                        <span class="userNameDiv">
+                            <span id="userW" class="userWDiv"></span>
+                            <span class="logOutDiv">
+                                <a asp-area="" style="color:black" id="Logout" asp-controller="Login" asp-action="Index">
+                                    Log Out
+                                </a>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="col-full">
+                <div>
+                    @RenderBody()
+                </div>
+
+            </div>
+        </div>
+        <div id="wrapper-ft" style="background-size: 100% 100%;">
+        </div>
+        <div id="autoHideAlert"></div>
+
+
+        <div id="popup" class="modal-box">
+            <header>
+                <a href="#" class="js-modal-close close">×</a>
+                <h3><a href="http://www.jqueryscript.net/tags.php?/Modal/">Modal</a> Title</h3>
+            </header>
+            <div class="modal-body">
+                <p>Modal Body</p>
+            </div>
+            <footer>
+                <a href="#" class="js-modal-close">Close Button</a>
+            </footer>
+        </div>
+    </form>
+</body>
+</html>

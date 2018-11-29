@@ -1,0 +1,50 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify Security-Group is not deleted when state parameter is not provided
+#Ansible Playbook created by - Sachin J
+
+
+- name: Delete security group without State parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  
+    # Task 1:
+
+  tasks:
+  
+  
+   - block: 
+   
+   
+     - name: Scenario 1 - Delete security group without State parameter
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ SGId }}'
+        #state: '{{ deletestatusInvalid }}'  Without state parameter
+        
+        
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+     always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+           - "'provide rules for authorization' in result1.msg" 
+           

@@ -1,0 +1,123 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Create account with command parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create account with command parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Create account with invalid command parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ commandInvalid }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 2 - Create account without command parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause :
+        seconds: 20
+        
+   - block :
+      - name: Scenario 2.1 - delete account
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceId }}'
+          account_name: '{{ accName }}'  
+        register: result_del_scn2
+      - debug: var=result_del_scn2
+     
+   - block :
+     - name: Scenario 3 - Create account with blank command parameter
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: 
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn3
+     - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 4 - Create account with command parameter as Command
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         Command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn4
+     - debug: var=result_scn4 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+          #  - "'value of command must be one of: create,delete,reset_password,reset,grant,revoke, got: crated' in result_scn1.msg"
+            
+            - "'failed' not in result_scn2"
+            - "'failed' not in result_del_scn2"
+            
+            - "'failed' in result_scn3"
+            - "'value of command must be one of: create,delete,reset_password,reset,grant,revoke, got: None' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Command' in result_scn4.msg"
+            
+         msg: 'Test pass FAILED !!!'

@@ -1,0 +1,87 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create Rds instance with all parameters
+#Ansible Playbook created by - Sachin J
+---
+
+- name: Create RDS instance with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+   - ../../../vars/alicloud-creds.yml
+   - ../../vars/test-environment.yml
+   - ../../vars/general-parameters.yml
+  tasks:
+   - block:
+     - name: Scenario 1 - Create an RDS instance with all parameters
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: cn-beijing
+         zone: '{{ zone }}'
+         command: '{{ command }}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: rds.mysql.s2.xlarge
+         instance_net_type: Intranet
+         security_ip_list: '{{ securityIpList }}'
+         instance_description: '{{ instanceDescription }}'
+         pay_type: '{{ payType }}'
+         network_type: VPC
+         connection_mode: '{{ connectionModeSafe }}'
+         vpc_id: vpc-2ze5hrb3y5ksx5oa3a0xa 
+         vswitch_id: vsw-2zeob1v20umn67x6i5ybx
+         private_ip_address: 192.168.1.11
+#         allocate_public_ip : '{{ allocatePublicIpYes }}'
+         public_connection_string_prefix: dfsflcodfsdfectionstr
+         public_port: '{{ port }}'
+         character_set_name: utf8 
+         db_name: mysqldatabase
+         db_description: mysqldescription
+         preferred_backup_time: 22:00Z-23:00Z
+         maint_window: 22:00Z-02:00Z  
+         preferred_backup_period: Saturday, Sunday
+         backup_retention_period: 8
+         wait: true
+         wait_timeout: 5
+         
+         
+        
+       register: result_scn1
+     - debug: var=result_scn1
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 3
+      
+      
+  # Task : 2
+      
+   - block: 
+     - name: Scenario 2 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn1.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn2
+     - debug: var=result_scn2
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+      
+     always: 
+      - assert: 
+         that: 
+          - "'failed' not in result_scn1" 
+          - "'failed' not in result_scn2" 
+         msg: 'Test pass FAILED !!!'   

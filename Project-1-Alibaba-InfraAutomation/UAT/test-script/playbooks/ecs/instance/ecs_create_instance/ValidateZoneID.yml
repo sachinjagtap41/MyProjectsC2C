@@ -1,0 +1,131 @@
+# Ansible Module Name - ECS
+# Interface : CreateInstance
+# Playbook Contains Test-Cases for RegionId parameter
+# Playbook created by : Sachin J
+
+- name: create instance
+  hosts: localhost
+  connection: local
+
+  
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+    
+    
+  tasks:
+  
+  # Task: 1
+  
+  - block:
+    - name: Validating - Valid ZoneId / Valid RegionId  Parameter (Valid Test-Case)
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'  # Valid
+        zone: '{{ zone }}'    # Valid
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_1
+    - debug: var=create_instance_result_1
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+ # Task: 2
+ 
+  - block:
+    - name: Validating - Invalid ZoneId / Valid RegionId Parameter (Invalid Test-Case)
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'   # Valid
+        zone: '{{ zoneInvalid }}'   # Invalid
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_2
+    - debug: var=create_instance_result_2
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+  - pause:
+        seconds: 15 
+  # Task: 3
+  
+  - block:
+    - name: Validating - Default ZoneId / Valid RegionId Parameter (Valid Test-Case)
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'    # Valid
+        # zone: '{{ zone }}'   Default ZoneId
+        image_id: '{{ windowsImageId }}'
+        instance_type: '{{ instanceType }}'
+        instance_name: '{{ instanceName }}'
+        description: '{{ description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ password }}'
+        state: '{{ state }}'
+      register: create_instance_result_3
+    - debug: var=create_instance_result_3
+
+    rescue:
+    - fail:
+        msg: "The fail block is added just to handle exception. This block won't be executed ever."
+      when: no
+
+
+
+    always:
+     - assert:
+         that:
+            - "'failed' not in create_instance_result_1"
+
+            - "'failed' in create_instance_result_2"
+            - "'The specified zone does not exists.' in create_instance_result_2.msg[0]['Error Message']"
+
+            - "'failed' not in create_instance_result_3"
+
+         msg: 'Test pass FAILED !!!'
+
+  - pause:
+        seconds: 15     
+  
+  post_tasks:
+
+    - name: Deleting newly created instance in Task 1
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        instance_id: '{{ create_instance_result_1.result[0].instance_id }}'
+        status: absent
+      when:
+         - "'failed' not in create_instance_result_1"
+
+    - name: Deleting newly created instance in Task 3
+      ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        instance_id: '{{ create_instance_result_3.result[0].instance_id }}'
+        status: absent
+      when:
+         - "'failed' not in create_instance_result_3"

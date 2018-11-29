@@ -1,0 +1,136 @@
+<html><head><style>body {
+   color: black;
+}
+</style></head><body><h2 id="click2cloud-dockm">Click2cloud DockM</h2>
+<p><strong>DockM</strong> is a lightweight management UI which allows you to easily manage the containers running on Docker hosts or Docker Swarm clusters. It is a platform for automating deployment, scaling the containerized applications across clusters of hosts.
+The goal of DockM on QingCloud AppCenter is to help end users easily set up a Docker swarm cluster with preconfigured DockM tool in just few minutes. It also supports cluster horizontal, vertical scaling, node monitoring and alarming etc. </p>
+<h3 id="active-endpoints">Active Endpoints</h3>
+<p>Lists the endpoints for which the user is authorized by the Administrator.</p>
+<h3 id="endpoint-actions">Endpoint Actions</h3>
+<p>This section provides the detailed overview of Docker and allows you to manage stacks, services, containers, images, networks, volumes and swarm.</p>
+<h3 id="dashboard">Dashboard</h3>
+<p>Dashboard page displays the running and stopped containers, number of downloaded Docker images, number of volumes and networks. You don’t have memorize Docker commands. Everything can be done from the Dashboard itself.</p>
+<p><img src="screenshot/dashboardPage.png" alt=""> </p>
+<h3 id="app-templates">App Templates</h3>
+<p>The App Templates page shows some ready-made available templates such as Docker image registry, Nginx, Httpd, MySql, WordPress etc. You can create your own custom templates by specifying the path of JSON file of GitHub repository, local system from Settings tab.</p>
+<p><img src="screenshot/apptemplate.png" alt=""></p>
+<p>To deploy a Container, just click on the respective template. Let us launch Redis Container. To do so, click on the Redis template. Enter the Container name, select network type (ex. bridge mode). click on Show advanced options and set port number.
+Finally, Click Create.</p>
+<p><img src="screenshot/rediscontainer.png" alt=""></p>
+<h4 id="linuxserver-io">LinuxServer.io</h4>
+<p>App Templates contains another tab <code>LinuxServer.io</code> which shows images related to Linux environment.</p>
+<p><img src="screenshot/linuxserverio.png" alt=""></p>
+<h3 id="stacks">Stacks</h3>
+<p>Multi-container Docker applications can be run on a single Docker engine by using stack files. Stack file defines environment variables, deployment tags, the number of containers, and related environment-specific configuration.
+Copy the contents of docker-compose.yml file in the provided web-editor text box and create the stack. We can also upload or specify the path of GitHub repository for your docker-compose.yml file.</p>
+<p><img src="screenshot/stack.png" alt=""></p>
+<p>The stacks list displays the created stacks, status, service count and deployment hosts.</p>
+<p><img src="screenshot/stack2.png" alt=""></p>
+<h3 id="services">Services</h3>
+<p>Services allows the Docker engine to know about the state of the services that we want <code>up</code> at all times. Now that the engine knows about the desired state, it can take immediate measures to correct things when the actual state differs. If a container dies unexpectedly at any time, the engine can bring another one up automatically. If an entire node goes down taking a few containers with it, the engine detects it and can bring these containers back up on a healthy node.</p>
+<p><img src="screenshot/services.png" alt=""></p>
+<p>The service created by using service option can be schedule as Global, Replicated. We can also create the entry points, working directory, networks, mapped volumes etc.</p>
+<p><img src="screenshot/services2.png" alt=""></p>
+<h3 id="containers">Containers</h3>
+<p>The Containers page that shows the list of running and Stopped containers.</p>
+<p><img src="screenshot/containers.png" alt=""></p>
+<p>To create a Container, just hit <code>Add Container</code> button on the top. Enter the Container name and Image name. click on map additional port and set port number.
+Finally, Click Start Container.</p>
+<p><img src="screenshot/startcontainer.png" alt="">  </p>
+<p>To view the complete overview of any container, just click on the name of the container.</p>
+<p><img src="screenshot/insideofContainer.png" alt="">  </p>
+<p>Click on the <code>Stats</code> button to view what’s happening in the newly launched Container.</p>
+<p><img src="screenshot/stats.png" alt="">   </p>
+<p>Similarly, click on the <code>Logs</code> button to view complete log details of the Container.</p>
+<p><img src="screenshot/logs.png" alt=""></p>
+<p>Another notable feature is you can easily connect to the console of your Container by clicking on the <code>CONNECT</code> button.</p>
+<p><img src="screenshot/console.png" alt=""> </p>
+<p>You can see the Console of the container, and disconnect it by clicking on <code>DISCONNECT</code> button.</p>
+<p><img src="screenshot/console2.png" alt=""> </p>
+<h3 id="shipm">ShipM</h3>
+<p><code>ShipM</code> can be used for building Docker images from source code. It produces ready-to-run images by injecting source code into a Container and letting the Container prepare that source code for execution. By creating self-assembling builder images, we can version and control your build environments exactly like we use Docker images to version our runtime environments.
+The Builder image name is nothing but the Docker image to be used in building the final image.
+The Source Code URL is the URL of a Git repository or a local path to the source code.
+The New image name is the name of the final Docker image.
+Here We can see the Complete Build logs. </p>
+<p><img src="screenshot/buildlogs.png" alt=""></p>
+<h3 id="docker-images">Docker Images</h3>
+<p>In this section, we can view the list of downloaded docker images. </p>
+<p><img src="screenshot/images.png" alt=""></p>
+<p>You can pull the image from any docker registry by specifying the image name.</p>
+<p><img src="screenshot/pullImage.png" alt=""></p>
+<p>To view the complete overview of any image, just click on the name of the image.</p>
+<p><img src="screenshot/clickonImage.png" alt=""></p>
+<p>To remove any image, just select it and click Remove. The selected image will be removed.</p>
+<h3 id="networks">Networks</h3>
+<p>This section allows to add a new network, change the network type, assign/change IP address, remove existing networks.</p>
+<p><img src="screenshot/createNetwork.png" alt=""></p>
+<p>Clicking on <code>Add network</code> button shows the Create network page providing the options for Name, Subnet, Gateway, Driver, Driver options, Labels for the network.</p>
+<p><img src="screenshot/networks.png" alt=""></p>
+<h3 id="volumes">Volumes</h3>
+<p>Here we can view existing Docker volumes, create new one, delete them if we no longer need them.</p>
+<p><img src="screenshot/volumes.png" alt=""></p>
+<p>Clicking on <code>Add volume</code> button shows the <code>Create volume</code> page containing Name, Driver, Driver options, Access control options.</p>
+<p><img src="screenshot/newVolume.png" alt=""></p>
+<h3 id="configs">Configs</h3>
+<p><code>Configs</code>, allow you to store non-sensitive information, such as configuration files, outside a service’s image or running containers.
+This allows you to keep your images as generic as possible, without the need to bind-mount configuration files into the containers or use environment variables.</p>
+<p><img src="screenshot/dockerconfig.png" alt=""></p>
+<h3 id="secrets">Secrets</h3>
+<p>This section allows to add a secret and remove existing secrets. We can see the added secrets list with the created date and time.</p>
+<p><img src="screenshot/secrets.png" alt=""></p>
+<p>Clicking on <code>Add secret</code> button shows the <code>Create secret</code> page containing Name, Secret, Encode options, Labels.</p>
+<p><img src="screenshot/newSecret.png" alt=""></p>
+<p>To remove any secrets, just select it and click <code>Remove</code>. The selected secrets will be removed.</p>
+<h3 id="swarm">Swarm</h3>
+<p>In Swarm, we can see the Cluster overview which is nothing but Cluster status and Node status, which Manage the swarm.</p>
+<p><img src="screenshot/swarm.png" alt=""></p>
+<h2 id="dockm-setting">DockM Setting</h2>
+<p>This section provides the option for User Management, Endpoints, Registries and, Application Settings.</p>
+<h3 id="user-management">User Management</h3>
+<h3 id="administrator-user">Administrator User</h3>
+<p>Administrator User can create other Administrator Users, Normal Users. Administrator user can be created by enabling the Administrator button, and clicking on <code>Create user</code> button.</p>
+<p><img src="screenshot/adminuser1.png" alt=""></p>
+<p>Only the Administrator User is responsible to Authorize Users, Teams, Team Leaders for the specific Endpoint.
+Administrator User is the only person who has control over all the tabs in the DockM application.    </p>
+<h3 id="team">Team</h3>
+<h3 id="users">Users</h3>
+<p>Administrator User can create many normal and Administrator User from the Users tab. A normal user can be created without enabling the Administrator button. Enter the Username and Password. click on <code>Create user</code> button.</p>
+<p><img src="screenshot/joe.png" alt=""></p>
+<p>Clicking on <code>Teams</code> view shows the Teams page providing the options for Name and select box for the Selecting team leader.</p>
+<p><img src="screenshot/teamleader.png" alt=""></p>
+<p>Click on created team to check the assignment of team leader.  </p>
+<p><img src="screenshot/teamleadauthentication.png" alt=""></p>
+<p>After logging in into the application, Normal User can only see the tabs present under Endpoint Actions view and cannot see the tabs under <code>DockM Settings</code> view. Normal User can switch in between the Endpoints which are authorized by the Administrator.</p>
+<p><img src="screenshot/normaluser.png" alt=""></p>
+<h3 id="team-leader-">Team Leader:</h3>
+<p>Team Leader can only see the User Management, Teams tab from the DockM Settings view, Team Leader can add other users in the team which is created by Administrator, unless the user is authorized for the endpoint by Administrator the user will not be able to log in into the application.</p>
+<p><img src="screenshot/teamleaderview.png" alt=""></p>
+<p>Clicking on Teams tab, shows the Team Details page. We can add and remove the Users from the Team. Simply click on a user to move it from one table to the other.</p>
+<p><img src="screenshot/leadpermission.png" alt=""></p>
+<h3 id="endpoints">Endpoints</h3>
+<p>This tab provides the option to create the Endpoints, only Administrator User can create the Endpoints and validate TLS certificates. </p>
+<p><img src="screenshot/endpoint.png" alt=""></p>
+<p>By using manage access option Administrator User gives the permission to Users, Team Leaders</p>
+<p><img src="screenshot/endpoint.png" alt=""></p>
+<p>Clicking on Manage Access, shows the Endpoint Access page. In this page, we can select which user or team can access this endpoint by moving them to the authorized access table. Simply click on a user or team entry to move it from one table to the other.</p>
+<h3 id="registries">Registries</h3>
+<p>Registries contains the all available registries. Administrator can Update and add registries. </p>
+<p><img src="screenshot/registries1.png" alt=""> </p>
+<p>Administrator can create another custom registry. Clicking on Add Registry buttons shows the Create Registry page with the options Quay.io and Custom registry. For adding Quay.io i.e. Quay container registry provide Registry Details as Username and Password.</p>
+<p><img src="screenshot/registries2.png" alt=""></p>
+<p>You can create your own custom registry by providing the options for Registry Details as Name, Registry URL and Authentication for Custom registry.
+In Authentication tab provide the Username and Password.</p>
+<h3 id="settings">Settings</h3>
+<p>Settings contains all the Application settings and all hidden container settings</p>
+<p><img src="screenshot/settings1.png" alt=""></p>
+<p>Administrator User can add the Custom Logo by specifying the URL with specified image dimensions. By enabling the Use custom templates option, you can create your own custom templates by specifying the path of JSON file of GitHub repository. If you don’t want external contributions such as Linuxserver.io in the side bar, you can hide it by enabling the Hide external contributions. </p>
+<p><img src="screenshot/services2.png" alt=""></p>
+<h4 id="authentication">Authentication</h4>
+<p>There are two type of Authentication methods one is Internal and second is LDAP authentication.
+When you are using Internal authentication DockM will encrypt user passwords and store credentials locally.</p>
+<p><img src="screenshot/authentication.png" alt=""></p>
+<p>When you are using LDAP authentication, DockM will delegate user authentication to a LDAP server. Exception for the admin user that always uses internal authentication.</p>
+<p><img src="screenshot/ldap.png" alt=""></p>
+<p><img src="screenshot/ldap2.png" alt=""></p>
+</body></html>

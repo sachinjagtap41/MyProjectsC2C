@@ -1,0 +1,90 @@
+sudo yum update -y
+sudo yum group install "Development Tools"
+sudo yum -y install git-all
+sudo yum -y install memcached
+sudo yum -y install postgresql-devel postgresql-server
+sudo yum -y install bzip2 libffi-devel readline-devel
+sudo yum -y install libxml2-devel libxslt-devel patch
+sudo yum -y install sqlite-devel
+curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash -
+curl -sL https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+sudo yum install yarn
+sudo yum -y install nodejs
+sudo yum -y install libcurl-devel
+rpm -q --whatprovides npm || sudo yum -y install npm
+sudo yum -y install openssl-devel
+sudo yum -y install cmake
+sudo yum -y install openscap
+sudo systemctl enable memcached
+sudo systemctl start memcached
+
+sudo yum -y install centos-release-scl
+sudo systemctl stop postgresql-server
+sudo systemctl disable postgresql-server
+sudo yum -y remove 'postgresql-*'
+gem uninstall pg
+
+sudo yum -y install \
+rh-postgresql95-postgresql-server \
+rh-postgresql95-postgresql-devel
+
+scl enable rh-postgresql95 bash
+source /opt/rh/rh-postgresql95/enable
+
+cat > $HOME/.bash_profile <<.
+source /opt/rh/rh-postgresql95/enable
+.
+
+sudo su
+scl enable rh-postgresql95 bash
+postgresql-setup initdb
+PGDATA=/var/opt/rh/rh-postgresql95/lib/pgsql/data
+sudo grep -q '^local\s' $PGDATA/pg_hba.conf || echo "local all all trust" | sudo tee -a $PGDATA/pg_hba.conf
+sudo sed -i.bak 's/\(^local\s*\w*\s*\w*\s*\)\(peer$\)/\1trust/' $PGDATA/pg_hba.conf
+sudo systemctl enable rh-postgresql95-postgresql
+sudo systemctl start rh-postgresql95-postgresql
+su - postgres
+scl enable rh-postgresql95 bash
+psql -c "CREATE ROLE root SUPERUSER LOGIN PASSWORD 'smartvm'"
+
+---------------------Switch user to linux user or bash(Open New CLI)----------------------------------
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+\curl -sSL https://get.rvm.io | bash -s stable --ruby=2.5.1
+\curl -sSL https://get.rvm.io | bash -s stable --rails
+-------------Here this will ask for postgres password, just skip this permission (Open New CLI)----------------
+
+sudo yum install rubygems
+gem install bundler
+
+sudo npm install -g bower
+sudo npm install -g yarn
+sudo npm install -g gulp-cli
+sudo npm install -g webpack
+
+psql -V
+psql (PostgreSQL) 9.5.14
+
+node -v
+v10.12.0
+
+npm -v
+6.4.1
+
+ruby -v
+ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-linux]
+
+rails -v
+Rails 5.2.1
+
+bower -v
+1.8.4
+
+yarn -v
+1.10.1
+
+git clone --single-branch -b dev-merge-231018 https://github.com/Click2Cloud/manageiq-ui-classic.git
+git clone --single-branch -b dev-merge-231018 https://github.com/Click2Cloud/manageiq.git
+git clone --single-branch -b dev-merge-231018 https://github.com/Click2Cloud/manageiq-schema.git
+git clone --single-branch -b dev https://github.com/Click2Cloud/manageiq-providers-ansible_tower.git
+git clone --single-branch -b dev-aniket https://github.com/Click2Cloud/manageiq-providers-telefonica.git
+

@@ -1,0 +1,60 @@
+#Ansible Module Name -- ecs_slb.py
+#Test Case : Remove Backend Server
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating Remove Backend Server With Alias Parameter
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  # Task 1 : 
+  - block:
+    - name: Scenario - 1 Remove backend servers with all the alias parameter
+      ecs_slb: 
+       ecs_access_key: '{{ aliyun_acs_access_key }}'                # ecs_access_key   
+       ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'         # ecs_secret_key  
+      # acs_region: '{{ region }}'                                   # acs_region
+       ecs_slb: '{{ loadBalancerId }}'                              # ecs_slb
+       backend_servers: '{{ backendServers1 }}'                     
+       state: '{{ statusAbsent }}'                                        # state 
+                                     
+      register: RemoveBackendServerResult1
+    - debug: var=RemoveBackendServerResult1
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+    
+   
+  - block:
+   # Task 2 :
+    - name: Scenario - 2 Remove backend servers with all the alias parameter
+      ecs_slb: 
+       access_key: '{{ aliyun_acs_access_key }}'                # access_key      
+       secret_key: '{{ aliyun_acs_secret_access_key }}'         # secret_key   
+      # ecs_region: '{{ region }}'                               # ecs_region  
+       ecs_slb: '{{ loadBalancerId }}'                            
+       backend_servers: '{{ backendServers2 }}'                     
+       state: '{{ statusAbsent }}' 
+                                          
+      register: RemoveBackendServerResult2
+    - debug: var=RemoveBackendServerResult2
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+         that:
+            - "'failed' not in RemoveBackendServerResult1"
+            - "'failed' not in RemoveBackendServerResult2"
+         msg: 'Test pass FAILED !!!'
+
+
+    

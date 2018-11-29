@@ -1,0 +1,46 @@
+# Ansible Module Name - ECS
+# Playbook Contains Test-Cases for Modifying instance attribute after setting environment variables
+# Playbook created by : Sachin J
+
+
+- name: Validating modify instance attribute after setting environment variables
+  hosts: localhost
+  connection: local
+ 
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+        
+  tasks:
+   - block:
+    
+    # Before executing this playbook environment variables must be set
+   
+     # Tasks : 1
+     
+     - name: Validating modify instance attribute after setting environment variables
+       ecs:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+        attributes: '{{ modifyAttributeMultipleInstances }}'
+        state: '{{ state }}'
+        
+       register: result
+     - debug: var=result
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+     always:
+     - assert:
+        that:
+           - "'failed' not in result"
+      
+        msg: 'EXPECTED - SUCCESS!!! 
+               Playbook FAILED due to improper input values. 
+               REASON: {{ result }}'

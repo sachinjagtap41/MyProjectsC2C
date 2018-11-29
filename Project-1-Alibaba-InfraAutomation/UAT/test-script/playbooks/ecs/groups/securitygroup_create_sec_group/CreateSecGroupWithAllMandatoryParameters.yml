@@ -1,0 +1,65 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify that secruity group is created with all the mandatory parameters
+#Ansible Playbook created by - Sachin J
+
+- name: Validating security group is created with mandatory parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block:
+     - name: Scenario - 1 Create security group with all the mandatory parameters
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+         state: '{{ status }}'
+         name: '{{ SGName }}'
+         description: '{{ SGDescription }}'
+    
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+  post_tasks:   
+   - block: 
+   
+     - name: Scenario - 1 Deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ result1.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deleteResult
+     - debug: var=deleteResult
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     when:
+      - "result1.changed ==  True"   
+     
+     always:
+     - assert:
+        that: 
+           - "'failed' not in result1" 
+           - "'failed' not in deleteResult" 
+           
+           

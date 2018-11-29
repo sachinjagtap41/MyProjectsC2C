@@ -1,0 +1,301 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating SLB Name Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating SLB Name Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+  # Task 1 : Validating SLB Name with numbers
+   - pause:
+        seconds: 20
+   - block:
+      - name: Scenario 1 - Validating SLB Name with numbers
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          load_balancer_name: '{{ SLBNameNos }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn1
+      - debug: var=create_slb_result_scn1
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+         
+   - pause:
+        seconds: 20
+          
+   - block:
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn1.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn1"
+
+   # Task 2 : Validating SLB Name with Special Characters
+   - block:
+      - name: Scenario 2 - Validating SLB Name with special characters
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          load_balancer_name: '{{ SLBNameSplChar }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn2
+      - debug: var=create_slb_result_scn2
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   # Task 3 : Validating SLB Name with Alphanumeric value
+   - pause:
+        seconds: 20
+   - block:
+      - name: Scenario 3 - Validating SLB Name with Alphanumberic values
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          load_balancer_name: '{{ SLBNameAplphaNos }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn3
+      - debug: var=create_slb_result_scn3
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+          
+   - pause:
+        seconds: 20
+
+   - block:          
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn3.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn3"
+
+
+   # Task 4 : Validating SLB Name as blank
+   - pause:
+        seconds: 20
+   - block:
+      - name: Scenario 4 - Validating SLB Name as blank
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          load_balancer_name: '{{ SLBNameBlank }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn4
+      - debug: var=create_slb_result_scn4
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   - pause:
+        seconds: 20
+
+   - block:          
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn4.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn4"          
+
+
+   # Task 5 : Validating SLB Name with 1 character
+   
+   - pause:
+        seconds: 20
+   - block:
+      - name: Scenario 5 - Validating SLB Name with 1 character
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          load_balancer_name: '{{ SLBNameWith1Char }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn5
+      - debug: var=create_slb_result_scn5
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   - pause:
+        seconds: 20
+
+   - block:
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn5.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn5"
+
+   # Task 6 : Validating SLB Name with 80 character exact
+
+   - pause:
+        seconds: 20
+   - block:
+      - name: Scenario 6 - Validating SLB Name with 80 character exact
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          load_balancer_name: '{{ SLBNameWithExact80Char }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn6
+      - debug: var=create_slb_result_scn6
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   - pause:
+        seconds: 20
+
+   - block:          
+      - name: Delete load balancer
+        ecs_slb_lb:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         status: absent
+         load_balancer_id: '{{ create_slb_result_scn6.result[0].LoadBalancerId }}'
+        when:
+          - "'failed' not in create_slb_result_scn6"
+
+   # Task 7 : Validating SLB Name with more than 80 character
+   - block:
+      - name: Scenario 7 - Validating SLB Name with more than 80 character
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          load_balancer_name: '{{ SLBNameWithMoreThan80Char }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn7
+      - debug: var=create_slb_result_scn7
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+  
+   # Task 8 : Validating load_balancer_name as Load_balancer_name
+   - block:
+      - name: Scenario 8 - Validating load_balancer_name as Load_balancer_name
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          #master_zone_id: '{{ masterZone }}'
+          #slave_zone_id: '{{ slaveZone }}'
+          Load_balancer_name: '{{ SLBName }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn8
+      - debug: var=create_slb_result_scn8
+
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in create_slb_result_scn1"
+
+            - "'failed' in create_slb_result_scn2"
+            -  "'The specified parameter \"LoadBalancerName\" is not valid.' in create_slb_result_scn2.msg[0]['Error Message']"
+
+            - "'failed' not in create_slb_result_scn3"
+            - "'failed' not in create_slb_result_scn4"
+            - "'failed' not in create_slb_result_scn5"
+            - "'failed' not in create_slb_result_scn6"
+
+            - "'failed' in create_slb_result_scn7"
+            -  "'The specified parameter \"LoadBalancerName\" is not valid.' in create_slb_result_scn7.msg[0]['Error Message']"
+
+            - "'failed' in create_slb_result_scn8"
+            -  "'unsupported parameter for module: Load_balancer_name' in create_slb_result_scn8.msg"
+         msg: 'Test pass FAILED !!!'
+

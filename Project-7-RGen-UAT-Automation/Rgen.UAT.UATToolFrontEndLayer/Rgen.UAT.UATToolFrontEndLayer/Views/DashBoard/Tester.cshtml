@@ -1,0 +1,991 @@
+﻿@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "UAT Project Management:Tester";
+}
+
+@* Css Section *@
+<link rel="stylesheet" href="~/js/DashBoard/css/NewTesterPage.css" />
+@* End *@
+
+@* Js Section *@
+<script type="text/javascript" src="~/js/DashBoard/js/teststepfortester_tester.js"></script>
+<script type="text/javascript" src="~/js/DashBoard/js/expand.js"></script>
+<script type="text/javascript" src="~/js/DashBoard/js/CopyImageWithData.js"></script>
+@* End *@
+
+@* Inline Script *@
+<script type="text/javascript">
+    /**  Code block moved here by Shrutika M on 28 Oct 2014*/
+    //var urlvar = window.location.href;
+    //if(urlvar.indexOf('source')==-1)
+    //{
+    //	var index = urlvar.indexOf(".aspx");
+    //	var str = "?source="+urlvar.substr(0, index);
+    //	var newurl = urlvar.substr(0, index+5) + str + urlvar.substr(index)
+
+    //	window.location.href=newurl;
+    //}
+
+    /****/
+
+    var FileuploadString = "fileupload", FileUploadIndex = 0, FileUploadLocalFileCount = 0;
+
+    $(document).ready(function () {
+
+        Main.showLoading();
+
+        /* Added by shilpa for Dynamic Theme Conversion */
+        if (isRootWeb) {
+            $('#btnRecorder').html('<img src="../images/recorder-01.png" />');
+            $('#searchBtn').html('<img src="../images/testPassSearchButton.jpg" />');
+            $('#prevTestStep').html('<img src="../images/icon-move-pev.png" />');
+            $('#nextTestStep').html('<img src="../images/icon-move-next.png" />');
+        }
+        else {
+            $('#btnRecorder').html('<img src="../images/recorder-01.png" />');
+            $('#searchBtn').html('<img src="../images/testPassSearchButton.jpg" />');
+            $('#prevTestStep').html('<img src="../images/icon-move-pev.png" />');
+            $('#nextTestStep').html('<img src="../images/icon-move-next.png" />');
+        }
+
+        if (navigator.appName == "Microsoft Internet Explorer") {
+            var ctrlDown = false;
+            var ctrlKey = 17, vKey = 86, cKey = 67;
+            $(document).keydown(function (e) {
+                if (e.keyCode == ctrlKey) ctrlDown = true;
+            }).keyup(function (e) {
+                if (e.keyCode == ctrlKey) ctrlDown = false;
+            });
+            $("#actualResultWithImage").bind("paste", function (e) { e.preventDefault(); });
+            $("#actualResultWithImage").keyup(function (e) {
+                if (ctrlDown && e.keyCode == vKey) {
+                    // JS: To make sure data in clipboard is in image format
+                    ClipData.GetClipBoard(this);
+                    //setTimeout('ClipData.GetClipBoard(this)',300);
+                }
+                //Main.hideLoading();
+            });
+            $("").bind("paste", function (e) { e.preventDefault(); });
+            $("").keyup(function (e) {
+                if (ctrlDown && e.keyCode == vKey) {
+                    // JS: To make sure data in clipboard is in image format
+                    ClipData.GetClipBoard(this);
+                    //setTimeout('ClipData.GetClipBoard("'+this+'")',100);
+                }
+                //Main.hideLoading();
+            });
+        }
+        /****/
+
+        //To open Step Recorder Tool:SD
+        var fileFullPath = ''; var timer;
+        $('#btnRecorder').click(function () {
+            var state = 0;
+            fileFullPath = '';
+            try {
+                var object = new ActiveXObject("Scripting.FileSystemObject");
+                var WinNetwork = new ActiveXObject("WScript.Network");
+                var uname = WinNetwork.username;
+                state = 1;
+                //alert("userName"+uname);
+            }
+            catch (e) {
+                if (e.number == "-2146827859") {
+                    Main.showPrerequisites("Prerequisites to launch '" + teststepfortester.gConfigTestStep + " Recorder' tool");
+                    return;
+                }
+            }
+
+            if (state == 0) {
+                teststepfortester.alertBoxHTML("ActiveX is not enabled on your browser.\n\nTo enable this Open IE -> Tools ->Internet Options -> Security -> Custom Level -> ActiveX controls and plug-ins ->Enable \"Initialize and script ActiveX controls not marked as safe for scripting\"\n\nAlso add the site url to trusted sites on your browser.");
+                return;
+            }
+            else {
+                var now = new Date();
+                var prjName = $.trim($('#txtProject').attr('title'));
+                var testPassName = $.trim($('#txtTestPass').attr('title'));
+                var testCaseName = $.trim($('#tdTestCase').attr('title'));
+                var testStepName = $.trim($('#txtTestStep tr:eq(0) td:eq(1)').text());
+                //filter the string down to just alphanumeric values and remove special characters if any
+                prjName = prjName.replace(/[^a-z0-9\s]/gi, '');
+                testPassName = testPassName.replace(/[^a-z0-9\s]/gi, '');
+                testCaseName = testCaseName.replace(/[^a-z0-9\s]/gi, '');
+                testStepName = testStepName.replace(/[^a-z0-9\s]/gi, '');
+
+                prjName = prjName.replace(/\s+/g, '').substring(0, 50);
+                testPassName = testPassName.replace(/\s+/g, '').substring(0, 50);
+                testCaseName = testCaseName.replace(/\s+/g, '').substring(0, 100);
+                fileFullPath = "C:\\Users\\" + uname + "\\Desktop\\" + prjName + "_" + testPassName + "_" + testCaseName + "_" + document.getElementById('hidTestStepID').value + now.format("_dd-MM-yy_h-mm-ss_tt") + ".zip";
+
+                //replace single and double quote with space
+                fileFullPath = fileFullPath.replace(/["']/g, "");
+                //remove all spaces
+                fileFullPath = fileFullPath.replace(/\s+/g, '');
+                //alert(fileFullPath);
+                var run = new ActiveXObject('WSCRIPT.Shell').Run('psr.exe /output ' + fileFullPath + '   /maxsc 100  /exitonsave 1');
+                timer = setInterval(RecorderEvent, 1000);
+            }
+        });
+
+        function RecorderEvent() {
+            var object = new ActiveXObject("Scripting.FileSystemObject");
+            if (object.FileExists(fileFullPath)) {
+                //teststepfortester.alertBox("Recorded File is created to location "+ fileFullPath);
+                clearInterval(timer);
+                teststepfortester.alertBoxHTML("Recorded File is created successfully!<br/>File is saved to location => <br/>" + fileFullPath);
+                $("div[aria-labelledby=ui-dialog-title-divAlert]").css('width', '')
+                fileFullPath = '';
+            }
+        }
+        //************//
+
+        var arr = $("[id$='toolBarTbltop']").html();
+
+        Main.hideLoading();
+        ('<b>Attachments</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + arr);
+        $("h1 tbody").css('width', '20px');
+        $("[id$='attachCancelButton']").hide();
+        $("[id$='diidIOGoBack']").hide();
+        $("#partAttachment").css("display", "block");
+        $("#onetidIOFile").css({ "width": "200pt", "margin-left": "70px" });
+        $("[id$='toolBarTbltop']").css("display", "none");
+        $("[id$='TextField']").css('width', '200pt');
+        $(".ms-formlabel").css("height", "10px");
+        $("#attachOKbutton").addClass('btnOk');
+
+        $("[id$='diidIOSaveItem']").removeClass('ms-toolbar ms-ButtonHeightWidth');
+        $("[id$='diidIOSaveItem']").addClass('ms-toolbar ms-ButtonHeightWidth btn1');
+
+        $(".ms-formtable").each(function () {
+            var i = 0;
+            $(this).find("tr").each(function () {
+                //if(i!=2 && i!=3 && i!=6)
+                if (i != 2 && i != 3) {
+                    $(this).hide();
+                }
+                i++;
+            });
+        });
+        $(".ms-formline").hide();
+        $(".ms-descriptiontext").hide();
+
+        /************Code for attachment ends here ********************************/
+
+        $(function () {
+            $("#demo1 p.expand").toggler({ initShow: "div.collapse:eq(0)" });
+            $("#demo1").expandAll({
+                showMethod: "slideDown",
+                hideMethod: "slideUp"
+            });
+        });
+
+        $(function () {
+            $("#tabs").tabs({ selected: 1 });
+        });
+        $("a.open").removeAttr("href");
+        var flag = false;
+        if (flag == false) {
+            setTimeout('teststepfortester.onPageLoad();', 100);
+            flag = true;
+        }
+
+
+       
+
+
+
+    });
+
+
+    $(function () {
+        var _feedbackform = setTimeout(function () {
+            if ($('div[aria-labelledby=ui-dialog-title-FeedbackPopUpRTE]').length > 0) {
+                $('div[aria-labelledby=ui-dialog-title-FeedbackPopUpRTE]').css('width', '');
+
+                //$('div[aria-labelledby=ui-dialog-title-FeedbackPopUpRTE]').css('height', '');
+                $('#FeedbackPopUpRTE').css('height', '');
+                $('.ui-widget-content').css('background-color', '#eee !important')
+                clearTimeout(_feedbackform);
+            }
+        }, 100)
+    });
+
+    function PreSaveAction() {
+
+        if ($("[title$='AttachmentName']").val().replace(/\s+/g, "") == '')
+            teststepfortester.alertBox('AttachmentName is a mandatory field!');
+        else {
+            if ($('#attachOKbutton').css("display") != "none")
+                teststepfortester.alertBox('Please press the OK button first !');
+            else {
+                var childID = '';
+                switch (teststepfortester.gridFlag) {
+                    case "searchResult": childID = teststepfortester.ChildIDArrayForSearchResult[teststepfortester.searchResultStartIndexA];
+                        break;
+                    case "all": childID = teststepfortester.ChildIDArray[teststepfortester.startIndexA];
+                        break;
+                    case "passed": childID = teststepfortester.ChildIDArrayForPass[teststepfortester.passedStartIndexA];
+                        break;
+                    case "failed": childID = teststepfortester.ChildIDArrayForFail[teststepfortester.failedStartIndexA];
+                        break;
+                    case "notCompleted": childID = teststepfortester.ChildIDArrayForNotCompleted[teststepfortester.notCompletedStartIndexA];
+                        break;
+                    case "pending": childID = teststepfortester.ChildIDArrayForPending[teststepfortester.pendingStartIndexA];
+                        break;
+                }
+                $("[title$='ChildID']").val(childID);
+
+                var ActualResult = $('#actualResultWithImage').html();
+                var Status = $('input:radio[name=radStatus]:checked').val();
+                var TestCaseId = document.getElementById('ddTestCases').options[document.getElementById('ddTestCases').selectedIndex].value.split(',')[0];
+                var queryVal = teststepfortester.startIndexA + "~" + teststepfortester.passedStartIndexA + "~" + teststepfortester.failedStartIndexA + "~" + teststepfortester.notCompletedStartIndexA + "~" + teststepfortester.searchResultStartIndexA + "~" + teststepfortester.gridFlag + "~" + $("#txtSearch").val() + "~" + Status + "~" + "-" + "~" + '1' + "~" + document.getElementById('ddTestCases').selectedIndex + "~" + document.getElementById('hidTestStepID').value + "~" + childID;
+                Main.setCookie("TesterPageState", queryVal, null);
+
+                //var attList = jP.Lists.setSPObject(teststepfortester.SiteURL, 'Attachment');
+                /*var query = '<Query><Where><And><Eq><FieldRef Name="ChildID" /><Value Type="Text">'+childID+'</Value></Eq><Eq><FieldRef Name="ResultType" /><Value Type="Text">Actual</Value></Eq></And></Where><ViewFields><FieldRef Name="ID"/><FieldRef Name="ResultType"/></ViewFields></Query>'
+                var AttachmentResult = attList.getSPItemsWithQuery(query).Items;
+                if(AttachmentResult !=null && AttachmentResult!=undefined)
+                {
+                    if(AttachmentResult.length > 2)
+                        var r = attList.deleteItem(AttachmentResult[0]['ID']);
+                } */
+
+                //$("[title$='TestStepID']").val(document.getElementById('hidTestStepID').value);
+                $("[title$='ResultType']").val("Actual");
+
+                $("[title$='TestPassID']").val(teststepfortester.searchTestPassKey);
+
+                var TCID = $("#ddTestCases").val().split(",")[0];
+                $("[title$='TestCaseID']").val(TCID);
+
+                var path = fileInput.value;
+                var pos = path.lastIndexOf("\\");
+
+                var filename = path.substring(pos + 1);
+                $("[title$='FileName']").val(filename);
+
+                $("[title$='ActualResult']").val(ActualResult);
+
+                /* Save file to Db */
+
+
+
+
+
+                formData.append('childid', childID);
+                formData.append('TestStepID', document.getElementById('hidTestStepID').value);
+                formData.append('AttachmentName', $('#TxtAttachmentName').val());
+                formData.append('Description', $('#TxtDescription').val());
+                formData.append('FileName', $('#attachRow0 span').text());
+                formData.append('ResultType', teststepfortester.gridFlag);
+                formData.append('ProjectID', teststepfortester.searchProjectKey);
+                formData.append('TestPassID', teststepfortester.searchTestPassKey);
+                formData.append('TestCaseID', TestCaseId);
+                formData.append('ActualResult', ActualResult);
+
+
+
+                var _isupload = ServiceLayer.postFile('UploadAttachment', formData, 'TestingPg');
+                /* End            */
+                $('#attachmentsOnClient').show();
+                $('.ui-icon,.ui-icon-closethick').trigger('click');
+            }
+
+        }
+    }
+
+    var _file;
+    var formData;
+    function _attachEvent() {
+        $('[input[name=fileupload0]').change(function () {
+            formData = new FormData();
+            formData.append('file', $(this).get(0).files[0]);
+
+        });
+    }
+
+
+    function GetAttachElement(b) {
+        a:;
+        var a = document.getElementById(b);
+        if (a == null)
+            a = document.getElementsByName(b)[0];
+        return a
+    }
+    function TrimWhiteSpaces(d) {
+        var b, c; d = d.toString();
+        var e = d.length, a;
+        for (b = 0; b < e; b++) {
+            a = d.charAt(b);
+            if (a != " " && a != "\t" && a != "\n" && a != "\r" && a != "\f") break
+        } if (b == e) return ""; for (c = e - 1; c > b; c--)
+        { a = d.charAt(c); if (a != " " && a != "\t" && a != "\n" && a != "\r" && a != "\f") break } c++; return d.substring(b, c)
+    }
+
+
+    //!!!THIS FUNCTION OVERRIDES THE OkAttach FUNCTION FROM FORM.JS!!!!///
+    function OkAttach() {
+
+
+        fileID = FileuploadString + "0"
+
+        fileInput = GetAttachElement(fileID);
+
+        filename = TrimWhiteSpaces(fileInput.value);
+
+        /**************/
+        var pos = filename.lastIndexOf("\\");
+        var filenamenew = filename.substring(pos + 1);
+
+        if (filenamenew.split(".").length > 2)//code for bugid 3999
+        {
+            var L_FileNameRequired_TXT = "Attached filename shouldn't contain '.',please remove '.' from filename ";
+            teststepfortester.alertBox(L_FileNameRequired_TXT);
+            return false;
+        }
+        else {
+            if (filenamenew.indexOf(".exe") !== -1) {
+                var L_FileNameRequired_TXT = ".exe file is not allowed for attachment ";
+                teststepfortester.alertBox(L_FileNameRequired_TXT);
+                return false;
+
+            }
+        }
+
+        // filename
+        if (!filename) {
+            var L_FileNameRequired_TXT = "Please browse the attachment first!";
+            teststepfortester.alertBox(L_FileNameRequired_TXT);
+        }
+        else {
+            var childID = '';
+            switch (teststepfortester.gridFlag) {
+                case "searchResult": childID = teststepfortester.ChildIDArrayForSearchResult[teststepfortester.searchResultStartIndexA];
+                    break;
+                case "all": childID = teststepfortester.ChildIDArray[teststepfortester.startIndexA];
+                    break;
+                case "passed": childID = teststepfortester.ChildIDArrayForPass[teststepfortester.passedStartIndexA];
+                    break;
+                case "failed": childID = teststepfortester.ChildIDArrayForFail[teststepfortester.failedStartIndexA];
+                    break;
+                case "notCompleted": childID = teststepfortester.ChildIDArrayForNotCompleted[teststepfortester.notCompletedStartIndexA];
+                    break;
+                case "pending": childID = teststepfortester.ChildIDArrayForPending[teststepfortester.pendingStartIndexA];
+                    break;
+            }
+
+            /*
+            var attList = jP.Lists.setSPObject(teststepfortester.SiteURL, 'Attachment');
+            var query = '<Query><Where><And><Eq><FieldRef Name="ChildID" /><Value Type="Text">' + childID + '</Value></Eq><Eq><FieldRef Name="ResultType" /><Value Type="Text">Actual</Value></Eq></And></Where><ViewFields><FieldRef Name="ID"/><FieldRef Name="ResultType"/></ViewFields></Query>'
+            var AttachmentResult = attList.getSPItemsWithQuery(query).Items;
+            if (AttachmentResult != null && AttachmentResult != undefined) {
+                if (AttachmentResult.length > 2)
+                    teststepfortester.alertBox('Adding new attachments would delete your oldest attached document for this Test Step as the maximum limit for attachment uploading is 3.');
+            }
+            */
+
+            var AttachmentResult = ServiceLayer.GetData('CheckFileCount', childID, 'TestingPg');
+            if (AttachmentResult != null && AttachmentResult != undefined && parseInt(AttachmentResult) > 0) {
+                if (!isNaN(AttachmentResult)) {
+                    if (parseInt(AttachmentResult) > 2) {
+                        teststepfortester.alertBoxwithEval('Adding new attachments would delete your oldest attached document for this Test Step as the maximum limit for attachment uploading is 3.', DeleteOnOk(childID));
+
+                    }
+                }
+            }
+            //var L_FileUploadToolTip_text = "Name";
+            //oRow = document.getElementById("idAttachmentsTable").insertRow(-1);
+
+            /*Added by Atul.s*/
+            $('#idAttachmentsRow').show();
+            var attachRow0 = $('#attachRow0');
+            attachRow0.html('');
+            var span = "<span dir=\"ltr\">" + filenamenew + "</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+            attachRow0.append(span);
+            $('#attachmentsOnClient').prev('td').hide()
+            $('#attachmentsOnClient').hide()
+
+            //RowID = 'attachRow' + FileUploadIndex;
+            //oRow.id = RowID;
+            //oRow.style.display = "block";
+            //oRow.style['margin-top'] = "-35px"
+            //  oCellFileName = oRow.insertCell(-1);
+            //  oCellFileName.className = "ms-vb";
+
+            //oCellFileName.innerHTML = "<span dir=\"ltr\">" + filenamenew + "</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+
+            //oCellControl = oRow.insertCell(-1);
+            //oCellControl.className = "ms-propertysheet";
+
+            //fileInput.style.display = "none";
+            //++FileUploadIndex;
+            //oAttachments = document.getElementById("attachmentsOnClient");
+            //var inputNode = document.createElement("input");
+            //inputNode.tabIndex = "1";
+            //inputNode.type = "File";
+            //inputNode.className = "ms-longfileinput";
+            //inputNode.title = L_FileUploadToolTip_text;
+            //inputNode.name = FileuploadString + FileUploadIndex;
+            //inputNode.id = FileuploadString + FileUploadIndex;
+            //inputNode.size = "56";
+            //oAttachments.appendChild(inputNode);
+            //var theForm = fileInput.form;
+            //theForm.encoding = 'multipart/form-data';
+            //document.getElementById("idAttachmentsRow").style.display = "";
+            //ShowPart1();
+            $("#attachOKbutton").css("display", "none");
+            // $('#fileupload1').remove();
+            //$('#partAttachment table tbody tr:eq(1) td:eq(0)').remove();
+            //$("#partAttachment .ms-formlabel").css('display', 'none');
+
+            //$('#partAttachment table tbody tr:eq(3)').remove();
+            //$("#partAttachment tr").each(function () {
+            //    if ($(this).children('td').attr('height') == '10' && $(this).children('td').attr('class') == "")
+            //        $(this).remove();
+            //});
+            // $('#idAttachmentsRow td > h3').html('<nobr>File Name</nobr>'); // for bug 2204
+
+        }
+    }
+
+
+    function CloseAtachmentAfterSave() {
+        var x = setTimeout(function () {
+            if ($('.ui-icon,.ui-icon-closethick').length > 0) {
+                $('.ui-icon,.ui-icon-closethick').trigger('click')
+                clearTimeout(x);
+            }
+        }, 1000);
+
+    }
+
+    function DeleteOnOk(childID) {
+        var data = { '_Childid': childID };
+        ServiceLayer.InsertUpdateData('DeleteAtachmentonExceeds', data, 'TestingPg');
+    }
+</script>
+
+@* ENd *@
+
+@* Html Begin *@
+<style type="text/css">
+        #FeedbackPopUpRTE
+    {
+        width:423px!important;
+        height:447px!important;
+        background-color:#eee !important;
+    }
+</style>
+
+<span id='partAttachment' style='display:none'></span>
+<div class="col-full">
+    <input type="hidden" id="hidTestCaseID" /><input id="hidTestStepID" type="hidden" />
+    <div class="box boxsquare">
+
+        <div class="col-1">
+            <div class="testPassProjectDetails" style="padding-top:0px">
+                <table border="0" cellpadding="0" cellspacing="1" style="width:100%">
+                    <tr>
+                        <td>
+                            <div style="float:left">
+                                <h2 id="h2TestPass">
+                                    <img src="../images/drop-arrow.gif" />
+                                    Test Pass:
+                                </h2>
+                            </div><span id="txtTestPass" style="color:#636363;font-size:14px;font-weight:bold;"></span><br />
+                            <div class="tesrPassList" id="testpassdropdown">
+                                <!--a href="#">&raquo; TestPass-1</a>
+                                <a href="#">&raquo; TestPass-2</a>
+                                <a href="#">&raquo; TestPass-3</a>
+                                <a href="#">&raquo; TestPass-4</a-->
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span style="color:#000;float:left;" id="spnETT">
+                                    Estimated Test Case Time (mins):
+                                </span>
+                                <span style="color:#636363;padding-left:5px;width:40px;display:inline-block" id="estTime">
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td width="50%">
+                            <label style="color:#000">
+                                Project
+                                Name:
+                            </label><span id="txtProject" style="color:#636363"></span>
+                        </td>
+                        <td>
+                            <label style="width:85px;color:#000">Test Cases:</label> <span id="totalTestCase" style="color:#636363"></span><label style="width:35px;margin-left:10px;color:#000">
+                                Area:
+                            </label> <span id="area" style="color:#636363"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label title="Test Pass Due Date" style="color:#000">
+                                Due Date:
+                            </label><span id="txtDueDate" style="color:#636363"></span>
+                        </td>
+                        <td>
+                            <label style="width:85px;color:#000">
+                                Test
+                                Manager:
+                            </label> <a id="txtTestManager" onclick="teststepfortester.sendMail();" style="cursor:pointer;color:blue" title="Send E-mail to Test Manager"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="testUrls">
+                            <!--<label id="uatUrl">UAT Test URL:</label>-->
+                            <!--<div class="uatURLDetails" style="float:left">
+                                  <h2 id="uatURLListh2"><img src="../SiteAssets/images/drop-arrow.gif"/></h2>
+                                  <div class="tesrPassList" id="uatURLList">
+                                  </div>
+                               </div>-->
+                            <h2 style="font-weight:normal;font-size:12px;">
+                                <img src="../images/drop-arrow.gif" />&nbsp;UAT
+                                Environment(s)
+                            </h2>
+                            <!--<div class="tesrPassList" id="divUrl" style="display:none;">-->
+                            <div id="divUrl" class="tesrPassListurl" style="display:none;">
+
+
+                            </div>
+                        </td>
+                        <td>
+                            <label style="width:85px;color:#000">
+                                Testing
+                                Role:
+                            </label> <span id="role" style="color:#636363"></span>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="testPassStatistics">
+                <h2 id="h2Statistics">Statistics: Test Step</h2>
+                <p class="statisticsData">
+                </p>
+
+            </div>
+
+            <div class="testPassHeader">
+                <div id="TestCaseHead" style="float:left">
+                    <span style="background-color:rgb(222, 222, 222);text-align:center;width:30px;font-size:12px;font-weight:bold;margin:5px 0px 0px 3px;float:left" id="TCnumber">
+                        1
+                    </span>
+                    <span id="spnTestCase" style="font-size:14px;font-weight:bold;padding:5px 0px 0px 3px;float:left;">
+                        Test Case:
+                    </span>
+                    <p id="tdTestCase" style="padding:7px 5px 5px 5px;font-size:12px;width:550px;color:#444;">
+                    </p>
+                    <div id="testCaseDesc" style="width:550px;margin-left:10px">
+                    </div>
+                </div>
+                <div id="divRecorder" style="margin:0px;padding:0px;float:left;width:10px;">
+                    <a id="btnRecorder" style="cursor:pointer;" title="Step Recorder to capture screen shots in '.zip' format"><img src="" /></a>
+                    <!--<a title="On 'Start Recoding' and clicking on screen,Steps Recorder will automatically capture the steps tester take on a computer, including a text description of where clicked and screen shot during each click. Once tester capture these steps and press on 'Stop Recording', a recorded '.zip' file is saved to tester's desktop that can be attached by tester as actual attachment." style="cursor:pointer;"><img style="height: 20px;" src="../SiteAssets/images/icon-05.png"/></a>-->
+                </div>
+                <div class="testPassSearch">
+                    <table cellpadding="2" cellspacing="2" border="0" class="tblSearch" style="width:100%">
+                        <tr>
+                            <td title="Search Test Step(s)">Search</td>
+                            <td><input type="text" id="txtSearch" class="txtSearchBox" /></td>
+                            <td title="Search Test Step(s)"><a id="searchBtn" class="cursPoint" style="padding-left:8px;" onclick="Main.showLoading();setTimeout('teststepfortester.newSearch();teststepfortester.fsearch();',200);"><!--img src="../SiteAssets/images/testPassSearchButton.jpg"/--></a></td>
+                        </tr>
+                    </table>
+                    <div style="width:280px;"><label id="lblSearchResult"></label></div>
+                </div>
+
+            </div>
+
+            <div class="testPassForm">
+                <div class="testPassContent" style="padding-right:0px">
+                    <table style="width:100%" cellpadding="2" cellspacing="2" border="0">
+                        <tr>
+                            <td colspan="3">
+                                <!--<h3 style="padding-top:0">Test Step Details</h3>-->
+                                <!--ankita-- : 13/8/2012 modified For bug id2258---->
+                                <div id="txtTestStep" style="overflow:auto;width:933px;max-height:200px;border:1px #ccc solid"></div>
+                                <p id="TestStepName"></p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td width="48%">
+                                <!--  <img src="../SiteAssets/images/Preview.png" onclick="teststepfortester.popUpForExpected();" style="height:27px" /> -->
+                                <div style="float:left">
+                                    <h3>
+                                        Expected
+                                        Result
+                                    </h3>
+                                </div><p style="float:right;margin-top:15px;margin-right:3px">
+                                    <a style="margin-right:3px;text-decoration:underline;color:blue;cursor:pointer" onclick="teststepfortester.popUpForExpected();">
+                                        <i>
+                                            Click here to Preview
+                                        </i>
+                                    </a>
+                                </p>
+                                <textarea class="txtActualExpected" readonly="readonly" id="txtExpectedResult" style="display:none;"></textarea>
+                                <div id="expectedResultWithImage" class="pasteImagewithText" contentEditable="false" style="height:260px"></div>
+                                <label>
+                                    <a id="preview2" class="txtSmall rgt" style="cursor:pointer;margin-right:10px;color:blue">
+                                        [ View Attachment ]
+                                    </a>
+                                </label>
+                            </td>
+                            <td width="4%" align="center" style="padding-right:3px">
+                                <img src="../images/testPassActualExpectedDivider.png" alt="" style="height:147px" /><br />
+                                <img src="../images/testPassActualExpectedDivider.png" alt="" style="height:147px" />
+                            </td>
+                            <td width="48%">
+                                <!--  <img src="../SiteAssets/images/Preview.png" onclick="teststepfortester.popUpForActual();" style="height:27px" /> -->
+                                <div style="float:left">
+                                    <h3>
+                                        Actual
+                                        Result
+                                    </h3>
+                                </div> <p style="float:right;margin-top:15px;margin-right:10px">
+                                    <a style="margin-right:3px;text-decoration:underline;color:blue;cursor:pointer" onclick="teststepfortester.popUpForActual();">
+                                        <i>
+                                            Click here to Edit/Preview
+                                        </i>
+                                    </a>
+                                </p>
+
+                                <div id="actualResultWithImage" class="pasteImagewithText" contentEditable="true" onmouseover="teststepfortester.enableHyperlink(this);" style="height:260px"></div>
+                                <label>
+                                    <a id="preview" class="txtSmall rgt" style="cursor:pointer;margin-right:10px;color:blue">
+                                    </a>
+                                </label>
+                                <label id="lblAttachment">
+                                    <a class="txtSmall rgt" onclick="teststepfortester.showUpload();" style="cursor:pointer;margin-right:8px;color:blue">
+                                        [ + Add Attachment ]
+                                    </a>
+                                </label>
+
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td width="48%">
+                                <h3>Status</h3>
+                                <span>
+                                    <input type="radio" id="radNotCompleted" name="radStatus" value="1">Not
+                                    Completed</input>
+                                    <input type="radio" id="radPass" name="radStatus" value="2">Pass</input>
+                                    <input type="radio" id="radFail" name="radStatus" value="3">Fail</input>
+                                    <input type="radio" id="radPending" name="radStatus" value="4">Pending</input>
+                                </span>
+                            </td>
+
+                            <td width="4%"></td>
+
+                            <td width="48%" align="right" class="testPassActionButtons">
+                                <!-- modified by shilpa on 12 apr -->
+                                <div style="font-size:11px;color:red;position:absolute;margin-top:-25px;margin-left:216px">
+                                    Note: Upto three attachments can be
+                                    added.
+                                </div>
+                                <input type="button" class="btnNew1" style="width:85px;cursor:pointer" value="Save" id="btnSave" onclick="teststepfortester.preSaveTestStep();" />
+                                <input type="button" class="btnNew1" style="width:85px;margin-right:11px" value="Cancel" id="btnCancelNew" onclick="teststepfortester.clearFields();" />
+                                <div id="feedbackNote" style="font-size:11px;color:red;display:none;position:absolute;margin-left:78px;">
+                                    Note: Mandatory &#39;Rating&#39; popup will
+                                    come after every passed test case.
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <img src="../images/bg-testPassFormFooter.jpg" alt="" />
+            </div>
+            <div class="testPassNavigation">
+
+            </div>
+
+
+        </div>
+
+        <!-- RIght Side List area -->
+        <div class="col-2">
+            @*
+                <script type="text/javascript">
+                            var listtestcases = jP.Lists.setSPObject(teststepfortester.SiteURL, 'Tester');
+
+                            var query = '<Query><Where><And><Eq><FieldRef Name="TestPassID" /><Value Type="Text">' + teststepfortester.searchTestPassKey + '</Value></Eq><Eq><FieldRef Name="SPUserID" /><Value Type="Text">' + _spUserId + '</Value></Eq></And></Where>' +
+                            '<ViewFields><FieldRef Name="ID"/><FieldRef Name="TestPassID" /><FieldRef Name="TestCaseID" /></ViewFields>' +
+                            '</Query>';
+
+                            var testcases = listtestcases.getSPItemsWithQuery(query).Items;
+
+                </script>*@
+            <div class="testCaseSelect">
+                <h3>Test Cases</h3>
+                <select class="ddlTestCases" id="ddTestCases" onchange="teststepfortester.onChangeTestCase();"></select>
+
+                <!--<p>Total Steps/Scripts: <span class="txtorange">7</span></p>-->
+            </div>
+            <h3 id="h3TestStepHeader" class="testScriptHeader">
+                Test
+                Steps
+            </h3>
+            <span style="clear:both;"></span>
+            <table class="tblResult" cellpadding="0" cellspacing="0"></table>
+            <!--<div id="Pagination" style="margin-left:10px;margin-top:5px"></div>-->
+            <!-- Added by shilpa -->
+            <div id="navigation" style="margin-left:10px">
+                <a id="prevTestStep" onclick="teststepfortester.Prev();" style="cursor:pointer"></a>
+                <a id="nextTestStep" onclick="teststepfortester.Next();" style="cursor:pointer"></a>
+            </div>
+
+            <div id="newPagination" style="height:95px;width:230px;background-color:#efefef;margin-left:10px">
+                <h4 id="h4TestStepHeader" class="testScriptHeader" style="color:#0382c5">
+                    Test Steps
+                </h4>
+                <span id="prevPage" style="margin-left:12px;font-weight:bold;cursor:pointer" onclick="teststepfortester.Prev10();">
+                    Previous 10
+                </span>
+                <span style="padding-left:5px;padding-right:5px;">|</span>
+                <span id="nextPage" style="font-weight:bold;cursor:pointer" onclick="teststepfortester.Next10();">
+                    Next 10
+                </span>
+                <div id="showPagination" style="margin-left:10px"></div>
+            </div>
+            <!-- -->
+            <!-- added for paging -->
+            <p class="testScriptPaging">
+
+            </p>
+            <!--------->
+
+            <p class="testScriptFeedback">
+                <!--a id="feedbackredirect" href="#" onclick="teststepfortester.FeedbackRedirect();"><img src="../SiteAssets/images/provide-feedback.jpg" alt="" /></a-->
+            </p>
+
+
+        </div>
+    </div>
+    <p class="box-ft" style="height:0px"></p>
+
+
+    <!-- Right Side Detail Grid: END-->
+    <!--============Web Part Code Starts================-->
+    <div id="upload" style="display:none;" title="Attachment">
+
+        <table style="margin-top: 8px; width:100%" border="0" cellspacing="0" cellpadding="0">
+            <tbody>
+
+                <tr>
+                    <td width="113" valign="top" style="height: 10px;text-wrap:none">
+                        <span class="ms-h3 ms-standardheader">
+                            <nobr>Attachment&nbsp;Name&nbsp;<font color="red">*</font></nobr>
+                        </span>
+                    </td>
+
+                    <td width="350" valign="top">
+                        <span>
+                            <input name="TextField" title="AttachmentName" class="ms-long ms-spellcheck-true" id="TxtAttachmentName" style="width: 200pt; padding-right: 5px; float: right;" type="text" maxlength="255"><br>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="113" valign="top" style="height: 10px;text-wrap:none">
+                        <span class="ms-h3 ms-standardheader">
+                            <nobr>Description</nobr>
+                        </span>
+                    </td>
+                    <td width="350" class="ms-formbody" valign="top">
+
+                        <span>
+                            <textarea name="TextField" title="Description" class="ms-long" id="TxtDescription" style="width: 200pt!important; padding-right: 5px; margin-top: 7px; float: right;" rows="6" cols="20"></textarea><br>
+                        </span>
+
+
+                    </td>
+                </tr>
+                <tr>
+                    <td width="190" height="50" valign="top" style="height: 10px; color: rgb(82, 82, 82);">
+                        <span class="ms-h3 ms-standardheader">
+                            File&nbsp;Name&nbsp;<font color="red">*</font>
+                        </span>
+                    </td>
+                    <td height="15" class="ms-formbody" id="attachmentsOnClient" valign="bottom">
+                        <span dir="ltr">
+                            <input name="fileupload0" title="Name  " class="ms-fileinput" id="fileupload0" style="width: 200pt!important;margin-left:70px; height: 20px;" type="file" size="56">
+                        </span>
+                    </td>
+                </tr>
+
+
+                @*<table border="0" cellpadding="0" cellspacing="0" id="idAttachmentsTable">*@
+                <tr style="display:none;" id="idAttachmentsRow">
+                    <td width="113" class="ms-formlabel" nowrap="true" valign="top" style="height: 10px;">
+                        <span class="ms-h3 ms-standardheader">
+                            <nobr>Attachments</nobr>
+                        </span>
+                    </td>
+                    <td width="350" class="ms-formbody" valign="top">
+                        <span dir="none">
+                            <table id="idAttachmentsTable" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                    <tr id="attachRow0">
+
+                                        <td class="ms-propertysheet"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </span>
+                    </td>
+                </tr>
+                @*</table>*@
+
+                <tr style="position:absolute;margin-top:15px;">
+                    <td class="ms-attachUploadButtons" style="padding-bottom: 7px;" colspan="4">
+                        <input class="ms-ButtonHeightWidth btnOk" id="attachOKbutton" style="margin-right: -12px;" onclick="OkAttach();" type="BUTTON" value="OK  ">
+                        <span class="ms-SpaceBetButtons" id="idSpace"></span>
+
+
+                        <input name="btnSaveItem" class="ms-toolbar ms-ButtonHeightWidth btn1" id="btnSaveItem" accesskey="O" onclick="PreSaveAction(); teststepfortester.onPageLoad(); return false;" type="button" value="Save" target="_self">
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+        <div id="saveBtnUpload" style="width:10%;"></div>
+    </div>
+    <!--==============Web Part COde End here====================-->
+    <!--- Alerts-->
+    <div id="divAlert"></div>
+    <div id="divAlert2"></div>
+    <div id="divConfirm"></div>
+    <div id="tsFeedPopup"></div>
+    <!--feedback-->
+    <div id="divCompTesting2" style="width:500px"></div>
+    <div id="divCompTesting" style="width:500px"></div>
+
+    <div id="clipBrdImageExpected" style="display:none" title="Expected Result">
+        <div id="expectedResultPreview" class="pasteImagePreview" contentEditable="false"></div>
+    </div>
+    <div id="clipBrdImageActual" style="display:none" title="Actual Result">
+        <div id="actualResultPreview" class="pasteImagePreview" contentEditable="true"></div>
+    </div>
+</div>
+
+<div id="FeedbackPopUpRTE" style="display:none;position:static;margin-bottom:-10px" title="Please provide satisfaction rating for this Test Pass">
+    <div id="rating" style="padding-bottom:10px">
+        <span style="font-weight:700">Rating: <font color="red">*</font></span>
+        <table style="width:100%">
+            <tr>
+                <td>
+                    <input type="radio" value="1" name="Rating" style="margin-top:-5px" />Very
+                    Satisfied
+                </td>
+                <td>
+                    <input type="radio" value="2" name="Rating" style="margin-top:-5px" />Very
+                    Dissatisfied
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="radio" value="3" name="Rating" style="margin-top:-5px" />Somewhat
+                    Satisfied
+                </td>
+                <td>
+                    <input type="radio" value="4" name="Rating" style="margin-top:-5px" />Somewhat
+                    Dissatisfied
+                </td>
+            </tr>
+        </table>
+    </div>
+    <span style="font-weight:bold">Feedback: </span>
+    <div id="rteDiv1" style="margin-top:5px" class="rte3Container">
+        <div></div>
+        <script type="text/javascript">
+            initRTE("../images/", "/palletes/", "", true);
+            writeRichText('rte3', teststepfortester.rteText, 420, 250, true, false);
+        </script>
+    </div>
+</div>
+
+<div id="activeX-form" title="Prerequesites for Active-X" style="display:none; margin-bottom:15px;">
+    <table>
+        <tr>
+            <td>
+                <img id="imgActivex" src="../images/Information.png" alt="" height="20" width="20" /><span style="vertical-align:top; margin-left:5px">
+                    <b>Steps to enable Active-X settings of Internet Explorer:</b>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span style="margin-left:30px">
+                    <b>Step1 :</b> Go to Tools &gt;
+                    Internet options &gt; Security &gt; Local Intranet Zone
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span style="margin-left:30px">
+                    <b>Step2 :</b> Select Sites &gt;
+                    Click Advanced and add current url in to the list.
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span style="margin-left:30px">
+                    <b>Step3 :</b> Go to Local
+                    Intranet Zone &gt; Custom level and enable ‘Initialize and
+                    script Active-X controls
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span style="margin-left:75px;text-align:left;">
+                    not marked
+                    as safe for scripting’ setting.
+                </span>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <span style="margin-left:30px">
+                    <b>Step4 :</b> Refresh the
+                    browser
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <span style="margin-left:30px;text-align:left;">
+                    <b>Note:</b>
+                    Enabling Active-x in your browser will not harm your
+                    software security in any manner.
+                </span>
+            </td>
+        </tr>
+
+    </table>
+</div>
+@* End *@

@@ -1,0 +1,52 @@
+# Ansible Module Name - ECS_AMI
+# Interface : CreateCustomImage
+# Playbook Contains Test-Case for creating a custom image
+# Playbook created by : Sachin J
+
+
+
+- name: Create user defined image with instance id, snapshot_id parameter both
+    
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - ../vars/general-parameters.yml
+    - ../vars/test-environment.yml
+    - ../../../vars/alicloud-creds.yml
+      
+  tasks:
+  
+  - block:
+  
+    - name: Create user defined image with instance id, snapshot_id parameter both
+    
+      ecs_ami:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        snapshot_id: '{{ snapshotId }}'   # Snapshot_id
+        instance_id: '{{ ecsInstanceId }}'        # Instance_id
+        image_name: '{{ imageName }}'   
+        image_version: '{{ imageVersion }}'
+        description: '{{ description}}'
+        images_tags: '{{ imagesTags }}'
+                
+      register: result
+    - debug: var=result
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+          that:
+            - "'failed' in result"
+            -  "'Only 1 of SnapshotId or InstanceId ' in result.msg"
+          msg: 'Test pass FAILED!!! Failure Expected - We can not create an image with instance id and snapshot id both.
+                REASON: {{ result }}'
+
+    

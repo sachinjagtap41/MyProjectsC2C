@@ -1,0 +1,164 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Instance Type parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: create instance
+  hosts: localhost
+  connection: local
+  
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml   
+    
+    
+    
+  tasks:
+  
+   # Task : 1
+  
+  - block:
+    - name: Validating - Valid InternetData Parameter Which Accepts All The Parameters As Default
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        internet_data: '{{ InternetDataAllParametersDefault }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+  # Task : 2
+ 
+  - block:
+    - name: Validating - Invalid PayByTraffic Parameter Which Contains Max_In With Value and Max_Out Parameter As Default
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        internet_data: '{{ InternetDataPayByTrafficInvalidDefaultBandWidthOut }}'
+       
+      register: result
+    - debug: var=result
+
+    rescue:
+    - debug: msg="Failure Expected - '{{ InternetDataPayByTrafficInvalidDefaultBandWidthOut }}' is not a valid parameter "
+ 
+  # Task : 3
+ 
+  - block:
+    - name: Validating - Valid PayByTraffic Parameter Which Contains Max_Out Parameter With A Value And Max_In As Default
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        internet_data: '{{ InternetDataPayByTrafficDefaultMaxIn }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+  
+   # Task : 4
+  
+  - block:
+    - name: Validating - Invalid InternetData-PayByTraffic Parameter Which Contains Max_Out and Max_In As Default Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        internet_data: '{{ InternetDataPayByTrafficAllDefaultParameters }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ InternetDataPayByTrafficAllDefaultParameters }}' is not a default parameter"
+  
+   # Task : 5
+  
+  - block:
+    - name: Validating - Valid InternetData-PayByBandwidth Parameter Which Contains Max_In With Default And Max_Out With A Value Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        internet_data: '{{ InternetDataPayByBandwidthDefaultMaxIn}}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+  
+   # Task : 6
+  
+  - block:
+    - name: Validating - Valid InternetData-PayByBandwidth Parameter Which Contains Max_Out With Default And Max_In With A Value Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        internet_data: '{{ InternetDataPayByBandwidhtDefaultMaxOut }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"

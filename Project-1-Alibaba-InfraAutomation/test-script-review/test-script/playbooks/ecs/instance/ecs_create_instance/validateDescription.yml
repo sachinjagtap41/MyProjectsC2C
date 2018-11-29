@@ -1,0 +1,226 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Description parameter
+# Playbook created by : Sachin Jagtap
+
+
+
+- name: Validating Description Parameter
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+    
+    
+  tasks:
+  
+  # Task : 1
+  
+  - block:
+    - name: Validating - Invalid Description Parameter contaning URL
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ descriptionURL }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+                     
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ descriptionURL }}' is not a valid parameter "
+ 
+ # Task : 2
+  
+  - block:
+    - name: Validating - Valid Description parameter contaning Numerals
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ DescriptionNumerals }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task : 3
+ 
+  - block:
+    - name: Validating - Valid Description Parameter Containing Null characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ DescriptionNull }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task : 4
+ 
+  - block:
+    - name: Validating - Valid Description Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ DescriptionValid }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task : 5
+ 
+  - block:
+    - name: Validating - Invalid Description Parameter Which Accepts Less Than 2 Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ DescriptionLessThan2Char }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ DescriptionLessThan2Char }}' is not a valid parameter"
+ 
+ 
+ # Task : 6
+ 
+  - block:
+    - name: Validating - Valid Description Parameter Which Accepts Default Characters As Null
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        #description: '{{ DescriptionNumerals }}'  Default description parameter
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+          
+      register: result
+    - debug: var=result
+    
+    rescue:
+    - debug: msg="Expected - Success"
+ 
+ # Task : 7
+ 
+  - block:
+    - name: Validating - Invalid Description Parameter Which Accepts More Than 256 Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ DescriptionMoreThan256Char }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg="Failure Expected - '{{ DescriptionMoreThan256Char }}' is not a valid parameter "
+  
+  # Task : 8
+  
+  - block:
+    - name: Validating - Valid Description Parameter Which Accepts 256 Characters Only
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description256CharOnly }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg=" Expected - Success"
+ 
+ # Task : 9
+ 
+  - block:
+    - name: Validating - Valid Description Parameter Which Accepts Special Characters
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ DescriptionSpecialChar }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+  
+    rescue:
+    - debug: msg=" Expected - Success"

@@ -1,0 +1,75 @@
+#Ansible Module Name -- ecs_slb_lb
+#Test Case : Load Balancer Id Parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Load Balancer Id Parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Load Balancer Id Parameter validation with invalid id
+   - block: 
+     - name: Load Balancer Id Parameter validation with invalid id
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id: '{{ SLBIdInvalid }}'
+        load_balancer_name: '{{ SLBName }}'
+       register: set_slb_name_result_1
+     - debug: var=set_slb_name_result_1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+
+         msg: 'Test pass FAILED !!!'
+
+    
+      # Task 2 - Name Parameter validation with blank
+   - block: 
+     - name: Name Parameter validation with blank
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        load_balancer_id:
+        load_balancer_name: '{{ SLBName }}'
+       register: set_slb_name_result_2
+     - debug: var=set_slb_name_result_2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' in set_slb_name_result_1"
+            - "'LoadBalancerId does not exist.' in set_slb_name_result_1.msg[0]['Error Message']"
+
+            - "'failed' not in set_slb_name_result_2"
+         msg: 'Test pass FAILED !!!'
+
+
+    # Delete Load Balancer Created in Task 2
+  post_tasks:
+    - name: Delete load balancer
+      ecs_slb_lb:
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       status: absent
+       load_balancer_id: '{{ set_slb_name_result_2.result[0].LoadBalancerId }}'
+      when:
+        - "'failed' not in set_slb_name_result_2"
+
+    

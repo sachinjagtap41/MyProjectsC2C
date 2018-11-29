@@ -1,0 +1,50 @@
+# Ansible Module Name - ECS_AMI
+# Interface : CreateCustomImage
+# Playbook Contains Test-Case for creating a custom image
+# Playbook created by : Sachin J
+
+
+
+- name: Create user defined image with snapshot parameter where snapshot is present in another region
+    
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+
+    - ../vars/general-parameters.yml
+    - ../vars/test-environment.yml
+    - ../../../vars/alicloud-creds.yml
+      
+  tasks:
+  
+  - block:
+  
+    - name: Create user defined image with snapshot parameter where snapshot is present in another region
+    
+      ecs_ami:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        snapshot_id: '{{ snapshotIdInvalid }}'
+        image_name: '{{ imageName }}'   
+        image_version: '{{ imageVersion }}'
+        description: '{{ description}}'
+        images_tags: '{{ imagesTags }}'
+      
+      
+      register: result
+    - debug: var=result
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+          that:
+            - "'failed' in result"
+#            -  "'The snapshot id not found' in result.msg[0]['Error Message']"
+#          msg: 'Test pass FAILED!!! Failure Expected - We can not create an image when snapshot is present in another region.
+#                REASON: {{ result }}'

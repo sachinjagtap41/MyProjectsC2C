@@ -1,0 +1,491 @@
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "UAT Project Management:Dashboard";
+}
+
+<style type="text/css">
+    table.gridDetails td .ddl {
+        width: 250px;
+    }
+
+    #celebs td {
+        padding: 5px;
+    }
+
+    #celebsMA td {
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 2px;
+    }
+
+    #celebsMA thead td:not('.sorted'):hover {
+        background-image: url('~/images/Sorting.png');
+        background-repeat: no-repeat;
+        background-position: 90%;
+    }
+
+    .divTesterPortfolio #divDetailAnalysisLink, #divDetailAnalysisLink {
+        margin-top: -15px;
+    }
+
+    #divManager #divDetailAnalysisLink {
+        width: 600px;
+    }
+
+    #divOnlyTester #noTestCases {
+        margin-top: 20px;
+    }
+
+    .divManagerPortfolio #noTestPases {
+        margin-left: 110px !important;
+        margin-top: 50px !important;
+        margin-bottom: 70px !important;
+    }
+
+    .divManagerWithoutPortfolio #noTestCases {
+        margin-left: 126px !important;
+        margin-top: 0px !important;
+    }
+
+    .divManagerPortfolio #noTestCases {
+        margin-top: 0px !important;
+        margin-bottom: 165px !important;
+        margin-left: 130px !important;
+    }
+
+        .divManagerPortfolio #noTestCases b {
+            margin-left: 0px !important;
+        }
+</style>
+
+<script type="text/javascript" src="~/js/DashBoard/js/jquery.gchart.js"></script>
+<div id="bodyloader" class="loadingMainDiv">
+
+    <!--<img src="../SiteAssets/images/ajax-loader.gif" class="innerLoadImg" alt="Loading.."/>-->
+
+</div>
+
+<div class="box details">
+    <h1>
+        <span id="pgHeading" style="font-weight:bold;font-size:14px;">
+            Dashboard
+        </span>
+    </h1>
+
+    <!-- UAT Feedback Button Html -->
+    <span onclick="openUATFeedback();" title="Click here to give feedback, Suggestion, or Concerns for UAT Portal." class="ratedasshboardbtn">
+        Rate the UAT Dashboard
+    </span>
+
+    <div style="width: 1205px;float:left;display:none" id="divManager">
+        <div class="dashboard dashPrjTPStaus" style="float:left;width:1138px;">
+
+            <table style="width:100%;height:100%">
+                <tr>
+                    <td style="width:50%;" class="tdProjectChart">
+                        <!-- Project Status -->
+
+                        <div style="height: 30px; margin-top:-30px" class="DivlblWithNoColon">
+                            <h3 class="h3DbDa" style="float:left;padding-bottom:15px;padding-left:5px">
+                                Project Status&nbsp;&nbsp;
+                            </h3>
+                            <table class="gridDetails" cellspacing="0" style="margin-left:5px;width: 400px;float:left">
+                                <!--thead-->
+                                <!--PORTFOLIO -->
+                                <tr id="trPortfolio">
+                                    <td class="tblhd1" style="width:100px">
+                                        <label>
+                                            Portfolio
+                                        </label>
+                                    </td>
+                                    <td class="tblhd1">
+                                        <select id="ddPortfolio" class="ddl" style="width:300px">
+                                            <option value="select">
+                                                Default Portfolio
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!--/PORTFOLIO -->
+
+                                <tr>
+                                    <td class="tblhd1" style="width:100px">
+                                        <label>
+                                            Project
+                                        </label>
+                                    </td>
+                                    <td class="tblhd1">
+                                        <select id="dd" class="ddl" style="width:300px">
+                                            <option value="select">
+                                                Project Name
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!--PORTFOLIO -->
+                                <tr id="trVersion">
+                                    <td class="tblhd1" style="width:100px">
+                                        <label>
+                                            Version
+                                        </label>
+                                    </td>
+                                    <td class="tblhd1">
+                                        <select id="ddVersion" class="ddl" style="width:300px">
+                                            <option value="select">
+                                                All Versions
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!--/PORTFOLIO -->
+                                <!--/thead-->
+                            </table>
+                        </div>
+
+
+
+                        <label id="noTestPases" style="width: 300px; margin-top: 3px; margin-bottom: 115px; margin-left: 5px; display: block;">
+                            <b style="margin-left: 5px;">
+                                No Test Pass Available
+                            </b>
+                        </label>
+
+                        <div class="grapharea" style="padding:0px;">
+
+                            <div id="pieChartProject" style="height:138px; z-index:1;width:350px;margin-left:110px"></div>
+
+
+
+                        </div>
+
+
+
+
+                    </td>
+
+                    <td style="width:50%">
+                        <!-- Testing Status -->
+                        <div style="height: 30px; margin-top:25px" class="DivlblWithNoColon">
+                            <h3 class="h3DbDa" style="float:left;padding-bottom:15px;padding-left:5px">
+                                Test Pass Status&nbsp;&nbsp;
+                            </h3>
+
+                            <table class="gridDetails" cellspacing="0" style="margin-left:5px;width: 400px;float:left;margin-bottom:10px">
+                                <!--thead-->
+
+                                <tr>
+                                    <td align="left" class="tblhd1" style="height:8px;width: 100px;">
+                                        <label>
+                                            Test Pass
+                                        </label>
+                                    </td>
+                                    <td class="tblhd1">
+                                        <select id="testPassDD" class="ddl" style="width:300px">
+                                            <option value="select">
+                                                Select Test Pass
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <!--/thead-->
+                            </table>
+                        </div>
+                        <label id="noTestCases" style="float:left;display:none;margin-bottom:170px">
+                            No TestCases
+                        </label>
+                        <div class="grapharea" style="padding:0px">
+
+                            <div id="pieChart" style="height:138px; z-index:1;width:350px;margin-left:130px;"></div>
+
+                            <div id="divDetailAnalysisLink" style="margin-top:0px"></div>
+
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+
+    <div style="width: 1205px;float:left;" id="divTester">
+        <div class="dashboard dashmyAct" style="float:left;width:735px;">
+            <h3 class="h3DbDa" style="padding-bottom:15px;padding-left:5px">
+                My Activities
+            </h3>
+
+            <div class="scroll-pane" id="spanMA" style="margin-left:5px;height:205px;width:735px;">
+                <table id="celebsMA" class="gridDetails celebsMAWithoutPortfolio" cellspacing="0">
+
+
+                    <thead>
+                        <tr>
+
+                            <td class="tblhd1" style="width:10%" onclick="DashBoard.SortMyActivity('ProjectName',$(this))">
+                                Project
+                            </td>
+                            <td class="tblhd1" style="width:11%;display:none" onclick="DashBoard.SortMyActivity('Version',$(this))">
+                                Version
+                            </td>
+
+
+                            <td class="tblhd1" style="width:10%" onclick="DashBoard.SortMyActivity('TestPassName',$(this))">
+                                Test Pass
+                            </td>
+                            <td class="tblhd1" style="width:9%" onclick="DashBoard.SortMyActivity('Role',$(this))">
+                                Role
+                            </td>
+                            <td class="tblhd1 sorted daysrm" style="width:7%;background-image: url('../images/Sort-asc.png')" onclick="DashBoard.SortMyActivity('DaysRemaining',$(this))">
+                                Days<br /> Left
+                            </td>
+                            <td class="tblhd1 nc" style="width:5%" onclick="DashBoard.SortMyActivity('NC',$(this))">
+                                #<br />NC
+                            </td>
+                            <td class="tblhd1" style="width:6%" onclick="DashBoard.SortMyActivity('Pass',$(this))">
+                                # <br />Pass
+                            </td>
+                            <td class="tblhd1" style="width:5%" onclick="DashBoard.SortMyActivity('Fail',$(this))">
+                                # <br />Fail
+                            </td>
+                            <td class="tblhd1" style="width:15%" onclick="DashBoard.SortMyActivity('Action',$(this))">
+                                Action
+                            </td>
+                            <td id="offLinetest" class="tblhd1 offtesting tTipdash" style="width:10%">
+                                Offline Testing<img style="background-repeat:no-repeat;background-position:right;cursor:pointer;float:right;align:center;width:20px;padding-top:2px" onclick="DashBoard.helpTextOnTempalteUse();" src="../images/icon-05.png" />
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody id="myact"></tbody>
+
+                </table>
+
+
+                <!-- if the Portfolio feature is on use this table :Ejaz Waquif DT:1/27/2014 -->
+                <table id="celebsMA" class="gridDetails celebsMAWithPortfolio" cellspacing="0" style="display:none">
+                    <thead>
+                        <tr>
+
+                            <td class="tblhd1" style="width:10%" onclick="DashBoard.SortMyActivity('ProjectName',$(this))">
+                                Project
+                            </td>
+                            <td class="tblhd1" style="width:11%" onclick="DashBoard.SortMyActivity('Version',$(this))">
+                                Version
+                            </td>
+
+                            <td class="tblhd1" style="width:10%" onclick="DashBoard.SortMyActivity('TestPassName',$(this))">
+                                Test Pass
+                            </td>
+                            <td class="tblhd1" style="width:9%" onclick="DashBoard.SortMyActivity('Role',$(this))">
+                                Role
+                            </td>
+                            <td class="tblhd1 sorted daysrm" style="width:7%;background-image: url('../images/Sort-asc.png')" onclick="DashBoard.SortMyActivity('DaysRemaining',$(this))">
+                                Days<br /> Left
+                            </td>
+                            <td class="tblhd1 nc" style="width:5%" onclick="DashBoard.SortMyActivity('NC',$(this))">
+                                #<br />NC
+                            </td>
+                            <td class="tblhd1" style="width:6%" onclick="DashBoard.SortMyActivity('Pass',$(this))">
+                                # <br />Pass
+                            </td>
+                            <td class="tblhd1" style="width:5%" onclick="DashBoard.SortMyActivity('Fail',$(this))">
+                                # <br />Fail
+                            </td>
+                            <td class="tblhd1" style="width:15%" onclick="DashBoard.SortMyActivity('Action',$(this))">
+                                Action
+                            </td>
+                            <td id="offLinetest" class="tblhd1 offtesting tTipdash" style="width:10%">
+                                Offline Testing<img style="background-repeat:no-repeat;background-position:right;cursor:pointer;float:right;align:center;width:20px;padding-top:2px" onclick="DashBoard.helpTextOnTempalteUse();" src="../images/icon-05.png" />
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody id="myact"></tbody>
+                </table>
+                <!--End of: if the Portfolio feature is on use this table :Ejaz Waquif DT:1/27/2014 -->
+            </div>
+            <span style="clear:both;"></span>
+            <div id="MyActPagination" style="padding-left:5px;float:right;margin-right:2px;"></div>
+        </div>
+
+
+
+        <div class="dashboard DivlblWithNoColon dashtestingStaus" style="width:350px;float:left;margin-left:5px">
+            <h3 class="h3DbDa" style="padding-bottom:15px;padding-left:5px">
+                Testing Status
+            </h3>
+            <table class="gridDetails" cellspacing="0" style="margin-left:5px;width: 350px">
+                <!--thead-->
+                <tr>
+                    <td class="tblhd1" style="width:100px">
+                        <label>
+                            Project
+                        </label>
+                    </td>
+                    <td class="tblhd1">
+                        <select id="dd" class="ddl">
+                            <option value="select">
+                                Select Project
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+
+                <!--If Portfolio Feature is on :Ejaz Waquif DT:1/27/2014-->
+                <tr class="VersionDDWithPortfolio">
+                    <td align="left" class="tblhd1" style="height:8px">
+                        <label>Version</label>
+                    </td>
+                    <td class="tblhd1">
+                        <select id="versionDD" class="ddl">
+                            <option value="select">
+                                Select Version
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <!--If Portfolio Feature is on :Ejaz Waquif DT:1/27/2014-->
+
+                <tr>
+                    <td align="left" class="tblhd1" style="height:8px;width:100px">
+                        <label>
+                            Test Pass
+                        </label>
+                    </td>
+                    <td class="tblhd1">
+                        <select id="testPassDD" class="ddl">
+                            <option value="select">
+                                Select Test Pass
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+
+
+
+                <!--/thead-->
+            </table>
+            <div class="grapharea" style="padding:0px;">
+
+                <div id="pieChart" style="height:120px; z-index:1;width:350px;margin-left:5px"></div>
+
+                <div id="divDetailAnalysisLink"></div>
+                <label id="noTestCases" style="float:left;display:none;margin-top:10px">
+                    No TestCases
+                </label>
+            </div>
+        </div>
+
+
+    </div> <!--Ejaz -->
+
+
+    <p class="clear"></p>
+
+
+    <div class="dashboard dashPrjTPStaus" style="width:1150px;margin-left:12px;">
+        <h3 class="h3DbDa" style="padding-bottom:15px;padding-left:5px">
+            Project and Test Pass Summary
+        </h3>
+
+        <div id="myTestPassSummary" class="scroll-pane" style="margin-left:5px;height:205px;width:1138px;">
+            <table id="celebs" class="gridDetails celebsWithoutPortfolio" cellspacing="0">
+                <thead>
+                    <tr>
+
+                        <td class="tblhd1" style="width:15%">Project</td>
+                        <!--<td class="tblhd1" style="width:8%">Version</td>-->
+                        <td class="tblhd1" style="width:15%">Project Lead</td>
+                        <td class="tblhd1" style="width:11%">
+                            Project End
+                            Date
+                        </td>
+                        <td class="tblhd1" style="width:20%">Test Pass (TP)</td>
+                        <td class="tblhd1" style="width:15%">Test Manager</td>
+                        <td class="tblhd1" style="width:9%">TP End Date</td>
+                        <td class="tblhd1 center" style="width:7%">
+                            TP
+                            Status
+                        </td>
+                    </tr>
+                </thead>
+                <tbody id="Searchresult"></tbody>
+            </table>
+
+            <!--if Portfolio feature is on use this table :Ejaz Waquif DT:1/27/2014 -->
+            <table id="celebs" class="gridDetails celebsWithPortfolio" cellspacing="0" style="display:none">
+                <thead>
+                    <tr>
+
+                        <td class="tblhd1" style="width:10%">Group</td>
+                        <td class="tblhd1" style="width:10%">Portfolio</td>
+                        <td class="tblhd1" style="width:17%">Project</td>
+                        <td class="tblhd1" style="width:8%">Version</td>
+                        <td class="tblhd1" style="width:20%">Test Pass (TP)</td>
+                        <td class="tblhd1" style="width:12%">Test Manager</td>
+                        <td class="tblhd1 center" style="width:7%">
+                            TP
+                            Status
+                        </td>
+                        <td class="tblhd1 " style="width:8%">TP Start Date</td>
+                        <td class="tblhd1" style="width:8%">TP End Date</td>
+
+                    </tr>
+                </thead>
+                <tbody id="Searchresult"></tbody>
+            </table>
+            <!--if Portfolio feature is on use this table :Ejaz Waquif DT:1/27/2014 -->
+
+        </div>
+        <span style="clear:both;"></span>
+        <div id="Pagination" style="padding-left:5px;float:right;margin-right:2px;"></div>
+    </div>
+
+
+
+</div>
+
+
+
+<div id="dialog" title="Information Unavailable"></div>
+<p class="box-ft"></p>
+
+<!-- Hidden Divs -->
+<div id="divAlert" style="display:none;" title="Dashboard">
+
+</div>
+
+<div id="divHtml" style="display:none;"></div>
+<div id="divUpload"><input type="file" id="upload" style="display:none" /></div>
+
+
+<div style="overflow:hidden;width:2px;height:2px;" id="rteDiv" class="rte1Container">
+    <div></div>
+   
+    
+    <script type="text/javascript">
+        
+    //    var parameter1 = Main.getSiteUrl() + "/SiteAssets/js/RTE/images/";
+        //var parameter2 = Main.getSiteUrl()+"/SiteAssets/js/RTE/";
+        var parameter1 = Main.getSiteUrl() + "/images/";
+        var parameter2 = Main.getSiteUrl() + "/palletes/";
+	initRTE(parameter1.toString(),parameter2.toString(),  "", true);
+
+	writeRichText('rte1', "", 0, 0, false, false);
+    
+    </script>
+</div>
+
+<div id="parentExp">
+    <div id="expectedResultWithImage" class="pasteImage" style="display:none"></div>
+    <div id="divExp"></div>
+    <div id="divAct"></div>
+</div>
+
+<div id="div1"></div>
+<div id="div2"></div>
+<div id="onhovertextOfflinetesting" style="display:none"></div>
+<!-- End of Hidden Divs -->
+ 

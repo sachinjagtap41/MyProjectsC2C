@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Access Denied";
+}
+
+@{
+    Layout = "~/Views/Shared/AccessDenied.cshtml";
+}
+<div style="width:auto; margin:25%;margin-top:50px!important;font-family:Segoe UI Light, Segoe UI, Segoe, Tahoma, Helvetica, Arial, sans-serif!important ">
+    <h1 style="font-size:2.4em!important;white-space:nowrap!important;font-weight:100;color:#444!important;
+font-family:Segoe UI Light, Segoe UI, Segoe, Tahoma, Helvetica, Arial, sans-serif!important">
+        Access Denied
+    </h1>
+
+    <div style="font-size:1.2em!important">
+        <span class="email" style="color:#0072c6"></span> &nbsp; does not have permissions to access this resource.
+    </div>
+    
+    <h4>Here are the few ideas:</h4>
+    <ol>
+        <li>
+            Please ask the admin to give you access.
+        </li>
+        <li>
+            <a asp-controller="Login" asp-action="Index">If you have different account , try signing in that account.</a>
+        </li>
+    </ol>
+
+    
+    <p>
+        If this problem persists, contact your support team and include these technical details:<br />
+        <span>Date and Time</span> : @DateTime.Now.ToString() <br />
+        <span>User</span>: &nbsp;<a style="cursor:none!important;text-decoration:none!important;color:#333!important" class="email"></a> <br />
+        <span> Issue Type</span>: User does not have permissions.
+    </p>
+</div>
+
+<style type="text/css">
+    p span {
+        font-size: 0.9em !important;
+        color: #444 !important;
+        font-weight: bold !important;
+    }
+</style>
+<script src="~/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+    $('.email').text();
+    var email = sessionStorage.getItem('UserEmail');
+    if (email != undefined && email != null) {
+        $('.email').text(email);
+    }
+    else {
+        $('.email').text('notfound@demo.com');
+    }
+    
+</script>

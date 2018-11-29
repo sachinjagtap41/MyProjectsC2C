@@ -1,0 +1,88 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating invalid bandwidth
+#Ansible Playbook created by - Abha H
+---
+- name: Validating invalid bandwidth
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Validating invalid bandwidth
+  - block: 
+    - name: Validating invalid bandwidth
+      ecs_slb_lb:
+       access_key: '{{ aliyun_acs_access_key }}'
+       secret_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       status: '{{ status }}'
+       load_balancer_id: '{{ SLBId }}'
+       internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+       bandwidth: '{{ bandwidthInvalid }}'
+      register: create_slb_result
+    - debug: var=create_slb_result
+    rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+
+    
+     # Task 2 - Validating blank Bandwith Parameter
+  - block: 
+    - name: Validating blank Bandwith Parameter
+      ecs_slb_lb:
+       access_key: '{{ aliyun_acs_access_key }}'
+       secret_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       status: '{{ status }}'
+       load_balancer_id: '{{ SLBId }}'
+       internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+       bandwidth: 
+      register: create_slb_result
+    - debug: var=create_slb_result
+    rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+
+     
+     # Task 3 - Validating Bandwith Parameter with more than its limit
+  - block: 
+    - name: Validating blank Bandwith Parameter
+      ecs_slb_lb:
+       access_key: '{{ aliyun_acs_access_key }}'
+       secret_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       status: '{{ status }}'
+       load_balancer_id: '{{ SLBId }}' 
+       internet_charge_type: '{{ internetChargeTypeBandwidth }}'
+       bandwidth: '{{ bandwidthMoreThan1000 }}'
+      register: create_slb_result
+    - debug: var=create_slb_result
+    rescue:
+      - assert:  
+         that:
+            - "create_slb_result.changed ==  false"
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ create_slb_result}}'
+         when: 
+            - "create_slb_result.changed ==  false"
+
+

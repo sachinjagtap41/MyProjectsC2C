@@ -1,0 +1,50 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Release EIP with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Release EIP with all parameters
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+   - block: 
+     - name: Request EIP with all parameters
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: ap-southeast-1
+        status: '{{ status }}'
+        bandwidth: '{{ bandwidth }}'
+        internet_charge_type: '{{ internetChargeType }}'
+       register: result
+     - debug: var=result
+
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+            
+
+  post_tasks:
+   - block:
+     - name: Release EIP with all parameters
+       ecs_vpc_net:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: ap-southeast-1
+        status: '{{ statusAbsent }}'
+        bandwidth: '{{ bandwidth }}'
+        allocation_id: '{{ result.result["AllocationId"] }}'
+       when:
+           - "result.changed ==  True"
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in result"
+
+         msg: 'Test pass FAILED !!!'               
+    

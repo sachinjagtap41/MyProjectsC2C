@@ -1,0 +1,39 @@
+#!/bin/bash
+
+info() {
+  echo -e "\n\e[1m[INFO] $@...\e[0m\n"
+}
+
+install_ansible_packages(){
+	sudo pip install ansible --upgrade 
+}
+
+install_aliyun_packages(){
+
+	sudo pip install aliyun-python-sdk-ecs ecsutils markupsafe --upgrade
+
+	#TODO: Install all aliyun python sdk packages
+	#TODO: Install specific packages
+	#TODO: Uploaded updated module
+}
+
+install_footmark(){
+	sudo pip install test-script/packages/footmark-1.0.7.tar.gz --upgrade 
+}
+
+#install_aliyun_ansible_modules(){	
+#}
+
+info "setting up test environment"
+
+info "Installing/Updating ansible packages"
+install_ansible_packages
+
+info "Installing/Updating aliyun packages"
+install_aliyun_packages
+
+info "Installing/Updating footmark packages"
+install_footmark
+
+#info "Installing/Updating aliyun ansible modules"
+#install_aliyun_ansible_modules

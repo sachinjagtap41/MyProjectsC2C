@@ -1,0 +1,245 @@
+# Ansible Module Name - ECS
+# Playbook Contains Test-Cases for Modify Instance's Description Parameter
+# Playbook created by : Sachin J
+
+
+- name: Validating Description Parameter
+  hosts: localhost
+  connection: local
+ 
+  vars_files:
+
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+        
+  tasks:
+   - block:
+   
+     # Tasks : 1
+     
+     - name: Scenario 1 - Verify description parameter is not accepting less than 2 characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ descriptionLessThan2CharactersModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn1
+     - debug: var=result_scn1
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+       # Tasks : 2
+      
+   - block:
+     - name: Scenario 2 - Verify description parameter accepts 256 characters only
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ description256CharactersOnlyModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn2
+     - debug: var=result_scn2
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+       # Tasks : 3
+      
+   - block:
+     - name: Scenario 3 - Verify description parameter doest not accept more than 256 characters
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ descriptionMoreThan256CharactersModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn3
+     - debug: var=result_scn3
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+       # Tasks : 4
+       
+   - block:
+     - name: Scenario 4 - Verify description parameter is not accepting http at begining
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{ descriptionHttpAtBeginingModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn4
+     - debug: var=result_scn4
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+       # Tasks : 5
+       
+   - block:
+     - name: Scenario 5 - Verify description parameter is accepting default character
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{  descriptionDefaultModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn5
+     - debug: var=result_scn5
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+       # Tasks : 6
+       
+   - block:
+     - name: Scenario 6 - Verify description parameter is accepting null character
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{  descriptionNullCharactersModify }}'
+        state: '{{ state }}'
+        
+       register: result_scn6
+     - debug: var=result_scn6
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      
+       # Tasks : 7
+       
+   - block:
+     - name: Scenario 7 - Verify description parameter is modifying when state parameter is not provided
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        attributes: '{{  description256CharactersOnlyModify }}'
+        #state: '{{ state }}'  Without state parameter
+        
+       register: result_scn7
+     - debug: var=result_scn7
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+   
+    # Tasks : 8
+       
+   - block:
+     - name: Scenario 8 - Verify description parameter is not modifying when region parameter is not provided
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       # region: '{{ region }}' without region parameter
+        attributes: '{{  description256CharactersOnlyModify }}'
+        state: '{{ state }}' 
+        
+       register: result_scn8
+     - debug: var=result_scn8
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+      
+      
+       # Tasks : 9
+       
+   - block:
+     - name: Scenario 9 - Verify description parameter is not modifying with invalid region parameter
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionInvalid }}' 
+        attributes: '{{  description256CharactersOnlyModify }}'
+        state: '{{ state }}' 
+        
+       register: result_scn9
+     - debug: var=result_scn9
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+   
+   # Tasks : 10
+       
+   - block:
+     - name: Scenario 10 - Verify description parameter is not modifying when attribute's id is invalid
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionInvalid }}' 
+        attributes: '{{  invalidAttributeIdModify }}'
+        state: '{{ state }}' 
+        
+       register: result_scn10
+     - debug: var=result_scn10
+  
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+     always:
+     - assert:
+        that:
+           - "'failed' in result_scn1"
+           - "'The specified parameter \"Description\" is not valid.' in result_scn1.msg[0]['Error Message']"
+
+           - "'failed' not in result_scn2"
+
+           - "'failed' in result_scn3"
+           - "'The specified parameter \"Description\" is not valid.' in result_scn3.msg[0]['Error Message']"
+
+           - "'failed' in result_scn4"
+           - "'The specified parameter \"Description\" is not valid.' in result_scn4.msg[0]['Error Message']"
+
+           - "'failed' not in result_scn5"
+
+           - "'failed' not in result_scn6"
+
+           - "'failed' not in result_scn7"
+
+           - "'failed' in result_scn8"
+           - "'region is required' in result_scn8.msg"
+           
+           - "'failed' in result_scn9"
+           - "'Can not find endpoint to access.' in result_scn9.msg[0]['Error Message']"
+           
+           - "'failed' in result_scn10"
+           - "'Can not find endpoint to access.' in result_scn10.msg[0]['Error Message']"
+
+        msg: 'EXPECTED - SUCCESS!!! 
+               Playbook FAILED due to improper input values. 
+               REASON: {{ result_scn10 }}'
+   
+   
+   

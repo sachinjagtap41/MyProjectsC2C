@@ -1,0 +1,537 @@
+############ Create an SLB ###############
+
+SLBName: DND_C2C_UAT_SLB
+
+internetChargeType: paybytraffic
+
+internetChargeTypeBandwidth: paybybandwidth
+
+bandwidth: 1
+
+listeners:
+      - protocol: http
+        load_balancer_port: 80
+        instance_port: 80
+        bandwidth: 1
+        scheduler: wrr
+        gzip: "on"
+        health_check:
+          ping_port: 80
+          ping_path: /index.html
+          response_timeout: 5
+          interval: 30
+          unhealthy_threshold: 2
+          healthy_threshold: 10
+          http_code: http_2xx
+        stickiness:
+          enabled: "on"
+          session_type: insert
+          cookie: 300
+          cookie_timeout: 1
+      - protocol: http
+        load_balancer_port: 90
+        instance_port: 90
+        bandwidth: 1
+        scheduler: wrr
+        gzip: "on"
+        health_check:
+          ping_port: 90
+          ping_path: /index.html
+          response_timeout: 5
+          interval: 30
+          unhealthy_threshold: 2
+          healthy_threshold: 10
+          http_code: http_2xx
+        stickiness:
+          enabled: "on"
+          session_type: insert
+          cookie: 300
+          cookie_timeout: 1
+addressType: internet
+purgeListener: true
+wait: on
+waitTimeout: 30
+purgeListeners: yes
+purgeInstanceId: yes
+validateCerts: yes
+tags:
+  - tag_key: C2C_UAT_SLB
+    tag_value: C2C_UAT_SLB
+
+###################### Validation of Parameters for SLB Creation #############################
+
+
+########## 1. Region Parameter ################
+
+regionNos: 656556565
+regionSplChar: ^^^++++++
+regionAlphaNo: jagsdhg64554563534
+regionBlank: 
+
+
+########## 3. SLB Name ########
+
+SLBNameNos: 737377
+SLBNameSplChar: ^^^^^^^^^^^^
+SLBNameAplphaNos: aksdag54234
+SLBNameBlank: 
+SLBNameWith1Char: a
+SLBNameWithExact80Char: q2w3e4r5t6y7u8i9o0plkjhgfdsazxcvbnm0987654321qazwsxedcrfvtgbyhnujmiklopqwertyui
+SLBNameWithMoreThan80Char: q2w3e4r5t6y7u8i9o0plkjhgfdsazxcvbnm0987654321qazwsxedcrfvtgbyhnujmiklopqwertyuiop31224344
+
+
+########## 4. Address Type ##########
+addressTypeInvalid: gg
+addressTypeBlank: 
+
+########## 5. VSwitch Id ########
+
+VSwitchIdInvalid: ghghdfsf
+VSwitchIdBlank: 
+
+######## 6. Internet Charge Type ###########
+internetChrgTypeInvalid: vjjv
+internetChrgTypeBlank: 
+
+########### 7. Master Zone #############
+
+masterZoneInvalid: hcjjjsdhjs
+masterZoneBlank: 
+
+########### 8. Slave Zone ##########
+
+slaveZoneInvalid: hcjjjsdhjs
+slaveZoneBlank:
+
+########## 9. Bandwidth #######
+
+bandwidthInvalid: gfgfg
+bandwidthBlank: 
+bandwidthMoreThan1000: 2345
+
+########### 10. Purge Listeners + Instance Ids #########
+
+purgeListenersInvalid: hghghg
+purgeListenersBlank:
+purgeInstanceIdInvalid: jajaa
+purgeInstanceIdBlank:
+
+######## 11. Validate Certs ###########
+
+validateCertsInvalid: sdfjhdh
+validateCertsBlank: 
+
+####### 12. Tags #######
+
+tagsSplChar:
+  - tag_key: dhh^^^^
+    tag_value: hdh^^^
+    
+tagsNos:
+  - tag_key: 37824672346
+    tag_value: 3264623546
+    
+tagsBlank:
+  - tag_key: 
+    tag_value: hdh^^^
+    
+###### 13. Wait #######
+
+waitInvalid: ahghgd
+waitBlank: 
+
+#### 14. Wait Timeout ####
+
+waitTimeoutInvalid: hfs
+waitTimeoutBlank: 
+waitTimeoutMoreThan300: 320
+
+
+########## SLB Alias ###########
+
+state: present
+scheme: internet
+
+################# Create Listener #####################
+
+purgeListenersFalse: no
+listenerHttp: 
+  - protocol: http
+    listener_port: 80
+    backend_server_port: 80
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    health_check:
+      ping_port: 80
+      ping_path: /index.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 1
+   
+listenerHttps:   
+  - protocol: https
+    listener_port: 443
+    backend_server_port: 443
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_159dedd04a9
+    health_check:
+      ping_port: 443
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+   
+listenerTcp:   
+  - protocol: tcp
+    listener_port: 90
+    backend_server_port: 90
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    health_check:
+      ping_port: 90
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      
+listenerUdp:   
+  - protocol: udp
+    listener_port: 70
+    backend_server_port: 70
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    health_check:
+      ping_port: 70
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      
+######### Invalid Listener Parameters ###########
+
+listenerInvalid:   
+  - protocol: https767676
+    listener_port: 440
+    backend_server_port: 443
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+
+
+########## Set Load Balancer Status ###############
+
+statusActive: active
+statusInactive: inactive
+
+
+######### Invalid Listener Parameters ###########
+
+listenerInvalidProtocol:   
+  - protocol: https767676
+    listener_port: 440
+    backend_server_port: 443
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+
+listenerInvalidListenerPort:   
+  - protocol: https
+    listener_port: 3000000
+    backend_server_port: 443
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+      
+listenerInvalidBackendPort:   
+  - protocol: https
+    listener_port: 440
+    backend_server_port: 3000000
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+      
+listenerInvalidBandwidth:   
+  - protocol: https
+    listener_port: 440
+    backend_server_port: 1
+    bandwidth: 5000
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+      
+listenerInvalidScheduler:   
+  - protocol: https
+    listener_port: 440
+    backend_server_port: 1
+    bandwidth: 1
+    scheduler: jkhhh
+    gzip: "on"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+ 
+listenerInvalidGzip:   
+  - protocol: https
+    listener_port: 440
+    backend_server_port: 1
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "dgfdgdf"
+    ssl_certificate_id: 1077970544931979_15a41f730d5
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+      
+listenerInvalidSslCertificate:   
+  - protocol: https
+    listener_port: 440
+    backend_server_port: 1
+    bandwidth: 1
+    scheduler: wrr
+    gzip: "on"
+    ssl_certificate_id: 1077
+    health_check:
+      ping_port: 44
+      ping_path: /wecome.html
+      response_timeout: 5
+      interval: 30
+      unhealthy_threshold: 2
+      healthy_threshold: 10
+      http_code: http_2xx
+    stickiness:
+      enabled: "on"
+      session_type: insert
+      cookie: 300
+      cookie_timeout: 2
+  
+###################### General Parameters #############################
+status: present
+statusAbsent: absent
+statusHealthCheck: check
+statusInvalid: create
+statusBlank: 
+
+regionInvalid: cn-india
+regionOther: cn-hongkong
+
+loadBalancerIdInvalid: lb-dj12kb54ydfequ8i1bn58
+loadBalancerIdAlreadyDeleted: lb-dj12kb54ddklequ8i1bn58
+diffRegionVSwitchId: vsw-2ze1v3bg6r6rtbdsqfzei
+
+instanceIdsOfDiffRegion:
+  -  i-2zeefrrzhrojmp31nkei
+     i-2zede0yjqvz9z4ntk2q2
+
+backendServersWithoutServerId:
+ - server_id: 
+   weight: 50
+  
+backendServersWeightMoreThan100:
+ - server_id: i-2zeb0snt8vdg1o3nm3nv
+   weight: 150
+   
+backendServersInvalidServerId:
+ - server_id: i-2dfd1o3nm3nv
+   weight: 15
+
+
+backendServersWithInvalidServer:
+  - i-2dfd1o3nm3nv
+     
+backendServersWeightAsStringParameter:
+ - server_id: i-2zeb0snt8vdg1o3nm3nv
+   weight: hundred
+   
+backendServersWithListDataType:
+ - server_id: i-2zeb0snt8vdg1o3nm3nv
+ - weight: 45
+
+backendServersForVserverGrpInvalid:        # Invalid serverId is provided
+  - server_id: i-2zeefrrzhrojmp31nkei
+    port: 12 
+    weight: 10
+    
+backendServerServerIdInvalid:
+ - server_id: i-2zeefrdfsdfrojmp31nkei      # Invalid server id 
+   port: 4 
+   weight: 42
+
+backendServerServerIdWithout: 
+ #- server_id: i-2zeefrdfsdfrojmp31nkei     # Invalid server id 
+   port: 4 
+   weight: 42   
+  
+backendServerServerIdWithOneServerNotPresent:
+ - server_id: i-2ze9o2kucvflcochjbe0        # Serverid not present in the region    
+   port: 4 
+   weight: 44  
+ - server_id: i-2ze9ufq5dfdfdf58n0f6o2nc     
+   port: 5 
+   weight: 43
+ - server_id: i-2zede0yjqvz9z4ntk2q2     
+   port: 6 
+   weight: 45    
+   
+vservergroupNameSet: Uat_c2c_ansible2
+vserverGroupName: Uat_c2c_ansible
+vserverGroupNameInvalid: In September 2013, the company sought an IPO in the United States after a deal could not be with Hong Kong regulators.[9] PlannifIn September 2013, the company sought an IPO in the United States after a deal could not be with Hong Kong regulators.[9] Planni
+vserverGroupNameSpecailChar: Ansib@&()le
+vserverGroupNameAlphanumeric: Ansible1254     
+
+vserverGroupLoadBalancerIdInvalid:  lb-dj12kb5dfdfklequ8i1bn58   # Invalid load balancer id
+
+vserverGroupInvalid: rsp-dj1wkdfdfhq8l0yt
+
+removeVserverGroupBackendServersInavlid: 
+   - server_id: i-2zeefrrzhggkjojmp31nkei     
+     port: 15
+    
+     
+purgeBackendServersOldInvalid:
+   - server_id: i-2ze7b179ej8juo3m60m3    
+     port: 4   
+             
+     
+purgeBackendServersNewInvalid:
+  - server_id: i-2zebmnc8vdffdsliy0xz     
+    port: 5 
+    weight: 4    
+
+  
+portsMoreThanRange: 65539
+portsNotConfigured: 166
+
+SLBIdInvalid: 364723hgsfhsgfh
+
+
+################ Modify VserverGroup Backend Server
+
+   
+modifyBackendServersOldInvalid:
+   - server_id: i-2ze9ddfdffucvflcochjbe0     
+     port: 14    
+  
+modifyBackendServersNewInvalid:
+  - server_id: i-2zebmnc8vdffdsliy0xz     
+    port: 5 
+    weight: 4    
+modifyBackendServersListWhereOneServeridIsInvalid:
+  - server_id: i-2zebmnc8vn2elsliy0xz    
+    port: 5 
+    weight: 42
+  - server_id: i-2zebmnc8vn2elsliy0xz     
+    port: 6 
+    weight: 43
+  - server_id: i-2zebmndfdfelsliy0xz     
+    port: 7 
+    weight: 48   
+    

@@ -1,0 +1,52 @@
+# Ansible Module Name - ECS
+# Playbook Contains Test-Cases for Modify Instance's InstanceId Parameter
+# Playbook created by : Sachin J
+
+
+
+- name: Validating ImageId Parameter
+  hosts: localhost
+  connection: local
+  
+  
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+  
+    
+  
+  tasks:  
+  
+  # Task : 1    
+  
+   - block: 
+     - name: Verifying instance Image id is not modified
+       ecs:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        image_id: '{{ ecsImageId }}'
+        state: '{{ state }}'
+        
+       register: result
+     - debug: var=result
+
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+     always:
+     - assert:
+        that:     
+           - "'failed' in result"
+           - "'instance_type is required for new instance' in result.msg"
+
+
+        msg: 'EXPECTED - SUCCESS!!! 
+              Playbook FAILED due to improper input values. 
+              REASON: {{ result }}'
+     
+   
+    

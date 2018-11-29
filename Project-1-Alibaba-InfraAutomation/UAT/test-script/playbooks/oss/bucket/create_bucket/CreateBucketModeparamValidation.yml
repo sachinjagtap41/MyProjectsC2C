@@ -1,0 +1,93 @@
+#Ansible Module Name -- oss.py
+#Test Case : create bucket with Mode Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: create bucket with Mode Param Validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create bucket with invalid Mode Param
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ invalidMode }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - create bucket with blank Mode Param
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: 
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   - block:
+     - name: Scenario 3 - create bucket with mode Param as Mode
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         Mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - create bucket without mode Param
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no        
+        
+     always:
+      - assert:
+         that:
+            - "'failed' in result_scn1"
+            - "'value of mode must be one of: create,delete,put,put_folder,list,delobj, got: sghh54@^' in result_scn1.msg"
+
+            - "'failed' in result_scn2"
+            - "'value of mode must be one of: create,delete,put,put_folder,list,delobj, got: None' in result_scn2.msg"
+
+            - "'failed' in result_scn3"
+            - "'unsupported parameter for module: Mode' in result_scn3.msg"
+
+            - "'failed' in result_scn4"
+            - "'missing required arguments: mode' in result_scn4.msg"
+
+         msg: 'Test pass FAILED !!!'
+        

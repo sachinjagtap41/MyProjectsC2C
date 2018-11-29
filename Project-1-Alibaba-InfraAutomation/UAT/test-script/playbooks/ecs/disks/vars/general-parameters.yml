@@ -1,0 +1,36 @@
+# Disk
+sizeMoreThanSpecifiedCategory: 2050 
+
+# Disk Tags
+diskTagsValueNull: 
+    - tag_key: Disk1
+      tag_value: 12
+      
+diskTagsKeyNull: 
+    - tag_key: 
+      tag_value: 123  
+        
+diskTags: 
+    - tag_key: Disk
+      tag_value: 123  
+      
+statusInvalid: Create
+diskCategory: cloud_efficiency
+diskCategorySsdCloud: cloud_ssd
+diskCategoryUltraCloud: ultra_cloud
+diskCategoryCloudEfficiency: cloud_efficiency 
+diskCategoryCloud: cloud
+diskCategoryNotAllowed: cloud   # This disk category is not allowed in hongkong region
+
+# Disk Name0.
+
+diskName: Uat_c2c_ansible
+diskDescription: Created using Uat Script
+
+##########    Detach disk     ###########
+
+# Detach Disk
+diskNotAttached: d-j6chh1thgplqvos6i8x3
+diskIdInvalid: d-j6c3sw9sdfsdfvv0783q
+diskOfDifferentRegion: d-rj9j8a740966dhs3kbya 
+      

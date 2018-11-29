@@ -1,0 +1,43 @@
+# Ansible Module Name - ECS_AMI
+# Interface : DeleteCustomImage
+# Playbook Contains Test-Case for deleting a custom image
+# Playbook created by : Sachin J
+
+
+
+- name: Delete the custom image without ImageId parameter
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+
+    - ../vars/general-parameters.yml
+    - ../vars/test-environment.yml
+    - ../../../vars/alicloud-creds.yml
+      
+  tasks:
+  
+  - block:
+  
+    - name: Delete the custom image without ImageId parameter
+    
+      ecs_ami:
+        ecs_access_key: '{{ aliyun_acs_access_key }}'
+        ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+        state: 'absent'
+      register: result
+    - debug: var=result
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+          that:
+            - "'failed' in result"
+            -  "'image id is required to delete image' in result.msg"
+          msg: 'Test pass FAILED!!! Failure Expected - We can not delete an image without ImageId.
+                REASON: {{ result.msg }}'

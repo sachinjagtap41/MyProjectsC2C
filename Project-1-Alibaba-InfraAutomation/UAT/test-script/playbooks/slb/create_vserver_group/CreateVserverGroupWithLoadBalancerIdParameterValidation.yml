@@ -1,0 +1,97 @@
+#Ansible Module Name -- ecs_slb_vsg.py
+#Test Case : Create Vserver Group
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating create vserver group with loadbalancerid parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+   # Task : 1 Create vserver group by providing valid loadbalancerid parameter
+   - block:
+     - name: Scenario 1 - Create vserver group by providing valid loadbalancerid parameter
+       ecs_slb_vsg:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         load_balancer_id: '{{ vserverGroupLoadBalancerId }}'
+         vserver_group_name: '{{ vserverGroupName }}'
+         backend_servers: '{{ backendServersForVserverGrp }}'
+         status: '{{ status }}'
+        
+       register: create_vsg_result_scn1
+     - debug: var=create_vsg_result_scn1
+    
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+  # Task : 2 Create vserver group by providing invalid loadbalancerid parameter
+   - block:
+     - name: Scenario 2 - Create vserver group by providing invalid loadbalancerid parameter
+       ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        load_balancer_id: '{{ vserverGroupLoadBalancerIdInvalid }}'
+        vserver_group_name: '{{ vserverGroupName }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+       register: create_vsg_result_scn2
+     - debug: var=create_vsg_result_scn2
+    
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+   # Task : 3 Create vserver group without providing loadbalancerid parameter
+   - block:
+     - name: Create vserver group without providing loadbalancerid parameter
+       ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        #load_balancer_id: '{{ loadBalancerId }}'     # Without providing loadbalancer id parameter
+        vserver_group_name: '{{ vserverGroupName }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+       register: create_vsg_result_scn3
+     - debug: var=create_vsg_result_scn3
+    
+     rescue:
+        - fail:
+           msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' not in create_vsg_result_scn1"
+
+            - "'failed' in create_vsg_result_scn2"
+
+            - "'failed' in create_vsg_result_scn3"
+
+         msg: 'Test pass FAILED !!!'
+
+
+  post_tasks:
+   - name: Deleting newly created vserver group
+     ecs_slb_vsg:
+      acs_access_key: '{{ aliyun_acs_access_key }}'
+      acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+      region: '{{ region }}'
+      vserver_group_id: '{{ create_vsg_result_scn1.result["VServerGroupId"]  }}'
+      load_balancer_id: '{{ loadBalancerId }}'
+      state: absent
+     when:
+      - "create_vsg_result_scn1.changed ==  True"

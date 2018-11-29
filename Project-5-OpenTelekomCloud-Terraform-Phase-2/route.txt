@@ -1,0 +1,165 @@
+provider "opentelekomcloud"  {
+  alias = "main"
+  user_name   = "lizhonghua"
+  domain_name = "OTC00000000001000010501"
+  password    = "slob@1234"
+  auth_url    = "https://iam.eu-de.otc.t-systems.com/v3"
+  region      = "eu-de"
+  tenant_id   = "bf74229f30c0421fae270386a43315ee"
+}
+
+provider "opentelekomcloud"  {
+  alias = "peer"
+  user_name   = "lizhonghua"
+  domain_name = "OTC00000000001000010501"
+  password    = "slob@1234"
+  auth_url    = "https://iam.eu-de.otc.t-systems.com/v3"
+  region      = "eu-de"
+  tenant_id   = "17fbda95add24720a4038ba4b1c705ed"
+}
+
+variable "tenant_id" {
+  default = "17fbda95add24720a4038ba4b1c705ed"
+}
+
+resource "opentelekomcloud_vpc_v1" "vpc_1" {
+  provider = "opentelekomcloud.main"
+  name = "click2cloud-vpc1"
+  cidr = "192.168.0.0/16"
+}
+
+resource "opentelekomcloud_vpc_v1" "vpc_2" {
+  provider = "opentelekomcloud.peer"
+  name = "click2cloud-vpc2"
+  cidr = "192.168.0.0/16"
+}
+
+
+resource "opentelekomcloud_vpc_peering_connection_v2" "peering_1" {
+  provider = "opentelekomcloud.main"
+  name = "click2cloud-sachin"
+  vpc_id = "${opentelekomcloud_vpc_v1.vpc_1.id}"
+  peer_vpc_id = "${opentelekomcloud_vpc_v1.vpc_2.id}"
+  peer_tenant_id =  "${var.tenant_id}"
+}
+
+resource "opentelekomcloud_vpc_peering_connection_accepter_v2" "peer" {
+  provider = "opentelekomcloud.peer"
+  vpc_peering_connection_id = "${opentelekomcloud_vpc_peering_connection_v2.peering_1.id}"
+  accept = true
+}
+
+
+
+/*data "opentelekomcloud_vpc_peering_connection_v2" "peering" {
+  //peer_vpc_id = "91a100ba-b501-4c26-ae0d-8e7518a5913c"
+  //vpc_id =  ""
+  //peer_tenant_id =    ""
+  //status =    ""
+  id =        "9a103c0d-0374-41e4-a7e8-cbc45a8eef64"
+  //name =      ""
+}
+
+output "peering_data" {
+  value = "${data.opentelekomcloud_vpc_peering_connection_v2.peering.name}"
+}*/
+
+
+resource "opentelekomcloud_vpc_route_v2" "vpc_route_2" {
+  provider = "opentelekomcloud.peer"
+ type      = "peering"
+ nexthop    = "ae85fa53-45f4-49cb-8841-7e7c73b79a17"
+  destination = "192.168.0.0/16"
+  vpc_id = "9a103c0d-0374-41e4-a7e8-cbc45a8eef64"
+  tenant_id = "17fbda95add24720a4038ba4b1c705ed"
+}
+
+
+
+resource "opentelekomcloud_vpc_route_v2" "vpc_route_32" {
+  provider = "opentelekomcloud.peer"
+  type      = "peering"
+  nexthop    = "ae85fa53-45f4-49cb-8841-7e7c73b79a17"
+  destination = "192.168.0.0/17"
+  vpc_id = "9a103c0d-0374-41e4-a7e8-cbc45a8eef64"
+  tenant_id = "17fbda95add24720a4038ba4b1c705ed"
+
+}
+
+
+resource "opentelekomcloud_vpc_route_v2" "vpc_route_18" {
+  provider = "opentelekomcloud.peer"
+  type      = "peering"
+  nexthop    = "ae85fa53-45f4-49cb-8841-7e7c73b79a17"
+  destination = "192.168.0.0/18"
+  vpc_id = "9a103c0d-0374-41e4-a7e8-cbc45a8eef64"
+  tenant_id = "17fbda95add24720a4038ba4b1c705ed"
+
+}
+
+
+
+/*
+data "opentelekomcloud_vpc_route_v2" "vpc_route" {
+  provider = "opentelekomcloud.peer"
+  //id = "be996502-cffe-4986-85aa-67fde2ee7109"
+// id = "163da728-44ec-4aec-8ac2-32dc6b466415"
+}
+
+output "peering_data" {
+  value = "${data.opentelekomcloud_vpc_route_v2.vpc_route.destination}"
+}*/
+
+
+
+/*
+
+data "opentelekomcloud_vpc_route_ids_v2" "example" {
+  provider = "opentelekomcloud.peer"
+  vpc_id = "9a103c0d-0374-41e4-a7e8-cbc45a8eef64"
+}
+
+
+data "opentelekomcloud_vpc_route_v2" "vpc_route" {
+  provider = "opentelekomcloud.peer"
+  count = "${length(data.opentelekomcloud_vpc_route_ids_v2.example.ids)}"
+  id = "${data.opentelekomcloud_vpc_route_ids_v2.example.ids[count.index]}"
+}
+output "route_nexthop" {
+  value = "${data.opentelekomcloud_vpc_route_v2.vpc_route.vpc_id}"
+}
+
+
+
+output "route_nexthop" {
+  value = ["${data.opentelekomcloud_vpc_route_ids_v2.example.ids}"]
+}
+*/
+
+
+
+/*
+data "opentelekomcloud_vpc_route_ids_v2" "example" {
+  provider = "opentelekomcloud.peer"
+  vpc_id = "9a103c0d-0374-41e4-a7e8-cbc45a8eef64"
+}
+
+data "opentelekomcloud_vpc_route_v2" "vpc_route" {
+  provider = "opentelekomcloud.peer"
+  count = "${length(data.opentelekomcloud_vpc_route_ids_v2.example.ids)}"
+  id = "${data.opentelekomcloud_vpc_route_ids_v2.example.ids[count.index]}"
+}
+output "route_nexthop" {
+  value = "${data.opentelekomcloud_vpc_route_ids_v2.example.ids}"
+}
+*/
+
+
+
+// f33b2a7a-86eb-40fd-acb4-39d559b20cf8
+
+// e25e5519-9d15-4c94-aa18-2faff2b27569
+
+// 17699263-6e01-41a4-b459-e7c4143f927c
+
+

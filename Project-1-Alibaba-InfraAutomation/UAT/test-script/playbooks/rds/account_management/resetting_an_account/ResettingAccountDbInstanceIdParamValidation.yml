@@ -1,0 +1,101 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Resetting Account with Db name parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Resetting Account with Db name parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - Resetting Account with invalid Db name parameter
+       rds_acc_mgmt:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandReset }}'
+        db_instance_id: '{{ instanceIdInvalid }}'
+        account_name: '{{ accName }}'
+        account_password: '{{ accPwd }}'
+       register: result_scn1
+     - debug: var=result_scn1 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 2 - Resetting Account without Db name parameter
+       rds_acc_mgmt:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandReset }}'
+        account_name: '{{ accName }}'
+        account_password: '{{ accPwd }}'
+       register: result_scn2
+     - debug: var=result_scn2 
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 3 - Resetting Account with blank Db name parameter
+       rds_acc_mgmt:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandReset }}'
+        db_instance_id: 
+        account_name: '{{ accName }}'
+        account_password: '{{ accPwd }}'
+       register: result_scn3
+     - debug: var=result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - block :
+     - name: Scenario 4 - Resetting Account with db name parameter as Db name
+       rds_acc_mgmt:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        command: '{{ commandReset }}'
+        Db_instance_id: '{{ instanceId }}'
+        account_name: '{{ accName }}'
+        account_password: '{{ accPwd }}'
+       register: result_scn4
+     - debug: var=result_scn4
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+            - "'The specified instance is not found.' in result_scn1.msg[0]['Error Message']"
+            
+            - "'failed' in result_scn2"
+            - "'db_instance_id is required for resetting account' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'db_instance_id is required for resetting account' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Db_instance_id' in result_scn4.msg"
+            
+            
+         msg: 'Test pass FAILED !!!'

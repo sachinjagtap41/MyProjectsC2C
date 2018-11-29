@@ -1,0 +1,96 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Master Zone Parmeter while creating SLB
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Master Zone Parmeter while creating SLB
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+   
+  tasks:
+  # Task 1 : Validating Invalid Master Zone
+  - block:
+    - name: Scenario 1 - Validating Invalid Master Zone
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        master_zone_id: '{{ masterZoneInvalid }}'
+        slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn1
+    - debug: var=create_slb_result_scn1
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+  # Task 2 : Validating Master Zone by keeping blank
+  - block:
+    - name: Scenario 2 - Validating Master Zone by keeping blank
+      ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        master_zone_id: '{{ masterZoneBlank }}'
+        slave_zone_id: '{{ slaveZone }}'
+        scheme: '{{ scheme }}'
+        internet_charge_type: '{{ internetChargeType }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+
+      register: create_slb_result_scn2
+    - debug: var=create_slb_result_scn2
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+
+  # Task 3 : Validating master_zone_id as Master_zone_id
+  - block:
+      - name: Scenario 3 - Validating master_zone_id as Master_zone_id
+        ecs_slb_lb:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          status: '{{ status }}'
+          Master_zone_id: '{{ masterZone }}'
+          slave_zone_id: '{{ slaveZone }}'
+          scheme: '{{ scheme }}'
+          internet_charge_type: '{{ internetChargeType }}'
+          wait: '{{ wait }}'
+          wait_timeout: '{{ waitTimeout }}'
+
+        register: create_slb_result_scn3
+      - debug: var=create_slb_result_scn3
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:  
+         that:
+             - "'failed' in create_slb_result_scn1"
+             -  "'Specified master_zone_id or slave_zone_id is not exist.' in create_slb_result_scn1.msg[0]['Error Message']"
+
+             - "'failed' in create_slb_result_scn2"
+             -  "'provide master_zone_id first' in create_slb_result_scn2.msg"
+
+             - "'failed' in create_slb_result_scn3"
+             -  "'unsupported parameter for module: Master_zone_id' in create_slb_result_scn3.msg"
+         msg: 'Test pass FAILED !!!'
+

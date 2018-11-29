@@ -1,0 +1,467 @@
+@{
+    Layout = "~/Views/Shared/UatAdminMaster.cshtml";
+}
+@{
+    ViewBag.Title = "UAT Project Management:Testers";
+}
+
+<script src="~/js/Tester/TesterTab.js"></script>
+
+<script type="text/javascript">
+    function checkUserType() {
+        var grpMembersMailId = new Array();
+        var grpMembersAlias = new Array();
+        tester.testerNameForSPuserID = [];
+        tester.testerDisplayNameForSPuserID = [];
+        tester.testerEmailForSPuserID = [];
+        tester.testerDisplayName = [];
+        tester.testerName = [];
+        tester.SPUserID = [];
+        tester.testerEmail = [];
+        var oldUser = $("div[title='tester']").children().eq(0).text();
+        var interval = setInterval(function () {
+            //alert("Interval called")
+            var newUser = $("div[title='tester']").children().eq(0).text();
+            if (oldUser != newUser) {
+                //var userXMLStr = $("div[title='tester'] #divEntityData div").attr('data');
+                //var xmlDoc = $.parseXML(userXMLStr.replace(/\t/gi,''));
+                //$xml = $(xmlDoc);
+                //tester.gPrincipalType = $xml.find('Key:contains(PrincipalType) + Value').text();
+                var displayText = $("div[Title='tester'] #divEntityData").attr('displaytext');
+                if (displayText.indexOf('\\') != -1) {
+                    displayText = displayText.split('\\')[1];
+                }
+                //////  If User is not present in any SP security group then principle type has returned as a empty ///
+                AddUser.globTesterName = $('div[title="tester"] #divEntityData').attr('key');//Added for SP13
+                AddUser.presentInGroup = 0;
+                AddUser.GetGroupNameforUser();
+                if (AddUser.presentInGroup == 1)//User is not present in member group
+                {
+                    AddUser.AddUserToSharePointGroup();
+                }
+                tester.gPrincipalType = Main.SearchPrincipalType(displayText);
+                if (tester.gPrincipalType == undefined)
+                    tester.gPrincipalType = 'User';
+                ///////
+
+                if (tester.gPrincipalType == 'SecurityGroup' || tester.gPrincipalType == 'DistributionList') {
+                    if (tester.editFlag == 1) {
+                        tester.alertBox("Sorry! DL/SG can not be added in '" + $('#editT').text() + "' mode");
+                        tester.reset();
+                        tester.gPrincipalType = '';
+                        clearInterval(interval);
+                        return;
+                    }
+                    var grpName = $("div[Title='tester'] #divEntityData").attr('description');
+                    var grpDomain = '';
+                    //Group Name:RSINNGP\CGHAdmin to get CGHAdmin
+                    if (grpName.indexOf('\\') != -1) {
+                        grpDomain = grpName.split('\\')[0];
+                        grpName = grpName.split('\\')[1];
+                    }
+                    Main.showLoading();
+                    grpMembersAlias = getMembersFromADGrp(grpDomain, grpName);//:SD
+
+                    if (grpMembersAlias == 'unauthorized') {
+                        Main.hideLoading();
+                        tester.alertBoxHtml3('<span>Sorry! You are not authorized to read Active Directory/DL Group from outside RSINNGP domain</span></br><span>To use this feature, Please login from RSINNGP domain</span>');
+                        clearInterval(interval);
+                        return;
+                    }
+                    else if (grpMembersAlias == 'active-x') {
+                        Main.hideLoading();
+                        importExport.showPrerequisites();
+                        clearInterval(interval);
+                        return;
+                    }
+                    else if (grpMembersAlias == 'exception') {
+                        Main.hideLoading();
+                        tester.alertBoxHtml3('<span>Sorry! You can not add selected RSINNGP Active Directory/DL Group</span>');
+                        clearInterval(interval);
+                        return;
+                    }
+                    Main.showLoading();
+                    if (grpMembersAlias != undefined) {
+                        for (var ss = 0; ss < grpMembersAlias.length; ss++) {
+                            AddUser.globTesterName = '';
+                            AddUser.AddUserToSharePointGroupForTester(grpMembersAlias[ss]);
+                            AddUser.GetUserPropertyForTester(grpMembersAlias[ss]);
+
+                            tester.testerName.push(grpMembersAlias[ss]);
+                            tester.SPUserID.push(AddUser.testerSPID);
+                            tester.testerDisplayName.push(AddUser.testerFullName);
+                            tester.testerEmail.push(AddUser.testerEmail);
+
+                            //Added by Mohini DT:25-03-2014
+                            tester.testerNameForSPuserID[AddUser.testerSPID] = grpMembersAlias[ss]
+                            tester.testerDisplayNameForSPuserID[AddUser.testerSPID] = AddUser.testerFullName;
+                            tester.testerEmailForSPuserID[AddUser.testerSPID] = AddUser.testerEmail
+                        }
+                    }
+                    tester.populateRolesForBulk();
+                }
+                else if (tester.gPrincipalType == 'User') {
+                    tester.populateRoles();
+                    $('#testerRolesinBulk').html('');
+                    $('#lblRole').css('display', '');
+                    $('#assigRole').css('display', 'none');
+                    $('#testerRolesinBulk').css('display', 'none');
+                    $('#testerRoles').css('display', '');
+                    $('#buttonsDiv').css('margin-top', '60px');
+                    $('#btnDiv').css('margin-top', '0px');
+
+
+                }
+                //alert("changed");
+                clearInterval(interval);
+            }
+            //clearInterval( interval );
+        }, 1000);
+
+    }
+    $(document).ready(function () {
+        if (isRootWeb)
+            $("#downloadPdf").attr('href', '../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Tester Template.pdf');
+        else
+            $("#downloadPdf").attr('href', '../../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Tester Template.pdf');
+        var onClick = 'checkUserType();' + $("[title='Browse']").attr('onClick');
+        $("a[title='Browse']").attr('onClick', onClick);
+
+        Main.showLoading();
+        $('#navHeading tr:eq(3) td').attr('class', 'activeNav');
+        $('#navHeading tr:eq(3) td img').attr('src', '/images/Admin/b_Login User.png');
+
+        $("div[title='tester']").css('width', '430px');//added by Mohini
+        $("a[title='Browse']").css("margin-left", "15px");//added by Mohini
+
+
+
+        $(".t6").addClass('t6 t6hover');
+        $("#ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser2_checkNames").css('display', 'none');
+        $("#ctl00_ctl00_midPannel_ContentPlaceHolder1_Child_ContentPlaceHolder1_PeopleEditorUser3_checkNames").css('display', 'none');
+        $("#divTesterPP").bind("contextmenu", function (e) { return false; });
+        $("#dialogPeoPic").bind("contextmenu", function (e) { return false; });
+        $(".ms-inputuserfield").css("border", "1px #ccc solid");
+        $("#navHeading tr:eq(2) td:eq(1)").css("background-color", "#ffffff")
+        tester.pageLoad();
+        //importExport.init();
+        $('#downloadT').attr('title', 'To import the ' + tester.gConfigTester + 's using the standard excel Template.');//added by Mohini for Hover Over Text
+
+        /*To show Active-x prerequisite on page load:SD*/
+        //tester.CheckPreRequisite();
+        navigation.changeLinks();
+
+        /*For Bug Id 1167*/
+        $('#projectHead').click(function (e) {
+            if ($('#assoProjects').height() >= 400)
+                $('#assoProjects').css('overflow-y', 'auto');
+        });
+        /*For Bug Id 11663*/
+        $('#TestPassHead').click(function (e) {
+            if ($('#assoTP').height() >= 400)
+                $('#assoTP').css('overflow-y', 'auto');
+        });
+        Main.hideLoading();
+    });
+</script>
+
+
+<div id="RightPanel">
+
+
+    <div class="pgHead">Tester Details</div>
+    <div class="prjHead" id="projectName"></div>
+    <div class="tpHead" id="testPassName"></div>
+
+    <table class="rgTableBread" style="display:none">
+        <tr>
+            <td id="groupTitle"><label class="rgBCTitle"></label></td>
+            <td id="portfolioTitle"><label class="rgBCTitle"></label></td>
+            <td id="projectTitle"><label class="rgBCTitle"></label></td>
+            <td id="versionTitle"><label class="rgBCTitle"></label></td>
+            <td id="TestPassTitle"><label class="rgBCTitle"></label></td>
+
+        </tr>
+        <tr>
+            <td id="groupHead" style="cursor:pointer"><label class="rgBCHead">Group</label><div id="assoGroups" class="headDD" style="height:auto;-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="grpul" class="headul"></ul></div></td>
+            <td id="portfolioHead" style="cursor:pointer">
+                <label class="rgBCHead">
+                    Portfolio
+                </label><div id="assoPortfolios" class="headDD"><ul style="list-style: none;" id="portful" class="headul"></ul></div>
+            </td>
+            <td id="projectHead" style="cursor:pointer"><label class="rgBCHead">Project</label><div id="assoProjects" class="headDD" style="z-index:1;-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="prjctul" class="headul"></ul></div></td>
+            <td id="versionHead" style="cursor:pointer"><label class="rgBCHead">Version</label><div id="assoVersions" class="headDD"><ul style="list-style: none;" id="versul" class="headul"></ul></div></td>
+            <td id="TestPassHead" style="cursor:pointer">
+                <label class="rgBCHead">
+                    Test
+                    Pass
+                </label><div id="assoTP" class="headDD" style="-ms-overflow-y: auto; max-height: 400px;"><ul style="list-style: none;" id="tpul" class="headul"></ul></div>
+            </td>
+
+        </tr>
+    </table>
+
+    <div style="float:left;margin-top:15px" class="navTabs">
+        <h2 style="color:#000000;font-size:12px;cursor:pointer;float:left;width:80px;text-transform:uppercase" id="allT">
+            VIEW ALL
+        </h2>
+        <h2 style="color:#7F7F7F;font-size:12px;cursor:pointer;float:left;width:100px;text-transform:uppercase" id="createT">
+            Add Tester
+        </h2>
+        <h2 style="color:#7F7F7F;font-size:12px;cursor:pointer;float:left;width:220px;text-transform:uppercase;display:none" id="downloadT">
+            Download/Upload Template
+        </h2>
+        <h2 style="color:#7F7F7F;font-size:12px;cursor:pointer;float:left;width:220px;text-transform:uppercase;display:none" id="editT">
+            Edit Tester
+        </h2>
+    </div>
+    <div id="countDiv" style="margin-top:7px;margin-right:7px;float:right;display:none">
+        <label style="font-size:14px">Total Records:</label>
+        <label id="labelCount" style="font-size:14px"></label>
+
+    </div>
+    <div style="width:950px;float:left;margin-top:15px">
+        <div id="testerGrid">
+        </div>
+        <div id="pagination" style="float:right;padding-top:20px"></div>
+        <div id="testerForm" style="display:none" class="DivlblWithColon">
+            <div style="float:left;width:460px">
+                @*<label style="color:#000000;font-size:10pt;" class="mandatory">Tester:</label>
+                    <br />
+                    <SharePoint:PeopleEditor ID="PeopleEditorUser2" ToolTip="Tester" AllowTypeIn="False" ShowEntityDisplayTextInTextBox="true" AllowEmpty="false" Width="470px" MultiSelect="false" MaximumEntities="10" ValidatorEnabled="true" ShowCreateButtonInActiveDirectoryAccountCreationMode="true" SelectionSet="User,SecGroup,DL" PlaceButtonsUnderEntityEditor="false" runat="server" DialogTitle="People Picker" Title="tester" __designer:Preview="&lt;span id=&quot;PeopleEditorUser2&quot; title=&quot;Tester&quot; style=&quot;display:inline-block;width:470px;&quot;&gt;&lt;/span&gt;" __designer:Values="&lt;P N=&#39;SelectionSet&#39; T=&#39;User,SecGroup,DL&#39; /&gt;&lt;P N=&#39;ShowCreateButtonInActiveDirectoryAccountCreationMode&#39; T=&#39;True&#39; /&gt;&lt;P N=&#39;PickerDialogType&#39; AssemblyQualifiedName=&#39;Microsoft.SharePoint.WebControls.PeoplePickerDialog, Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c&#39; /&gt;&lt;P N=&#39;DialogTitle&#39; T=&#39;People Picker&#39; /&gt;&lt;P N=&#39;PlaceButtonsUnderEntityEditor&#39; T=&#39;False&#39; /&gt;&lt;P N=&#39;AllowEmpty&#39; T=&#39;False&#39; /&gt;&lt;P N=&#39;ValidatorEnabled&#39; T=&#39;True&#39; /&gt;&lt;P N=&#39;Rows&#39; T=&#39;1&#39; /&gt;&lt;P N=&#39;MultiSelect&#39; T=&#39;False&#39; /&gt;&lt;P N=&#39;ShowEntityDisplayTextInTextBox&#39; T=&#39;True&#39; /&gt;&lt;P N=&#39;MaximumEntities&#39; T=&#39;10&#39; /&gt;&lt;P N=&#39;CustomProperty&#39; T=&#39;User,SecGroup,DL;;15;;;False&#39; /&gt;&lt;P N=&#39;Title&#39; T=&#39;tester&#39; /&gt;&lt;P N=&#39;AllowTypeIn&#39; T=&#39;False&#39; /&gt;&lt;P N=&#39;ToolTip&#39; T=&#39;Tester&#39; /&gt;&lt;P N=&#39;Width&#39; T=&#39;470px&#39; /&gt;&lt;P N=&#39;ID&#39; ID=&#39;1&#39; T=&#39;PeopleEditorUser2&#39; /&gt;&lt;P N=&#39;Page&#39; ID=&#39;2&#39; /&gt;&lt;P N=&#39;TemplateControl&#39; R=&#39;2&#39; /&gt;&lt;P N=&#39;AppRelativeTemplateSourceDirectory&#39; R=&#39;-1&#39; /&gt;" />
+                    <p style="margin-top:-5px;color:#000000;font-size:12px">
+                        Please use
+                        the address book to add a Tester (one entry at a time).
+                    </p>*@
+
+                @*<div  style="color:#000000;font-size:10pt;">*@
+                <label id="AutoDiv" style="color:#000000;font-size:10pt;" class="mandatory">Tester:<font color="red"><b>*</b></font></label>
+                <br />
+                <input type="text" id="Auto" style="position:static!important" class="ui-autocomplete textBox" />
+                <div id="TooltipVersionLead" style="display:none;top:-70px!important;font-size:1.4em!important" data-tip="No results were found to match your search item."></div>
+                <p style="margin-top:-30px;color:#000000;font-size:12px">
+                    Please use
+                    the address book to add a Tester (one entry at a time).
+                </p>
+                <br />
+                <input type="hidden" id="Auto_Hdn" /><input type="hidden" value="" id="Auto_Otxt" />
+
+                @*</div>*@
+
+
+
+
+                <label id="lblRole" style="color:#000000;font-size:10pt;" class="mandatory">
+                    Select Role: <font color="red"><b>*</b></font>
+                </label>
+                <br />
+                <div id="testerRoles" class="Mediumddl" style="width:455px">
+                </div>
+                <label id="assigRole" style="color:#000000;font-size:10pt;display:none" class="mandatory">
+                    Assign Role:
+                </label>
+                <div id="testerRolesinBulk" class="Mediumddl" style="max-height:310px;border:1px gray solid;display:none;max-width:455px;overflow:scroll">
+                </div>
+                <div id="btnDiv">
+                    <a id="addRole" onclick="tester.prepareAddRole();" style="color:#0066FF;text-decoration:underline; cursor:pointer">
+                        Add Role
+                    </a>
+                    <a id="editRole" onclick="tester.editRole();" style="color:#0066FF;text-decoration:underline; cursor:pointer;margin-left:10px">
+
+                        Edit Role
+                    </a>
+                    <a id="delRole" onclick="tester.deleteRole();" style="color:#0066FF;text-decoration:underline; cursor:pointer;margin-left:10px">
+                        Delete Role
+                    </a>
+                    <!--a onclick="tester.configRole();" style="color:#0066FF;text-decoration:underline; cursor:pointer;margin-left:10px" >
+                    Role Configuration</a>-->
+                </div>
+                <div id="divRole" class="action" style="text-align: left; padding-left: 10px;background-color: silver;display:none; max-height:85px;width:440px ">
+                    <label id="lblEnterRole" style="display:inline-block;width:70px;margin-left:-8px">
+                        Enter Role:
+                    </label>
+                    <input id="txtNewRole" type="text" class="sminput" style="width:240px" />
+                    <input id="btnAdd" type="button" class="btnNew1" value="Add" onclick="tester.addRole();" style="margin-right:0px;padding-left:10px;padding-right:10px;height:20px;padding-top:3px;padding-bottom:3px" />
+                    <input id="btnEdit" type="button" class="btnNew1" value="Update" style="display:none;margin-right:0px;padding-left:5px;padding-right:5px;height:20px;padding-top:3px;padding-bottom:3px" onclick="tester.updateRoles();" />
+                    <input id="btnCancel" type="button" class="btnNew1" value="Cancel" onclick="tester.cancelRole();" style="margin-right:0px;padding-left:10px;padding-right:10px;height:20px;padding-top:3px;padding-bottom:3px" />
+                    <br />
+                    <label style="display:inline-block;width:70px;margin-left:-8px;position:absolute">
+                        Description:
+                    </label>
+                    <textarea id="txtDescription" class="descLarge" style="width:360px;height:43px;margin-left:65px"></textarea>
+                </div>
+            </div>
+            <div style="float:right;width:450px">
+                <label style="color:#000000;font-size:10pt;">Area:</label>
+                <br />
+                <select name="Select0" class="Mediumddl" id="area" style="width:400px;border:1px #ccc solid;height:25px">
+                    <option value="0">Select Area</option>
+                    <option value="APAC" title="APAC">
+                        APAC
+                    </option>
+                    <option value="Canada" title="Canada">
+                        Canada
+                    </option>
+                    <option value="Central and Eastern Europe" title="Central and Eastern Europe">
+                        Central and Eastern Europe
+                    </option>
+                    <option value="France" title="France">
+                        France
+                    </option>
+                    <option value="Germany" title="Germany">
+                        Germany
+                    </option>
+                    <option value="Greater China" title="Greater China">
+                        Greater China
+                    </option>
+                    <option value="India" title="India">
+                        India
+                    </option>
+                    <option value="Japan" title="Japan">
+                        Japan
+                    </option>
+                    <option value="Latam" title="Latam">
+                        Latam
+                    </option>
+                    <option value="MEA" title="MEA">
+                        MEA
+                    </option>
+                    <option value="UK" title="UK">UK</option>
+                    <option value="United States" title="United States">
+                        United States
+                    </option>
+                    <option value="Western Europe" title="Western Europe">
+                        Western Europe
+                    </option>
+                </select>
+                <br />
+                <br />
+
+                <div style="width:400px;margin-top:27px">
+                    <p id="notePara" style="text-align:justify;color:#000000;font-size:10pt">
+                        <b>
+                            NOTE:
+                        </b>&nbsp;As a test manager, you can create roles to associate
+                        to each tester to help define what they should be testing for.
+                        ‘Standard’ is the default role that exists for all test passes.
+                        If you don’t want to create any new Role then assign default
+                        ‘Standard’ role to all Testers and create all Test Steps with
+                        the same ‘Standard’ role. If you want to associate certain test
+                        steps to a Tester, create a role and assign that to respective
+                        Tester then create all associated test steps with the same role.
+                    </p>
+                </div>
+                <div id="buttonsDiv" style="width:390px;margin-top:60px;margin-left:23px">
+                    <input type="button" class="btnNew1" style="margin-left:220px" value="Save" id="btnSave" onclick="Main.showLoading();setTimeout('tester.validationOnSave();',200);" />
+                    <input id="btnNewCancel" class="btnNew1" style="margin-left:10px" type="button" value="Cancel" onclick="tester.clearFields()" />
+                    <input type="button" class="btnNew1" value="Update" id="btnUpdate" onclick="Main.showLoading();setTimeout('tester.updateTester();',200);" style="display:none;margin-left:220px" />
+                    <input id="btnReset" class="btnNew1" style="display:none;margin-left:10px" type="button" value="Reset" onclick="tester.reset()" />
+                </div>
+            </div>
+        </div>
+        <div id="impExpTemplate" style="display:none">
+            <div id="divUpload"><input type="file" id="upload" style="display:none" /></div>
+            <div style="width:450px">
+                <div style="padding-bottom:10px;font-size:16px">
+                    Please use the
+                    downloaded template to import.
+                </div>
+
+                <input type="button" id="clsExpTemp" style="width:150px;height:35px;" class="btnNew1" value="Download Template" />&nbsp;
+                <input id="clsImpCont" type="button" style="width:150px;height:35px;" value="Upload Template" class="btnNew1" />
+
+                <input id="fileInput" type="file" style="display: none;" />
+            </div>
+            <div id="noteDiv" style="position:absolute;margin-top:40px">
+                <p style="font-size:16px;margin-bottom:6px">
+                    Please follow below
+                    steps to Import Tester(s):
+                </p>
+                <p>&nbsp;&nbsp;1. Download a Template using &#39;Download Template&#39; button.</p>
+                <p>&nbsp;&nbsp;2. Populate data of Testers as directed in template.</p>
+                <p>&nbsp;&nbsp;3. Save Template in local drive.</p>
+                <p>
+                    &nbsp;&nbsp;4. Upload this saved template using &#39;Upload Template&#39;
+                    button.
+                </p>
+
+                <p style="margin-top:8px">
+                    Download <a id="downloadPdf" style="color:#0066FF;text-decoration:underline; cursor:pointer" target='_blank' href="../SiteAssets/GuidelineDocs/Detailed Guidelines to Upload Tester Template.pdf">
+                        File
+                    </a> for detailed guidelines.
+                </p>
+            </div>
+        </div>
+    </div>
+    <input name="Hidden1" type="hidden" id="hidRoleId" />
+    <input name="Hidden9" type="hidden" id="getHidUserId" />
+    <input name="Hidden2" type="hidden" id="getHidUserFulNm" />
+    <input name="Hidden3" type="hidden" id="getHidUserEmailId" />
+    <input name="Hidden9" type="hidden" id="getHidID" />
+
+    <div id="divAlert1"></div>
+    <div id="divAlert2"></div>
+    <div id="divAlert" style="max-height:350px !important;"></div>
+    <div id="divAlert3"></div>
+    <div id="divConfirm"></div>
+    <div id="confRole" title="Role Configuration" style="display:none;">
+        <h2>Please select the Role(s) to display on Sign Up form </h2>
+        <div id="testerRolesConf" class="Mediumddl" style="float:right;display:block;width:460px;margin-top:3px">
+
+        </div>
+    </div>
+    <div id="import-form" title="Add New Data" style="display:none;">
+
+        <p style='padding-left:15px; padding-top:15px;'>
+            Please use the Downloaded
+            Template only!
+        </p>
+        <p style='padding-left:15px; padding-top:15px;'>Click <b>Ok</b> to continue.</p>
+        <p style='padding-left:15px;'>Click <b>Cancel</b> to stop this process.</p>
+
+    </div>
+
+    <div id="template-form" title="Download Template" style="display:none;">
+        <p style='padding-left:15px; padding-top:15px;'>
+            Do you want a pre-filled
+            template for selected project?
+        </p>
+        <p style='padding-left:15px; padding-top:15px;'>
+            Click <b>Yes</b> to download
+            pre-filled Template.
+        </p>
+        <p style='padding-left:15px;'>
+            Click <b>No</b> to download empty template for
+            selected project.
+        </p>
+        <p style='padding-left:15px;'>Click <b>Cancel</b> to stop this process.</p>
+    </div>
+
+    <div id="dvAlert" title="Template Notification" style="display:none;">
+    </div>
+    <div id="roleConfigForGroup"></div>
+
+
+    <script type="text/javascript">
+
+
+        var interval = setInterval(function () {
+            var ele = $('#Auto');
+            if (ele.length > 0) {
+                CallAuto('Auto', 'Auto_Hdn', 'TooltipVersionLead', 'Auto_Otxt')
+                $('#Auto').blur(function () {
+                   
+                    var x = $(this).val();
+                    var y = $('#Auto_Otxt').val();
+                    $('#TooltipVersionLead').hide();
+                    if (x != y && y != "") {
+                        $('#TooltipVersionLead').show();
+
+                    }
+                });
+                clearInterval(interval);
+            }
+        }, 500)
+    </script>
+
+</div>

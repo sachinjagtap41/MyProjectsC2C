@@ -1,0 +1,105 @@
+#Ansible Module Name -- rds.py
+#Test Case : changing rds instance type with region parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: changing rds instance type with region parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - changing rds instance type with invalid region
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ regionInvalid }}'
+         command: '{{ commandModify }}'
+         instance_id: '{{ instanceId }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         pay_type: '{{ payType }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 2 - changing rds instance type without region
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         command: '{{ commandModify }}'
+         instance_id: '{{ instanceId }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         pay_type: '{{ payType }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 3 - changing rds instance type with blank region
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: 
+         command: '{{ commandModify }}'
+         instance_id: '{{ instanceId }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         pay_type: '{{ payType }}'
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block:
+     - name: Scenario 4 - changing rds instance type with region as Region
+       rds:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         Region: '{{ region }}'
+         command: '{{ commandModify }}'
+         instance_id: '{{ instanceId }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         pay_type: '{{ payType }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+     always:
+      - assert:  
+         that:
+            - "'failed' in result_scn1"
+#            - "'Failed to changing rds instance type with error code SDK.InvalidRegionId and message: Can not find endpoint to access.' in result_scn1.msg[0]"
+            
+            - "'failed' in result_scn2"
+            - "'region is required' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'region is required' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Region' in result_scn4.msg"
+            
+         msg: 'Test pass FAILED !!!'
+        

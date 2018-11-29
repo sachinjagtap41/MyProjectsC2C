@@ -1,0 +1,45 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Add listener with same Backend server port and different Protocol and different Load balancer port
+#Ansible Playbook created by - Abha H
+---
+- name: Add listener with same Backend server port and different Protocol and different Load balancer port
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+     
+  tasks:
+  # Task 1 -  Add listener with same Backend server port and different Protocol and different Load balancer port
+   - block: 
+      - name: Add listener with same Backend server port and different Protocol and different Load balancer port
+        ecs_slb_lb: 
+          access_key: '{{ aliyun_acs_access_key }}'
+          secret_key: '{{ aliyun_acs_secret_access_key }}'
+          acs_region: '{{ region }}'
+          status: '{{ status }}'
+          load_balancer_id: '{{ SLBIdWitSameBackendServerPort }}'
+          scheme: '{{ addressType }}'
+          bandwidth: '{{ bandwidth }}'
+          listeners: '{{ listenerWithSameBackendServerPortAndDiffProtocolAndLBPortNo }}'
+          purge_listeners: '{{ purgeListenersFalse }}'
+          internet_charge_type: '{{ internetChargeType }}'
+        register: create_slb_result
+      - debug: var=create_slb_result
+     rescue:
+        - fail:
+            msg: "The fail block is added just to handle exception. This block won't be executed ever."
+          when: no
+               
+     
+     always:
+      - assert:  
+         that:
+            - "'failed' not in create_slb_result"
+            
+            
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values.
+               REASON: {{ create_slb_result}}'

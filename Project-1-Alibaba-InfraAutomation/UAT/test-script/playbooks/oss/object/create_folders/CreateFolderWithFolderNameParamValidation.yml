@@ -1,0 +1,150 @@
+#Ansible Module Name -- oss.py
+#Test Case : Create folder with folder name parameter validation
+#Ansible Playbook created by - Abha H
+---
+- name: Create folder bucket parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - Create folder - folder name parameter validation with invalid value
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}'
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ invalidFolderName }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 2 - Create folder with blank folder name parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}'
+         bucket: '{{ bucketForFolder }}'
+         folder_name:
+         region: '{{ region }}' 
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 3 - Create folder without folder name parameter
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}'
+         bucket: '{{ bucketForFolder }}'
+         region: '{{ region }}' 
+       register: result_scn3
+     - debug: var=result_scn3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 4 - Create folder with folder name parameter as 'Folder name'
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}' 
+         bucket: '{{ bucketForFolder }}'
+         Folder_name: '{{ folderName }}'
+         region: '{{ region }}'
+       register: result_scn4
+     - debug: var=result_scn4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 5 - Create folder with folder name parameter having exact 1 character
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}' 
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ folderNameHaving1Char }}'
+         region: '{{ region }}'
+       register: result_scn5
+     - debug: var=result_scn5
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 6 - Create folder with folder name parameter having exact 254 characters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}' 
+         bucket: '{{ bucketForFolder }}' 
+         folder_name: '{{ folderNameHaving256Char }}'
+         region: '{{ region }}'
+       register: result_scn6
+     - debug: var=result_scn6
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Scenario 7 - Create folder with folder name parameter having more than 254 characters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modePutFolder }}' 
+         bucket: '{{ bucketForFolder }}'
+         folder_name: '{{ folderNameHavingMoreThan256Char }}'
+         region: '{{ region }}'
+       register: result_scn7
+     - debug: var=result_scn7
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+
+            - "'failed' in result_scn1"
+            - "'invalid folder name' in result_scn1.msg"
+            
+            - "'failed' in result_scn2"
+            - "'folder_name is required' in result_scn2.msg"
+            
+            - "'failed' in result_scn3"
+            - "'folder_name is required' in result_scn3.msg"
+            
+            - "'failed' in result_scn4"
+            - "'unsupported parameter for module: Folder_name' in result_scn4.msg"
+
+            - "'failed' not in result_scn5"
+#            - "'unsupported parameter for module: Region' in result_scn5.msg"
+
+            - "'failed' in result_scn6"
+            - "'invalid folder name' in result_scn6.msg"
+
+            - "'failed' in result_scn7"
+            - "'invalid folder name' in result_scn7.msg"                                    
+         msg:  'Test pass FAILED !!!'
+           

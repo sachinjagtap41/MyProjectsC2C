@@ -1,0 +1,48 @@
+# Ansible Module Name - ECS_AMI
+# Interface : CreateCustomImage
+# Playbook Contains Test-Case for creating a custom image
+# Playbook created by : Sachin J
+
+
+
+- name: Create user defined image with an instance id which is already deleted
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - ../vars/general-parameters.yml
+    - ../vars/test-environment.yml
+    - ../../../vars/alicloud-creds.yml
+      
+  tasks:
+  
+  - block:
+  
+    - name: Create user defined image with an instance id which is already deleted
+    
+      ecs_ami:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        instance_id: '{{ ecsInstanceIdInvalid }}'   # Instance_id is already deleted
+        image_name: '{{ imageName }}'   
+        image_version: '{{ imageVersion }}'
+        description: '{{ description}}'
+        images_tags: '{{ imagesTags }}'
+
+      register: result
+    - debug: var=result
+
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    always:
+      - assert:
+          that:
+            - "'failed' in result"
+            -  "'InvalidInstanceId.NotFound' in result.msg[0]['Error Code']"
+          msg: 'Test pass FAILED!!! Failure Expected - {{ ecsInstanceIdInvalid }} is not valid instance id .
+                REASON: {{ result }}'

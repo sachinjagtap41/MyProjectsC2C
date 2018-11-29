@@ -1,0 +1,1439 @@
+@{
+    Layout = "~/Views/Shared/UatMaster.cshtml";
+}
+
+@{
+    ViewBag.Title = "Configuration";
+}
+
+
+
+<!-- Copyright © 2012 RGen Solutions . All Rights Reserved.
+
+     Contact : support@rgensolutions.com -->
+@*<SharePoint:CssRegistration ID="CssRegistration7" name="<% $SPUrl:~sitecollection/testv2.0/SiteAssets/js/RTE/rte.css %>" runat="server" After="corev15.css" />
+    <SharePoint:ScriptLink language="javascript" name="~sitecollection/testv2.0/SiteAssets/js/custom/tryConfiguration.js" runat="server" />
+    <SharePoint:ScriptLink language="javascript" name="~sitecollection/testv2.0/SiteAssets/js/RTE/richtext.js" runat="server" />
+    <SharePoint:ScriptLink language="javascript" name="~sitecollection/testv2.0/SiteAssets/js/custom/multiSelectDDL.js" runat="server" />*@
+
+<style type="text/css">
+    .btnNew {
+        margin-left: 1115px;
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        border: 1px solid #000000;
+        background: #FFFFCC;
+        padding: 5px 5px;
+        margin-top: 10px;
+        font-size: 9pt;
+    }
+</style>
+<link href="~/css/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
+<link href="~/css/theme/blue/style/jQuery Styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        Configuration.init();
+    });
+    //!!!Attachment code THIS FUNCTION OVERRIDES THE OkAttach FUNCTION FROM FORM.JS!!!!///
+    var AttachmentId;
+    function OkAttach_new() {
+        
+        FileUploadIndex = 0;
+        var FileuploadString;
+        fileID = FileuploadString + FileUploadIndex;
+        if (document.getElementById("FileUpload1").files.length === 0) {
+            Configuration.alertBox("Please browse the attachment first!");
+            return;
+        }
+        fileInput = document.getElementById("FileUpload1").files[0]['name'];
+        filename = TrimWhiteSpaces(fileInput);
+        var pos = filename.lastIndexOf("\\");
+        var filenamenew = filename.substring(pos + 1);
+        if (filenamenew.split(".").length > 2) {//code for bugid 3999
+            var L_FileNameRequired_TXT = "Attached filename shouldn't contain '.',please remove '.' from filename ";
+            Configuration.alertBox(L_FileNameRequired_TXT);
+            return false;
+        }
+        else {
+            if (filenamenew.indexOf(".exe") !== -1) {
+                var L_FileNameRequired_TXT = ".exe file is not allowed for attachment ";
+                Configuration.alertBox(L_FileNameRequired_TXT);
+                return false;
+            }
+        }
+
+        // filename
+        if (!filename) {
+            var L_FileNameRequired_TXT = "Please browse the attachment first!";
+            Configuration.alertBox(L_FileNameRequired_TXT);
+
+            //fileInput.focus();//commented for bug id 11985
+        }
+        else {
+            var L_FileUploadToolTip_text = "Name";
+            oRow = document.getElementById("idAttachmentsTable").insertRow(-1);
+            RowID = 'attachRow' + FileUploadIndex;
+            oRow.id = RowID;
+            oCellFileName = oRow.insertCell(-1);
+            oCellFileName.className = "ms-vb";
+            oCellFileName.innerHTML = "<span dir=\"ltr\">" + filenamenew + "</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+
+            oCellControl = oRow.insertCell(-1);
+            oCellControl.className = "ms-propertysheet";
+
+            document.getElementById("FileUpload1").style.display = "none";
+            ++FileUploadIndex;
+         
+            var theForm = fileInput.form;
+            
+            document.getElementById("idAttachmentsRow").style.display = "";
+            
+            $("#attachOKbutton").css("display", "none");
+            $('#fileupload1').remove();
+            $('#idUploadFileRow').css("display", "none");
+            $('#partAttachment table tbody tr:eq(1) td:eq(0)').hide();
+            $('#partAttachment table tbody tr:eq(3)').hide();
+            $('#idAttachmentsRow td > h3').html('<nobr>File Name</nobr>');
+            var filePath = document.getElementById("FileUpload1").value;
+          
+
+
+
+        }
+
+    }
+    
+    function PreSaveAction()//this function is called after clicking on save button of attachment webpart
+    {
+        var projectId = $('#projectForFileUploadVersion').val();
+        $("[title$='ProjectID']").val(projectId);
+        if ($("#AttachmentName").val() == '' /*$("[title$='AttachmentName']").val().replace(/\s+/g,"")==''*/)
+            Configuration.alertBox('Attachment Name is a mandatory field!');
+        else {
+            if ($('#attachOKbutton').css("display") != "none")
+                Configuration.alertBox('Please press the OK button first !');
+            else {
+
+                var filePath = document.getElementById("FileUpload1").value;
+                // alert(filePath);
+
+                if (filePath != undefined || filePath != '') {
+                    var data = {
+                        "AttachmentId": '',
+                        "AttachmentName": filename,
+                        "projectId": $('#projectForFileUploadVersion').val(),
+                        "Description": $('#attdesc').val(),
+                        "FileName": filename,
+                        "ContentType": ''
+                    };
+
+                    var result = ServiceLayer.InsertUpdateData("UploadConfigFileData", data, "Configuration");
+
+                    if (result.Success == undefined || result.Success == null) {
+                        Configuration.alertBox("Data Not saved");
+                        return;
+                    }
+                    
+                    var attId = result.ID;
+                    AttachmentId = attId;
+
+                    var formData = new FormData();
+                    formData.append('file', $('#FileUpload1')[0].files[0]);
+                    formData.append('attaid', AttachmentId);
+
+                    $.ajax({
+                        type: 'post',
+                        beforeSend: function (request) {
+                            request.setRequestHeader("appurl", ServiceLayer.appurl);
+                            request.setRequestHeader("LoggedInUserSPUserId", _spUserId);
+                        },
+                        url: ServiceLayer.serviceURL + '/Configuration/UploadConfigurationFile',//Async
+                        data: formData,
+                        success: function (status) {
+                            Main.AutoHideAlertBox("File added successfully!");
+                            Configuration.DLProjectChange();
+                            Configuration.bindUploadedFileGrid();
+                        },
+                        processData: false,
+                        contentType: false,
+                        error: function () {
+                            Configuration.alertBox("File Not Uploaded");
+                        }
+                    });
+                }
+                else
+                {
+                    Configuration.alertBox('Please select the file first !');
+                }
+                Configuration.renewUploadPopup();
+                $('#upload').dialog('close');
+              
+            }
+        }
+    }
+    ////////End Attachment code ///
+</script>
+<div id="rightDiv">
+
+    <div class="demo lblDiv">
+
+        <div id="tabs">
+            <ul style="padding-right:10px;padding-bottom:0px;padding-top:4px">
+                <!--<li><a href="#tabs-1" onclick="Configuration.tab1Save();">Configuration</a></li>-->
+                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                <li>
+                    <a href="#tab1" id="configTab" onclick="Configuration.tab1Save();" class="tTipConfig">
+                        Configuration
+                    </a>
+                </li>
+                <li>
+                    <a href="#tab5" id="genSetTab" class="tTipConfig">
+                        General Settings
+                    </a>
+                </li>
+                <li>
+                    <a title="To add, edit, delete or assign Envirnoments" href="#tab2" id="userSetTab" class="tTipConfig">
+                        User Settings
+                    </a>
+                </li>
+                <li>
+                    <a title="To upload documents" href="#tab3" id="docLibTab" class="tTipConfig">
+                        Document Library
+                    </a>
+                </li>
+                <li>
+                    <a id="proDet" href="#tab4" class="tTipConfig">
+                        Process Details
+                    </a>
+                </li>
+                <li>
+                    <a id="UATProc" href="#tab6" class="tTipConfig" style="display:none">
+                        UAT Process
+                    </a>
+                </li>
+            </ul>
+
+
+            <div id="tab1">
+                <div class="frm">
+                    <table>
+                        <tr>
+                            <td>
+                                <label><b>Select Project:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="projectForTester" onchange="Configuration.ProjectChange();Configuration.populateTestPassForTester();Configuration.gridDetails();(Configuration.getDoc().length==0)?noActHandle():initDocPagination();Configuration.getServrsFrLogInUser();"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><b>Select Version:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="projectForTesterVersion" onchange="Configuration.VersionChange()">
+                                    <option>
+                                        Select Version
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <!--------------------------------------------------------------------------->
+                <div class="doubleCoumn lft">
+                    <h4 class="h3DbDa" style="padding:10px 0px 5px 10px;">
+                        User Settings
+                    </h4>
+                    <div class="grayBox" style="height:175px;">
+                        <div class="frm">
+                            <table width="100%">
+                                <tr>
+                                    <td width="150"><label>User Name:</label></td>
+                                    <td><div id="userNameDiv"></div></td>
+                                </tr>
+                                <tr>
+                                    <td width="150"><label>Test Pass:</label></td>
+                                    <td><select id="testPassforPrj" class="Lddl" style="width:302px;" onchange="Configuration.getServrsFrLogInUser();"><option></option></select></td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label>
+                                            UAT
+                                            Environment:
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div id="urltextboxdiv" class="urltextboxNew1"></div>
+                                    </td>
+                                    <!--   <td><div class="mininput" id="serversDiv" style="width:220px; height:108px"></div></td>-->
+                                </tr>
+                                <tr>
+                                    <td><label>Request Access:</label></td>
+                                    <td>
+                                        <a id="sendEmailAnchor" onclick="Configuration.sendMail();" style="cursor:pointer;">
+                                            <div id="sendEmail" style="color:blue;">
+                                                [Send Request to Admin]
+                                            </div>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <!--<input type="submit" value="Send Request" class="submit"/>-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doubleCoumn rgt">
+                    <h4 class="h3DbDa" style="padding:10px 0px 5px 10px;">
+                        Document Library
+                    </h4>
+                    <div class="grayBox" style="height:175px;">
+                        <div class="frm">
+                            <table>
+                                <tr>
+                                    <td><label>Uploaded Files:</label></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div id="spanDoc" style="margin-left:5px;"></div>
+                                        <div class="scroll-pane" style="margin-left:5px;height:120px">
+                                            <table id="celebsDoc" cellspacing="2">
+                                                <tbody id="Doc"></tbody>
+                                            </table>
+                                        </div>
+                                        <span style="clear:both;"></span>
+                                        <div id="DocPagination" style="padding-left:5px;"></div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab">
+                    <h3>
+                        Processes Details:
+                    </h3>
+                    <div id="process"></div>
+                    <div id="paging" class="pager"></div>
+                </div>
+            </div>
+
+            <!------------------------------  Start of General Settings tab------------------------------------------------>
+            <div id="tab5">
+                <div class="frm">
+                    <!-- Portfolio Setting -->
+                    <div class="doubleCoumn" id="appDiv">
+                        <h4 class="h3DbDa" style="padding: 10px 0px 5px 10px;">
+                            Application Level Options:
+                        </h4>
+
+                        <div class="grayBox" id="porfolioSetting" style="display:none">
+                            <table>
+                                <tr>
+                                    <td width="280">
+                                        <label id="h4PortfolioOption">
+                                            Select Portfolio Option:
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="portfolioOption" id="portfolioOption0" onclick="Configuration.attachPortfolioCheckBoxEvent();" value="0" checked="checked"></input><label id="lblPortfolioDisable" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Disable Portfolio
+                                        </label>
+                                        <img id="imgDisPortfolio" alt="" src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer;float: right;margin-right: 8px;" title="Portfolio feature will not be available at UAT application level." />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="portfolioOption" id="portfolioOption1" onclick="Configuration.attachPortfolioCheckBoxEvent();" value="1"></input><label id="lblPortfolioEnable" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Enable Portfolio
+                                        </label>
+                                        <img id="imgEnPortfolio" alt="" src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer;float: right;margin-right: 8px;" title="Portfolio feature will be available at UAT application level." />
+                                    </td>
+                                </tr>
+
+                            </table>
+                            <span id="msgPort">
+                                <b>Note:</b><i>
+                                    &nbsp;Once ‘Enable Portfolio’ is selected,
+                                    you will not be able to make it ‘Disable Portfolio’ throughout the
+                                    application.
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                    <div id="EnPortf" class="doubleCoumn" style="display:none;">
+                        <h4 class="h3DbDa" style="padding: 10px 0px 5px 10px">
+                            Portfolio Setting:
+                        </h4>
+                        <div style="margin-left:2px;font-size:13px" class="grayBox">
+                            <span id="msgEnabled">
+                                <b>
+                                    Note:
+                                </b><i>Portfolio feature is enabled for this UAT App</i>
+                            </span><br>
+                            </br>
+                            <span id="docEnP">
+                                Download&nbsp;
+                                <a href="GuidelineDocs/UAT_Enabled Portfolio_RGen_V1.0.pdf" target='_blank' style='text-decoration:underline;color:blue'>
+                                    Enable Porfolio
+                                </a>
+                                &nbsp;document for detailed guidelines.
+                            </span>
+                        </div>
+                    </div>
+                    <!-- /Portfolio Setting -->
+                    <div id="UATStatistic" class="doubleCoumn" style="width:250px;float:right;">
+                        <table style="border:1px #333 solid;border-collapse:collapse;width:100%;margin-bottom:5px;table-layout:fixed;word-wrap:break-word" cellpadding="5px">
+                            <thead class="uatStatisctic">
+                                <tr>
+                                    <th id="heading" style="border-bottom:1px #333 solid;" colspan="2">
+                                        Usage Statistics: UAT V3.0
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="lblPrj" style="border-bottom:1px #333 solid;border-right:1px #333 solid;">
+                                        Total Projects
+                                    </td>
+                                    <td id="prjCount" style="border-bottom:1px #333 solid;text-align:right"></td>
+                                </tr>
+                                <tr>
+                                    <td id="lblTP" style="border-bottom:1px #333 solid;border-right:1px #333 solid;">
+                                        Total Test Passes
+                                    </td>
+                                    <td id="tpCount" style="border-bottom:1px #333 solid;text-align:right"></td>
+                                </tr>
+                                <tr>
+                                    <td id="lblTS" style="border-bottom:1px #333 solid;border-right:1px #333 solid;">
+                                        Total Test Steps
+                                    </td>
+                                    <td id="tsCount" style="border-bottom:1px #333 solid;text-align:right"></td>
+                                </tr>
+                                <tr>
+                                    <td id="lblUser" style="border-bottom:1px #333 solid;border-right:1px #333 solid;">
+                                        Total Users*
+                                    </td>
+                                    <td id="userCount" style="border-bottom:1px #333 solid;text-align:right"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span id="statNote" style="font-size:11px">
+                            * Total Users includes
+                            all testers, Test Managers and Stakeholders added to any project
+                            or test pass for your site.
+                        </span>
+                    </div>
+                    <table id="tab5dropdown">
+                        <tr>
+                            <td>
+                                <label><b>Select Project:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="projectForGS" onchange="Configuration.GSProjectChange();Configuration.populateTPForGS()"></select>
+                            </td>
+                        </tr>
+                        <tr id="GSVersionField">
+                            <td>
+                                <label><b>Select Version:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="projectForGSVersion" onchange="Configuration.GSVersionChange()">
+                                    <option>
+                                        Select Version
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label><b>Select Test Pass:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="tpForGS" onchange="Configuration.testPassDDChange()">
+                                    <option></option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="doubleCoumn lft">
+                    <h4 class="h3DbDa" style="padding:10px 0px 5px 10px;">
+                        General Settings
+                    </h4>
+                    <div class="grayBox" style="height:380px;">
+                        <div class="frm">
+                            <table width="100%">
+                                <tr><td></td></tr>
+                                <tr><td></td></tr>
+
+
+
+                                <tr>
+                                    <td width="90%">
+                                        <h4 id="ProjectOptions" class="msgGenSetng">
+                                            Project Level Options:
+                                        </h4>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label id="lblRoleConfig" style="float:left">
+                                            Role Configuration:
+                                        </label>
+                                        <img alt="" id="roleConfig" align="right" style="vertical-align:top;cursor:pointer;float: right;margin-right: 300px;" src="/images/icon-05.png" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <label id="lblSelectRoles" style="font-weight:normal;">
+                                            Please select Role(s) to display on
+                                            &#39;Sign Up&#39; form:
+                                        </label>
+                                    </td>
+                                </tr>
+
+                            </table>
+                            <div id="testerRolesConf" class="Mediumddl" style="width:inherit"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doubleCoumn rgt">
+                    <div class="grayBox" style="height:380px;margin-top:37px">
+                        <div class="frm">
+                            <table width="100%">
+                                <tr>
+                                    <td style="width: 390px">
+                                        <h4 id="h4TestPassOptions2" class="msgGenSetng">
+                                            Test Pass Level Options:
+                                        </h4>
+                                    </td>
+                                </tr>
+                                <tr><td></td></tr>
+                                <tr><td></td></tr>
+                                <tr>
+                                    <td><label>Select Testing Type:</label></td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="testingType" id="testingType0" value="0" checked="checked"></input><label id="lblTestingType1" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Sequential
+                                            Testing within a Test Case
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <img id="imgTestingType1" src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer" title="Execute Test Step sequentialy within a Test Case." />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="testingType" id="testingType1" value="1"></input><label id="lblTestingType2" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Sequential
+                                            Testing within a Test Pass
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <img id="imgTestingType2" src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer" title="Execute Test Step sequentialy as per its creation within a Test Pass." />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="testingType" id="testingType2" value="2"></input><label style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Testing
+                                            out of sequence
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <img id="imgTestingType3" src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer" title="Execute test step in any sequence at Test Pass level." />
+                                    </td>
+                                </tr>
+                                <tr><td></td></tr>
+                                <tr><td></td></tr>
+                                <tr>
+                                    <td><label>Select Feedback Rating Option:</label></td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="feedbackRating" id="feedbackRating0" value="0" checked="checked"></input><label id="lblFeedbackRatingOption1" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            After
+                                            completion of each Test Pass activity
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <img id="imgFeedbackRatingOption1" src="/images/icon-05.png" class="masterTooltip" align="top" style="margin-top:-2px;cursor:pointer" title="User has to provide a mandatory feedback rating after completing testing of a Test Pass activity which he selects from 'My Activity' Action links." />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="feedbackRating" id="feedbackRating1" value="1"></input><label id="lblFeedbackRatingOption2" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            After
+                                            completion of each &#39;Pass&#39; Test Case
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <img id="imgFeedbackRatingOption2" src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer" title="User has to provide a mandatory feedback rating after every 'Pass' Test Case." />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input style="float:left;" type="radio" name="feedbackRating" id="feedbackRating2" value="2"></input><label id="lblNofeebackOption" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            No Rating popup
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <img src="/images/icon-05.png" align="top" style="margin-top:-2px;cursor:pointer" title="User will not get any mandatory rating pop-up in any point of time while testing assigned scripts." />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="150">
+                                        <label id="lblTestStepConstraint">
+                                            Test Step Name Constraint:
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input type="radio" style="float:left;" id="TSNameConstraint0" name="TSNameConstraint" value="0" checked="checked" /><label id="lblTestStepConstraint1" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Allow
+                                            Same Test Step name within Test Case
+                                        </label>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align:top">
+                                        <input type="radio" style="float:left" id="TSNameConstraint1" name="TSNameConstraint" value="1" /><label id="lblTestStepConstraint2" style="float:left;margin-top:-4px;margin-left:10px;font-weight:normal">
+                                            Don&#39;t
+                                            allow same Test Step name within Test
+                                            Case
+                                        </label>
+                                    </td>
+                                </tr>
+                                <!--tr><td></td></tr-->
+                                <tr><td></td></tr>
+                                <!-- <tr>
+                                    <td style="vertical-align:top"><input type="checkbox" id="autoApproval" style="float:left" value="Yes"/><label style="float:left;margin-top:-4px;margin-left:10px">Auto
+                                    approval for Testing?</label>
+                                    </td>
+                                    <td>
+                                    <img alt="" id="autoapp" class="masterTooltip" align="right" style="cursor:pointer;float:left;" src="../SiteAssets/images/icon-05.png"/></td>
+                                </tr>   -->
+                                <!--tr><td></td></tr>
+                                <tr><td></td></tr-->
+
+
+
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div style="float:right;clear:both;height:30px">
+                    <input class="btnNew1" value="Save" type="button" onclick="Main.showLoading();setTimeout('Configuration.saveGS();',200);" />
+                    <input class="btnNew1" value="Reset" type="button" onclick="Configuration.resetGS()" />
+                </div>
+            </div>
+            <!----------------------End of General Settings tab  ------------------------->
+            <!----------------------Start Of Add Processes Tab---------------------------->
+            <!----------------------Start Of User Settings Tab---------------------------->
+            <div id="tab2">
+                <div class="tabontent testPassForm tabBgrnd" id="UserSettings">
+                    <div class="frm">
+                        <table>
+                            <tr>
+                                <td>
+                                    <label><b>Select Project:</b></label>
+                                </td>
+                                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                                <td>
+                                    <select class="Lddl" id="projectNames" onchange="Configuration.USProjectChange();Configuration.clearFields();Configuration.populateTestPass();Configuration.populateEnvironments();Configuration.resetAddModeUserSetting();">
+                                        <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label><b>Select Version:</b></label>
+                                </td>
+                                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                                <td>
+                                    <select class="Lddl" id="projectNamesVersion" onchange="Configuration.USVersionChange()">
+                                        <option>
+                                            <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td>
+                                    <label><b>Select Test Pass:</b></label>
+                                </td>
+                                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                                <td>
+                                    <select class="Lddl" id="testPassNames" onchange="Configuration.clearFields();Configuration.populateEnvironments();Configuration.resetAddModeUserSetting();">
+                                        <option>
+                                            <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+
+                                        </option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+
+
+                    <div class="frm project">
+                        <div class="doublecol-1 lftNew" style="width:300px;">
+                            <label id="lblUser" class="mandatory">
+                                User(s):<font color="red"><b>*</b></font>
+                            </label>
+                            <!--<div id="UsersName" class="Mediumddl" style="background-color:white"></div>-->
+                            <div id="userList" class="Mediumddl">
+                                <div style="border: 1px solid rgb(204, 204, 204); width: 295px; padding-left: 1px;" class="Mediumddl">
+                                    <ul style="display: inline; list-style-type: none; list-style-position: outside;" id="ulItemstestPassName">
+                                        <li>
+                                            Select:&nbsp;
+                                            <a style="color: blue; text-decoration: underline; cursor: pointer;" id="linkSA_testPassName" onclick='multiSelectList.selectAll("userList");undefined'>All</a>&nbsp;&nbsp;&nbsp;
+                                            <a style="color: blue; text-decoration: underline; cursor: pointer;" id="linkSN_testPassName" onclick='multiSelectList.selectNone("userList");undefined'>None</a>&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;Show:&nbsp;
+                                            <a style="color: blue; text-decoration: underline; cursor: pointer;" id="anchShow_userList" onclick='multiSelectList.toggleSelectionDisplay("userList");undefined'>Selected</a>
+                                        </li>
+                                    </ul>
+                                    <div style="width: 290px; height: 125px; overflow-y: scroll; background-color:white; padding-top:5px;" id="userListDiv" class="urltextboxNew1">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<select id="ddlUserList" class="ddl" style="display:none;">
+                                <option value="-1"> --- Select User --- </option>
+                            </select>-->
+
+                            <br />
+
+                        </div>
+                        <div class="doublecol-1 rgtTstStep">
+                            <label id="lblEnvironment" class="mandatory">
+                                UAT Environment:<font color="red"><b>*</b></font>
+                            </label>
+                            <div id="uatEnvironmentList" class="Mediumddl">
+                                <div style="border: 1px solid rgb(204, 204, 204); width: 295px; padding-left: 1px;" class="Mediumddl">
+                                    <ul style="display: inline; list-style-type: none; list-style-position: outside;" id="ulItemstestPassName">
+                                        <li>
+                                            Select:&nbsp;
+                                            <a style="color: blue; text-decoration: underline; cursor: pointer;" id="linkSA_testPassName" onclick='multiSelectList.selectAll("uatEnvironmentList");undefined'>All</a>&nbsp;&nbsp;&nbsp;
+                                            <a style="color: blue; text-decoration: underline; cursor: pointer;" id="linkSN_testPassName" onclick='multiSelectList.selectNone("uatEnvironmentList");undefined'>None</a>&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;Show:&nbsp;
+                                            <a style="color: blue; text-decoration: underline; cursor: pointer;" id="anchShow_uatEnvironmentList" onclick='multiSelectList.toggleSelectionDisplay("uatEnvironmentList");undefined'>Selected</a>
+                                        </li>
+                                        <div style="width: 290px; height: 125px; overflow-y: scroll; background:white;padding-top:5px;" id="urlboxdiv" class="urltextboxNew1">
+                                        </div>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style="float:right;">
+                                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                                <a id="editEnv" onclick="Configuration.fUrlPopUpUpdate();" style="color:blue;text-decoration:underline; cursor:pointer">Edit</a>&nbsp;&nbsp;&nbsp;
+
+                                <a id="delEnv" onclick="Configuration.deleteEnvironment();" style="color:blue;text-decoration:underline; cursor:pointer">Delete</a>&nbsp;&nbsp;&nbsp;
+                                <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+
+                                <span id="spnEnvironment">
+                                    Add UAT
+                                    Environment
+                                </span><a title="Add UAT Environment" class="pedit" id="addUATEnvironment" style="height: 19px;" onclick="Configuration.fUrlPopUp();"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width:1100px;">
+
+                        <!--<label>Request Access:</label>
+                        <a style="cursor: pointer;" id="sendEmailAnchor" onclick="Configuration.sendMail();" href="mailto:admin@demo.com?Subject=Request For Access and Passwords&amp;body=Please provide the access and passwords for following servers.deepak@rgensolutions.com,">
+                                [Send Request to Admin]
+                        </a>-->
+                        <input id="btnSaveUATEnvironment" class="btnNew1" value="Save" type="button" onclick="Main.showLoading();setTimeout('Configuration.saveUATEnvironment();',200);" style="margin-left:700px;" />
+                        <input id="btnClearUATEnvironment" class="btnNew1" value="Cancel" type="button" onclick="Configuration.resetUserSetting()" />
+                        <!--Code Modified by swapnil kamle on 17 august 2012-->
+                        <input id="btnUpdateUATEnvironment" style="display: none;margin-left:700px;" class="btnNew1" name="Submit2" value="Update" type="button" onclick="Main.showLoading();setTimeout('Configuration.updateUserSetting();',200);" />
+                        <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+
+                        <input style="display: none;" id="btnCancelUATEnvironment" class="btnNew1" value="Reset" type="button" onclick="Configuration.resetUserSettingInEditMode()" />
+                        <br />
+                        <br />
+
+                    </div>
+
+
+                </div>
+                <div class="collapsibleGrid" style="width:920px;margin-left:10px;">
+                    <h3 style="padding-left:0px;">
+                        User Setting(s)
+                    </h3>
+                    <div id="newUserSetting" style="display:none;">
+                        <a style="float: right; cursor: pointer" class="rgt addNew" onclick="Configuration.resetAddModeUserSetting()">
+                            <b>+ Add User Setting</b>
+                        </a>
+                    </div>
+                    <p class="clear"> </p>
+
+                    <div>
+                        <div id="userSettingGrid"></div>
+                        <div id="userSettingsPaginf" class="pager"></div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!----------------------End Of User Settings Tab---------------------------->
+            <div id="tab3">
+                <div class="frm">
+                    <table style="width:650px;">
+                        <tr>
+                            <td>
+                                <label><b>Select Project:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="projectForFileUpload" onchange="Configuration.DLProjectChange();Configuration.bindUploadedFileGrid()"></select>
+                            </td>
+                            <td>
+                                <input id="btnUpload" class="btnNew1" value="Upload File" type="button" onclick="Main.showLoading();setTimeout('Configuration.UploadFilePopUp();',200);" style="margin-left:0px;width:100px;" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <label><b>Select Version:</b></label>
+                            </td>
+                            <td>
+                                <select class="Lddl" id="projectForFileUploadVersion" onchange="Configuration.DLVersionChange();">
+                                    <option></option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div style="width:1100px;">
+                        <!--<input id="btnUpload" class="btn" value="Upload File" type="button" onclick="Configuration.UploadFilePopUp()" style="margin-left:700px;"/>-->
+                    </div>
+                    <!--<div id="DivUpload">
+                        <iframe src="/Lists/ConfigureDocuments/NewForm.aspx" id="frame1"></iframe>
+                    </div>-->
+                    <br />
+                    <div id="grdUploadedFiles"></div>
+                    <div id="pagingFile" class="pager" style="padding-right:536px;"></div>
+                    <div id="divConfirmDelete"></div>
+
+                </div>
+            </div>
+
+            <div id="tab4">
+                <div id="Process" class="tabContent testPassForm tabBgrnd">
+                    <div class="frm">
+                        <table>
+                            <tr>
+                                <td>
+                                    <label><b>Select Project:</b></label>
+                                </td>
+                                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                                <td>
+                                    <select class="Lddl" id="projectNamesForProcess" onchange="Configuration.PDProjectChange();Configuration.clearProcessFields();Configuration.gridDetailsForProcess();"></select>
+                                    <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label><b>Select Version:</b></label>
+                                </td>
+                                <!--Code Modified by swapnil kamle on 17 august 2012-->
+                                <td>
+                                    <select class="Lddl" id="projectNamesForProcessVersion" onchange="Configuration.PDVersionChange();">
+                                        <option></option>
+                                    </select>
+                                    <!--End of Code Modified by swapnil kamle on 17 august 2012-->
+                                </td>
+                            </tr>
+
+
+
+                            <!--<tr>
+                                <td><label><b>Select Test Pass:</b></label>
+                                </td>
+                                <td><select class="Lddl" id="testPassNames"  onchange="Configuration.clearFields();Configuration.getServerInformForLogInUser();Configuration.getUserList();Configuration.bindUserSettingGrid();"><option>
+                                    </option></select>
+                                </td>
+                            </tr>-->
+                        </table>
+                    </div>
+                    <div class="frm project">
+
+                        <div class="doublecol-1 lftNew">
+                            <label class="mandatory">
+                                <b>AS IS:</b><font color="red"><b>*</b></font>
+                            </label>
+                            <input type="text" id="txtAsIs" class="inputNew" maxlength="275" />
+                            <br />
+                            <label>AS IS Description:</label>
+                            <textarea style="margin-bottom: 4px;" id="txtAsIsDescription" class="descLarge"></textarea>
+                        </div>
+
+                        <div class="doublecol-1 rgtTstStep">
+                            <label class="mandatory">
+                                <b>TO BE:</b><font color="red"><b>*</b></font>
+                            </label>
+                            <input type="text" id="txtToBe" class="inputNew" maxlength="275" />
+                            <br />
+                            <label>TO BE Description:</label>
+                            <textarea style="margin-bottom: 4px;" id="txtToBeDescription" class="descLarge"></textarea>
+                        </div>
+
+                        <br />
+                        <br />
+
+                    </div>
+                    <div>
+
+                        <input id="btnSaveProcess" class="btnNew1" value="Save" type="button" onclick="Main.showLoading();setTimeout('Configuration.saveProcess()',200);" style="margin-left:720px;" />
+                        <input id="btnCancelProcess" class="btnNew1" onclick="Configuration.blankProcess()" value="Cancel" type="button" />
+                        <input style="display: none;margin-left:720px;" id="btnUpdateProcess" class="btnNew1" onclick="Main.showLoading();setTimeout('Configuration.update();Configuration.clearProcessFields();',200);" name="Submit2" value="Update" type="button" />
+                        <input style="display: none;" id="btnResetProcess" class="btnNew1" onclick="Configuration.resetProcess()" value="Reset" type="button" />
+                        <br />
+                        <br />
+                    </div>
+                </div>
+
+
+                <div class="collapsibleGrid" style="width:920px;  margin-left:10px;">
+                    <h3 style="padding-left:0px;">
+                        Processes Detail(s)
+                    </h3>
+                    <div id="newProcess" style="display:none;">
+                        <a style="float: right; cursor: pointer" class="rgt addNew" onclick="Configuration.addMode()">
+                            <b>+ Add New Process</b>
+                        </a>
+                    </div>
+                    <p class="clear">
+                    </p>
+
+                    <div id="hideShowGrid">
+                        <div id="processGrid"></div>
+                        <div id="pagingProcess" class="pager"></div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div id="tab6">
+                <div id="UATProcess" class="tabContent testPassForm tabBgrnd">
+                    <div class="frm">
+                        <table>
+                            <tr>
+                                <td>
+                                    <label><b>Select Project:</b></label>
+                                </td>
+                                <td>
+                                    <select class="Lddl" id="projectNamesUATProcess">
+                                        <option>Demo Project for UAT App</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label><b>Select Version:</b></label>
+                                </td>
+                                <td>
+                                    <select class="Lddl" id="versionNamesUATProcess">
+                                        <option>Version 1.0</option>
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label><b>Select Test Pass:</b></label>
+                                </td>
+                                <td>
+                                    <select class="Lddl" id="testPassNamesUATProcess">
+                                        <option>Test Pass 1</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="collapsibleGrid" style="width:920px;margin-left:10px;">
+                    <h3 style="padding-left:0px;background-image:url('images/icon-minus.png');background-repeat:no-repeat;background-position:5px 7px;width:500px;padding:4px 0px 10px 35px">
+                        Plan Phase
+                    </h3>
+                    <div>
+                        <div id="UATProcessGrid1">
+                            <table class="gridDetails" cellSpacing="0">
+                                <thead>
+                                    <tr class="hoverRow">
+                                        <td class="tblhd center" style="width: 5%;"><span>#</span></td>
+                                        <td class="tblhd " style="width: 19%;">
+                                            <span>
+                                                Activity
+                                            </span>
+                                        </td>
+                                        <td class="tblhd " style="width: 20%;">
+                                            <span>
+                                                Description
+                                            </span>
+                                        </td>
+                                        <td class="tblhd " style="width: 19%;">
+                                            <span>
+                                                File
+                                                Template
+                                            </span>
+                                        </td>
+                                        <td class="tblhd " style="width: 18%;">
+                                            <span>
+                                                Final
+                                                File
+                                            </span>
+                                        </td>
+                                        <td class="tblhd center" style="width: 10%;">
+                                            <span>
+                                                Move To Final
+                                            </span>
+                                        </td>
+                                        <td class="tblhd center" style="width: 10%;">
+                                            <span>
+                                                Action
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center">1</td>
+                                        <td>UAT Plan</td>
+                                        <td> N/A</td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icxlsx.gif">UAT
+                                                Plan Test V1.0
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icxlsx.gif">UAT
+                                                Plan_Final
+                                            </a>
+                                        </td>
+                                        <td class="center"><a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a></td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">2</td>
+                                        <td>UAT Kick Off Deck</td>
+                                        <td> N/A</td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                Kick Off Deck V 1.0
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                Kick Off Deck_Final
+                                            </a>
+                                        </td>
+                                        <td class="center"><a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a></td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">3</td>
+                                        <td>UAT App Training Deck</td>
+                                        <td> N/A</td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                App Training Deck
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                App Training Deck_Final
+                                            </a>
+                                        </td>
+                                        <td class="center"><a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a></td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">3</td>
+                                        <td>UAT Go / No-Go Deck</td>
+                                        <td> N/A</td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                Go / No-Go Deck
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                Go / No-Go Deck_Final
+                                            </a>
+                                        </td>
+                                        <td class="center"><a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a></td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pager"></div>
+                    </div>
+
+                </div>
+
+                <div class="collapsibleGrid" style="width:920px;margin-left:10px;">
+                    <h3 style="padding-left:0px;background-image:url('images/icon-minus.png');background-repeat:no-repeat;background-position:5px 7px;width:500px;padding:4px 0px 10px 35px">
+                        Configuration Phase
+                    </h3>
+                    <div>
+                        <div id="UATProcessGrid2">
+                            <table class="gridDetails" cellSpacing="0">
+                                <thead>
+                                    <tr class="hoverRow">
+                                        <td class="tblhd center" style="width: 5%;"><span>#</span></td>
+                                        <td class="tblhd " style="width: 40%;">
+                                            <span>
+                                                Task
+                                                Name
+                                            </span>
+                                        </td>
+                                        <td class="tblhd " style="width: 47%;">
+                                            <span>
+                                                Template Name
+                                            </span>
+                                        </td>
+                                        <td class="tblhd center" style="width: 8%;">
+                                            <span>
+                                                Action
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center">4</td>
+                                        <td>Creating Test Cases and Test Scripts</td>
+                                        <td>
+                                            <a title="UAT Test Cases" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icxlsx.gif">UAT
+                                                Test Cases
+                                            </a>&nbsp;<a title="UAT Test Cases" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icxlsx.gif">Test
+                                                Steps
+                                            </a>
+                                        </td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">5</td>
+                                        <td> Load Test Case and Scripts</td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icxlsx.gif">Test
+                                                Steps
+                                            </a>&nbsp;<a title="UAT Test Cases" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icxlsx.gif">Tester
+                                                Template
+                                            </a>
+                                        </td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pager"></div>
+                    </div>
+
+                </div>
+                <div class="collapsibleGrid" style="width:920px;margin-left:10px;">
+                    <h3 style="padding-left:0px;background-image:url('images/icon-minus.png');background-repeat:no-repeat;background-position:5px 7px;width:500px;padding:4px 0px 10px 35px">
+                        Engage Phase
+                    </h3>
+                    <div>
+                        <div id="UATProcessGrid2">
+                            <table class="gridDetails" cellSpacing="0">
+                                <thead>
+                                    <tr class="hoverRow">
+                                        <td class="tblhd center" style="width: 5%;"><span>#</span></td>
+                                        <td class="tblhd " style="width: 40%;">
+                                            <span>
+                                                Task
+                                                Name
+                                            </span>
+                                        </td>
+                                        <td class="tblhd " style="width: 47%;">
+                                            <span>
+                                                Template Name
+                                            </span>
+                                        </td>
+                                        <td class="tblhd center" style="width: 8%;">
+                                            <span>
+                                                Action
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center">6</td>
+                                        <td>Training Testers/users</td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icpptx.gif">UAT
+                                                App Training Deck Testers
+                                            </a>
+                                        </td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center">7</td>
+                                        <td>
+                                            Kick off Meeting (Invite/Inform/Communicate to
+                                            Begin Testing)
+                                        </td>
+                                        <td>
+                                            <a title="UAT Plan" style="color: rgb(0, 89, 164); cursor: pointer;">
+                                                <img class="ms-asset-icon ms-rtePosition-4" src="/v7/insideit/ITLC/_layouts/images/icdocx.gif">Kick
+                                                off Meeting
+                                            </a>
+                                        </td>
+                                        <td class="center">
+                                            <a title="Edit user Setting" class="pedit" style="cursor: pointer;"></a><a title="Delete user setting" class="pdelete" style="cursor: pointer;"></a>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pager"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="upload" style="display:none;" title="Attachment">
+        <table style="width:100%;margin-top:10px;padding-bottom:10px">
+
+            <tr style="width:100%">
+                <td style="width:90%">
+                    <table style="margin-top:0px;">
+                        <tr>
+                            <td>
+                                <label class="mandatory">Attachment Name:</label><font color="red"><b>*</b></font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" id="AttachmentName" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 18px;" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="mandatory">
+                                    Decription:
+                                </label>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea id="attdesc" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 81px; margin-bottom: 10px;"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="">
+                                    File Name:
+                                </label><font color="red"><b>*</b></font>
+                            </td>
+                        </tr>
+                        <tr id="idAttachmentsRow" style="display:none">
+                            <td>
+                                <table id="idAttachmentsTable"></table>
+                            </td>
+                            <td height="15" class="ms-formbody" id="attachmentsOnClient" valign="bottom"></td>
+                        </tr>
+                        <tr id="idUploadFileRow">
+                            <td>
+                                <input type="file" name="FileUpload1" id="FileUpload1" style="border: 1px solid rgb(204, 204, 204); width: 390px; height: 30px;" /><br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="ms-ButtonHeightWidth btnOk" id="attachOKbutton" onclick="OkAttach_new()" type="BUTTON" value="OK  ">
+                                <input title="" class="btnNew1" id="SaveButton" onclick="PreSaveAction();" type="BUTTON" value="Save" />
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br />
+
+                    <br />
+
+                    <!--Removed attachment webpart-->
+                    <!--</fieldset>
+                    <div id="previewContainer" style="display:none">
+                        <label>Preview:</label>
+                        <div id="preview" style="width:430px;height:180px;background-color:silver;border:1px #ccc solid">
+                        </div>
+                    </div>
+                            -->
+                </td>
+
+                <!--<td style="width:50%">
+                    <div class="DivlblWithColon">
+                        <label class="mandatory">Select Test Step:</label>
+                    </div>
+                    <div id="testStepName" class="Mediumddl">   </div>
+                </td>-->
+            </tr>
+        </table>
+        @*<div id="saveBtnUpload" style="width:10%;margin-left: 0px"></div>*@
+    </div>
+    <!--End of Add Process Tab-->
+    <!-- End demo -->
+    <!--============Web Part Code Starts================--
+    <div id="upload" style="display:none;" title="Attachment">
+        <WebPartPages:SPWebPartManager runat="server" id="SPWebPartManager"></WebPartPages:SPWebPartManager>
+        <WebPartPages:ListFormWebPart runat="server" __MarkupType="xmlmarkup" WebPart="true" __WebPartId="{54BEE70C-0910-470A-AF63-3F980123A159}">
+            <WebPart xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/WebPart/v2">
+                <Title>ConfigureDocuments</Title>
+                <FrameType>Default</FrameType>
+                <Description />
+                <IsIncluded>true</IsIncluded>
+                <PartOrder>2</PartOrder>
+                <FrameState>Normal</FrameState>
+                <Height />
+                <Width />
+                <AllowRemove>true</AllowRemove>
+                <AllowZoneChange>true</AllowZoneChange>
+                <AllowMinimize>true</AllowMinimize>
+                <AllowConnect>true</AllowConnect>
+                <AllowEdit>true</AllowEdit>
+                <AllowHide>true</AllowHide>
+                <IsVisible>true</IsVisible>
+                <DetailLink />
+                <HelpLink />
+                <HelpMode>Modeless</HelpMode>
+                <Dir>Default</Dir>
+                <PartImageSmall />
+                <MissingAssembly>Cannot import this Web Part.</MissingAssembly>
+                <PartImageLarge />
+                <IsIncludedFilter />
+                <ExportControlledProperties>true</ExportControlledProperties>
+                <ConnectionID>00000000-0000-0000-0000-000000000000</ConnectionID>
+                <ID>g_54bee70c_0910_470a_af63_3f980123a159</ID>
+                <ListName xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">{F939DCAD-F719-4F5C-8098-771DAAA041DA}</ListName>
+                <ListId xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">F939DCAD-F719-4F5C-8098-771DAAA041DA</ListId>
+                <PageType xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">PAGE_NEWFORM</PageType>
+                <FormType xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">8</FormType>
+                <ControlMode xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">New</ControlMode>
+                <ViewFlag xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">1048576</ViewFlag>
+                <ViewFlags xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">Default</ViewFlags>
+                <ListItemId xmlns="http://schemas.microsoft.com/WebPart/v2/ListForm">0</ListItemId>
+            </WebPart>
+        </WebPartPages:ListFormWebPart>
+        ->
+        <div id="saveBtnUpload" style="width:10%;margin-left: 0px"></div>
+    </div>
+    <!--==============Web Part COde End here====================-->
+    <!-- html added on 16 March -->
+    <div id="divAlert">
+    </div>
+    <div id="divAlert2">
+    </div>
+    <div id="divConfirm">
+    </div>
+
+    <div id="divUrlPopUp" title="URL" style="height: 50px;display:none">
+        <label>
+            <b>URL:</b><font color="red"><b>*</b></font>
+        </label>
+        <br />
+        <input type="text" id="actualURL" class="input" style="width: 299px" />
+        <br />
+        <br />
+        <label>
+            <b>Alias:</b><font color="red"><b>*</b></font>
+        </label><br />
+        <input type="text" id="aliasURL" class="input" style="width: 299px" />
+        <br /><label style="color: #FF3000" id="lblError">
+        </label>
+    </div>
+
+    <div id="divUrlPopUpUpdate" title="URL" style="height: 50px;display:none">
+        <label>
+            <b>URL:</b><font color="red"><b>*</b></font>
+        </label>
+        <br />
+        <input type="text" id="actualURLUpdate" class="input" style="width: 299px" />
+        <br />
+        <br />
+        <label>
+            <b>Alias:</b><font color="red"><b>*</b></font>
+        </label><br />
+        <input type="text" id="aliasURLUpdate" class="input" style="width: 299px" />
+        <br /><label style="color: #FF3000" id="lblErrorUpdate">
+        </label>
+    </div>
+
+
+    <input type="hidden" id="userSettingID" />
+    <input type="hidden" id="processId" />
+    <input type="hidden" id="testerID" />
+    <input type="hidden" id="projectID" />
+    <input type="hidden" id="testPassID" />
+    <input type="hidden" id="testerName" />
+
+</div>
+<!-- 16 March html -->

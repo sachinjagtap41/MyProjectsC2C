@@ -1,0 +1,82 @@
+# Ansible Module Name - ECS_Disk
+# Interface : DetachDisk
+# Playbook Contains Test-Cases for detach disk 
+# Playbook created by : Sachin J
+
+- name: Detach disk with alias
+  hosts: localhost
+  connection: local
+  
+
+  vars_files:
+  
+   - ../vars/test-environment.yml
+   - ../vars/general-parameters.yml
+   - ../../../vars/alicloud-creds.yml
+      
+     
+          
+  tasks:
+  
+   # Task: 1
+ 
+  
+  - block:
+
+    - name: Scenario 1 - Attach disk to an instance 
+
+      ecs_disk:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        instance: '{{ ecsInstanceId }}'
+        vol_id: '{{ diskId }}'  # id
+        #device_name: '{{ deviceName }}'  
+        delete_on_termination: '{{ deleteWithInstance }}'
+        state: '{{ diskStatus }}'  # Alias
+       
+
+      register: result1
+    - debug: var=result1
+
+    rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+   # Task: 2   
+     
+  - block: 
+    - name: Scenario 2 - Detach disk with alias
+
+      ecs_disk:
+        ecs_access_key: '{{ aliyun_acs_access_key }}'
+        ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+        ecs_region: '{{ region }}'
+        vol_id: '{{ result1.disk_id }}'
+        state: '{{ diskStatus }}' 
+       
+      register: result2
+    - debug: var=result2
+    
+    
+    rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+    when:
+      - "result1.changed ==  True"
+    
+    always:
+     - assert:
+        that: 
+           - "'failed' not in result1" 
+           - "'failed' not in result2" 
+           
+    
+
+
+    
+
+

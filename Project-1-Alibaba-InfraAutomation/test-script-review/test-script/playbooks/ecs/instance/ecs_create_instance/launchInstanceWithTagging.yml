@@ -1,0 +1,52 @@
+
+# This playbook is an example for deploying an instances and tag it.
+
+# The play operates on the local (Ansible control) machine.
+---
+- name: create an ECS Instance and Add tag to it
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+     
+  tasks:
+   - block:
+     - name: create an ECS Linux Instance 
+       ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ Hongkong_region }}'
+        zone_id: '{{ Hongkong_zone }}'
+        image_id: '{{ linux_image_id }}'
+        instance_type: '{{ I_O_optimized_instance_type }}'
+        instance_name: '{{ linux_instance_name }}'
+        description: '{{ Instance_Description }}'
+        host_name: '{{ host_name }}'
+        password: '{{ Password }}'
+        state: '{{ state }}'
+        instance_tags:
+        - tag_key: iphone-apps
+          tag_value: iphone-apps
+    
+       register: ecs_instance_id
+     - debug: var=ecs_instance_id
+    
+    
+     rescue: 
+     - debug: msg=" Success Expected - Defined Tags should be added to the instance Successfully"
+  
+#    - name: Add Tag to the instance
+#      ecs:  
+#        instance_tags:
+#        - tag_key: iphone-apps
+#          tag_value: iphone-apps
+#        instance_ids: '{{ ecs_instance_id.instance_ids }}'# VALID ECS Instance Id    
+#          
+#      register: taggedValue
+#    - debug: var=taggedValue   
+          
+          

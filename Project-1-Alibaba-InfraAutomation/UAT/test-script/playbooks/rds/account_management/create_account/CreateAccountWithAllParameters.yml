@@ -1,0 +1,61 @@
+#Ansible Module Name -- rds_acc_mgmt.py
+#Test Case : Create account with all parameters
+#Ansible Playbook created by - Abha H
+---
+- name: Create account with all parameters
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block :
+     - name: Scenario 1 - create account
+       rds_acc_mgmt:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         command: '{{ command }}'
+         db_instance_id: '{{ instanceId }}'
+         account_name: '{{ accName }}'
+         account_password: '{{ accPwd }}'
+         description: '{{ description }}'
+         account_type: '{{ accountType }}'
+       register: result_scn1
+     - debug: var=result_scn1   
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+   - pause :
+        seconds: 20
+        
+   - block :
+      - name: Scenario 2 - delete account
+        rds_acc_mgmt:
+          acs_access_key: '{{ aliyun_acs_access_key }}'
+          acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+          region: '{{ region }}'
+          command: '{{ commandDelete }}'
+          db_instance_id: '{{ instanceId }}'
+          account_name: '{{ accName }}'  
+        register: result_scn2
+      - debug: var=result_scn2
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+      
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_scn2"
+         msg: 'Test pass FAILED !!!'
+               
+      

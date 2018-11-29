@@ -1,0 +1,79 @@
+#Ansible Module Name -- ecs_vpc.net.py
+#Test Case : Modify Eip Region Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: Modify Eip Region Param Validation
+  hosts: localhost
+  connection: local
+  vars_files: 
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+     - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - Validation of Region param with invalid region
+   - block: 
+     - name: Scenario 1 -  Validation of Region param with invalid region
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ regionInvalid }}'
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceId }}'
+        allocation_id: '{{ allocationId }}'
+       register: bind_eip_result_scn1
+     - debug: var=bind_eip_result_scn1
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+            
+   # Task 2 - Validation of Region param as blank
+   - block: 
+     - name: Scenario 2 -  Validation of Region param as blank
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: 
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceId }}'
+        allocation_id: '{{ allocationId }}'
+       register: bind_eip_result_scn2
+     - debug: var=bind_eip_result_scn2
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+                     
+   # Task 3 - Validation of region param as Region
+   - block: 
+     - name: Scenario 3 -  Validation of region param as Region
+       ecs_vpc_net: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        Region: '{{ region }}'
+        status: '{{ statusJoin }}'
+        instance_id: '{{ instanceId }}'
+        allocation_id: '{{ allocationId }}'
+       register: bind_eip_result_scn3
+     - debug: var=bind_eip_result_scn3
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in bind_eip_result_scn1"
+
+            - "'failed' in bind_eip_result_scn2"
+
+            - "'failed' in bind_eip_result_scn3"
+
+         msg: 'Test pass FAILED !!!'
+
+ 
+ 

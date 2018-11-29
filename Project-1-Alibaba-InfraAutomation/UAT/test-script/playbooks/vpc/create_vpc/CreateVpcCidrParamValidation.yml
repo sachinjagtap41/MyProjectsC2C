@@ -1,0 +1,114 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : create VPC Cidr Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: create VPC Cidr Param Validation
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - Validation of Cidr param with invalid value
+   - block:
+     - name: Scenario 1 - Validation of Cidr param with invalid value
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrInvalid }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario1
+     - debug: var=create_vpc_scenario1
+
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # Task 2 - Validation of Cidr param as blank
+   - block:
+     - name: Scenario 2 - Validation of Cidr param as blank
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block:
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario2
+     - debug: var=create_vpc_scenario2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   # Task 2 - Validation of Cidr param with invalid subnet value
+   - block:
+     - name: Scenario 2 - Validation of Cidr param with invalid subnet value
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        cidr_block: '{{ cidrInvalidSubnet }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario3
+     - debug: var=create_vpc_scenario3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # Task 3 - Validation of cidr_block param as Cidr_block
+   - block:
+     - name: Scenario 3 - Validation of Cidr param with invalid subnet value
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ status }}'
+        Cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario4
+     - debug: var=create_vpc4_scenario4
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:
+         that:
+            - "'failed' in create_vpc_scenario1"
+            - "'Specified CIDR block is not valid' in create_vpc_scenario1.msg[0]['Error Message']"
+
+            - "'failed' in create_vpc_scenario2"
+#            - "'cidr_block parameters is required' in create_vpc_scenario2.msg[2][' To create vpc']"
+
+            - "'failed' in create_vpc_scenario3"
+            - "'Specified CIDR block is not valid' in create_vpc_scenario3.msg[0]['Error Message']"
+
+            - "'failed' in create_vpc_scenario4"
+            - "'unsupported parameter for module: Cidr_block' in create_vpc_scenario4.msg"
+         msg: 'Test pass FAILED !!!'

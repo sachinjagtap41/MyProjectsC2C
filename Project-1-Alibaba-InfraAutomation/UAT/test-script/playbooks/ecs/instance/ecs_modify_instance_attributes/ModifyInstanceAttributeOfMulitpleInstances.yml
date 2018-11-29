@@ -1,0 +1,45 @@
+# Ansible Module Name - ECS
+# Playbook Contains Test-Cases for Modify Multiple Instance Attributes
+# Playbook created by : Sachin J
+
+
+- name: Validating modify instance attribute to modify multiple instances
+  hosts: localhost
+  connection: local
+ 
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../../vars/alicloud-creds.yml
+        
+  tasks:
+   - block:
+   
+     # Tasks : 1
+     
+     - name: Validating modify instance attribute to modify multiple instances
+       ecs:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+        attributes: '{{ modifyAttributeMultipleInstances }}'
+        state: '{{ state }}'
+        
+       register: result
+     - debug: var=result
+     
+     rescue:
+     - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+       when: no
+
+     always:
+     - assert:
+        that:
+           - "'failed' not in result"
+      
+        msg: 'EXPECTED - SUCCESS!!! 
+               Playbook FAILED due to improper input values. 
+               REASON: {{ result }}'
+      

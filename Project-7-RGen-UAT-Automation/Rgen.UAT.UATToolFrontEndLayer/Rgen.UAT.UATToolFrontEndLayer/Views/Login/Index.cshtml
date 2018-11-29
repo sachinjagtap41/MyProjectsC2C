@@ -1,0 +1,200 @@
+
+@{
+    ViewBag.Title = "Login";
+}
+
+@{
+    Layout = "~/Views/Shared/_loginMaster.cshtml";
+}
+
+
+
+<style>
+    body {
+        background: #eee !important;
+    }
+
+    .wrapper {
+        /*margin-top: 80px;
+        margin-bottom: 80px;*/
+    }
+
+    .form-signin {
+        max-width: 380px;
+        padding: 15px 35px 45px;
+        margin: 0 auto;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 30px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            font-size: 16px;
+            height: auto;
+            padding: 10px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+            .form-signin .form-control:focus {
+                z-index: 2;
+            }
+
+        .form-signin input[type="text"] {
+            margin-bottom: -1px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 20px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+    .form-control input[type="text"] + input[type="password"] {
+    }
+
+</style>
+
+<script type="text/javascript">
+    $(function () {
+       
+        $('#rememberMe').attr('checked', false);
+
+        $('.form-control input[type="text"] ,input[type="password"]').val('');
+       
+        /*Get values from Cookie*/
+        var remember = func.readCookie('loginCredencials');
+        var isCheck = false;
+        var _email = '';
+        var _pwd = '';
+        if (remember != null) {
+            _email = remember.split('|')[0];
+            _pwd = remember.split('|')[1];
+            isCheck = remember.split('|')[2];
+
+        }
+        if (isCheck) {
+
+            // autofill the fields
+            $('#Email').val(_email);
+            $('#Password').val(_pwd);
+            $('#rememberMe').attr('checked', true);
+        }
+        /*End*/
+
+        $('#Login').click(function () {
+         
+            var x = false;
+            if ($('.form-control input[type="text"] ,input[type="password"]').val().trim() != '') {
+                x = true;
+            }
+
+
+            /*Code for Remember me...checkbox*/
+            if ($('#rememberMe').is(':checked')) {
+                var email = $('#Email').val();
+                var password = $('#Password').val();
+
+
+                func.createCookie('loginCredencials', email +'|' +password +'|'+ true, 1);
+
+            }
+            else {
+                // reset cookies
+                func.createCookie('loginCredencials', '', -1);
+            }
+          
+            /*End*/
+            if (x) {
+                var Email = $('#' + _controls[0] + '');
+
+                var Pwd = $('#' + _controls[1] + '');
+             
+                var param = 'Email=' + Email.val() + "&Password=" + Pwd.val();
+                var _insert = func.GetData('UserLogin', param, 'Login');
+
+                if (_insert.ErrorDetails != undefined) {
+                    //func.alertBox('Invalid UserName or Password..!!');
+                    $("#Email").val('');
+                    $("#Password").val('');
+                    $("#lbl_alert").html("Invalid UserName or Password..!!");
+                   
+                   
+                }
+                else {
+                    if (_insert.ID != undefined) {
+                        func.SetSpUserId(_insert.ID);
+                        $("#lbl_alert").html("Loading... please wait..!!");
+                        //func.AutoHideAlertBox('Successfully login..!!');
+                        redirect('Dashboard');
+                       
+                      
+                       
+
+                    }
+                }
+            }
+        });
+
+
+    });
+
+    var _controls = [
+
+        'Email',
+        'Password'
+
+    ];
+
+
+    function redirect(url) {
+        func.redirect(url);
+    }
+
+    function stoppropagation(e) {
+        return e.preventDefault();
+    }
+
+</script>
+
+<form class="wrapper" onsubmit="return stoppropagation(event);">
+
+
+    <div class="form-signin">
+
+        <h2 class="form-signin-heading">User login</h2>
+
+        <input id="Email" type="text" class="textBox form-control" required="" placeholder="Enter Email ID" />
+
+
+
+        <input id="Password" type="password" required="" class="form-control " placeholder="Enter Password" />
+        <label class="checkbox" style="left: 25px; margin-top: -5px;  margin-bottom: 10px;">
+        <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+        </label>
+        <label id="lbl_alert" style="color: red; font-weight:400; right: 25px; margin-top: -5px;"></label>
+        <button type="submit" id="Login" class="btn btn-primary btn-block" style="width:100px;">Login</button>
+        <div style="line-height: 2; margin-top: 10px; display:flex">
+            <a asp-controller="CompanyLogin" asp-action="Index" style="padding-right: 5%">New Company</a>
+
+            <a asp-controller="UserRegistration" asp-action="Index">New User</a>
+        </div>
+      
+    </div>
+
+</form>
+
+
+

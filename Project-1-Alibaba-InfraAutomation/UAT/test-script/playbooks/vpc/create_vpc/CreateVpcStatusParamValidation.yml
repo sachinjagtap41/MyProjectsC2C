@@ -1,0 +1,91 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : create VPC Status Param Validation
+#Ansible Playbook created by - Abha H
+---
+- name: create VPC Status Param Validation
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../vars/test-environment.yml
+     - ../vars/general-parameters.yml
+     - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 - create VPC Status Param Validation with invalid value
+   - block:
+     - name: Scenario 1 - Create VPC Status Param Validation with invalid value
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusInvalid }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario1
+     - debug: var=create_vpc_scenario1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # Task 2 - create VPC blank Status Param Validation
+   - block:
+     - name: Scenario 2 - Create VPC blank Status Param Validation
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status:
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario2
+     - debug: var=create_vpc_scenario2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   # Task 3 - Validation of status param as Status
+   - block:
+     - name: Scenario 3 - Validation of status param as Status
+       ecs_vpc:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        Region: '{{ region }}'
+        Status: '{{ status }}'
+        cidr_block: '{{ cidrBlock }}'
+        vpc_name: '{{ vpcName }}'
+        description: '{{ description }}'
+        vswitches: '{{ vswitch }}'
+        wait: '{{ wait }}'
+        wait_timeout: '{{ waitTimeout }}'
+       register: create_vpc_scenario3
+     - debug: var=create_vpc_scenario3
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+     always:
+      - assert:
+         that:
+            - "'failed' in create_vpc_scenario1"
+            - "'value of status must be one of: present,absent,getinfo_vroute,getinfo_vswitch, got: shghshsg' in create_vpc_scenario1.msg"
+
+            - "'failed' in create_vpc_scenario2"
+            - "'value of status must be one of: present,absent,getinfo_vroute,getinfo_vswitch, got: None' in create_vpc_scenario2.msg"
+
+            - "'failed' in create_vpc_scenario3"
+            - "'unsupported parameter for module: Status' in create_vpc_scenario3.msg"
+
+         msg: 'Test pass FAILED !!!'

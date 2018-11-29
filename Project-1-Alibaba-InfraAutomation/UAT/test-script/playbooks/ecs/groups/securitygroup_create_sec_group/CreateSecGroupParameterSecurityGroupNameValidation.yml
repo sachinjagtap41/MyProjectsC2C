@@ -1,0 +1,413 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case :  Check all the Scenarios Security Group Name Validation
+#Ansible Playbook created by - Jogesh N
+
+---
+- name: validating Security Group Name Parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  tasks:
+   - block:
+     - name: Positive Scenario 1-Create Security Group With valid Security Group Name '{{ SGName1 }}
+       ecs_group:
+         
+         name: '{{ SGName1 }}'# valid Group Name
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+         #state: '{{ status }}'
+        
+       register: positiveScn1
+     - debug: var=positiveScn1
+   
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn1.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive1
+     - debug: var=deletePositive1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Positive Scenario 2-Create Security Group With a valid Security Group Name '{{ SGName2 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+         #state: '{{ status }}'
+         name: '{{ SGName2 }}'# valid Group Name
+    
+     
+       register: positiveScn2
+     - debug: var=positiveScn2
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn2.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive2
+     - debug: var=deletePositive2
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+      
+
+   - block:
+     - name: Positive Scenario 3-Create Security Group With valid Security Group Name '{{ SGName3 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: '{{ SGName3 }}'# valid Group Name
+    
+     
+       register: positiveScn3
+     - debug: var=positiveScn3
+   
+ 
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+        
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn3.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive3
+     - debug: var=deletePositive3
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+
+   - block:
+     - name: Positive Scenario 4-Create Security Group With valid Security Group Name '{{ SGName4 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: '{{ SGName4 }}'# valid Group Name
+    
+     
+       register: positiveScn4
+     - debug: var=positiveScn4
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn4.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive4
+     - debug: var=deletePositive4
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+
+   - block:
+     - name: Positive Scenario 5-Create Security Group With valid Security Group Name '{{ SGName5 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: '{{ SGName5 }}'# valid Group Name
+    
+     
+       register: positiveScn5
+     - debug: var=positiveScn5
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+  
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn5.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive5
+     - debug: var=deletePositive5
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+
+   - block:
+     - name: Positive Scenario 6-Create Security Group With valid Security Group Name '{{ SGName6 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+         state: '{{ status }}'
+         name: '{{ SGName6 }}'# valid Group Name
+    
+     
+       register: positiveScn6
+     - debug: var=positiveScn6
+   
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+  
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn6.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive6
+     - debug: var=deletePositive6
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     
+     
+
+   - block:
+     - name: Positive Scenario 7 -Create Security Group With valid Security Group Name '{{ SGName7 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+       #  state: '{{ status }}'
+         name: '{{ SGName7 }}'# valid Group Name
+    
+     
+       register: positiveScn7
+     - debug: var=positiveScn7
+   
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+  
+   - block: 
+   
+     - name: deleting the security group 
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        group_ids: '{{ positiveScn7.group_id }}'
+        state: '{{ deletestatus }}'
+        
+        
+       register: deletePositive7
+     - debug: var=deletePositive7
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - block:
+     - name: Negative Scenario 1-Create Security Group With invalid Security Group Name '{{ SGName8 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+       #  state: '{{ status }}'
+         name: '{{ SGName8 }}'# Invalid Group Name
+    
+     
+       register: negativeScn1
+     - debug: var=negativeScn1
+   
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+     
+
+   - block:
+     - name: Negative Scenario 2-Create Security Group With invalid Security Group Name '{{ SGName9 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+      #   state: '{{ status }}' By Default  True
+         name: '{{ SGName9 }}'# Invalid Group Name
+    
+     
+       register: negativeScn2
+     - debug: var=negativeScn2
+   
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+  
+  
+
+   - block:
+     - name: Negative Scenario 3-Create Security Group With invalid Security Group Name '{{ SGName10 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: '{{ SGName10 }}'# Invalid Group Name
+    
+     
+       register: negativeScn3
+     - debug: var=negativeScn3
+   
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+
+   - block:
+     - name: Negative Scenario 4-Create Security Group With invalid Security Group Name '{{ SGName11 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+        # state: '{{ status }}'
+         name: '{{ SGName11 }}'# Invalid Group Name
+    
+     
+       register: negativeScn4
+     - debug: var=negativeScn4
+   
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+  
+    
+
+   - block:
+     - name: Negative Scenario 5-Create Security Group With invalid Security Group Name '{{ SGName12 }}
+       ecs_group:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}' 
+         #state: '{{ status }}'
+         name: '{{ SGName12 }}'# Invalid Group Name
+    
+     
+       register: negativeScn5
+     - debug: var=negativeScn5
+   
+  
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+     - assert:
+        that: 
+           - "'failed' not in positiveScn1" 
+           - "'failed' not in positiveScn2" 
+           - "'failed' not in positiveScn3" 
+           - "'failed' not in positiveScn4" 
+           - "'failed' not in positiveScn5" 
+           - "'failed' not in positiveScn6" 
+           - "'failed' not in positiveScn7" 
+           - "'failed' in negativeScn1" 
+           - "'failed' in negativeScn2" 
+           - "'failed' in negativeScn3" 
+           - "'failed' in negativeScn4" 
+           - "'failed' in negativeScn5" 
+        
+
+     

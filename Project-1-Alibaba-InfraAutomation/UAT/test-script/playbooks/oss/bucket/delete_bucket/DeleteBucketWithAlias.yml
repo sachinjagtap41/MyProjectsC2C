@@ -1,0 +1,61 @@
+#Ansible Module Name -- oss.py
+#Test Case : Delete bucket with alias
+#Ansible Playbook created by - Abha H
+---
+- name: Delete bucket with alias
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../../vars/alicloud-creds.yml
+     - ../../vars/test-environment.yml
+     - ../../vars/general-parameters.yml
+   
+  tasks:
+   - block:
+     - name: Scenario 1 - create bucket with all parameters
+       oss:
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeCreate }}'
+         bucket: '{{ bucketName }}'
+         permission: '{{ permission }}'
+         region: '{{ region }}'
+       register: result_scn1
+     - debug: var=result_scn1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 1
+
+
+   - block:
+     - name: Scenario 2 - Delete bucket with alias
+       oss:
+         access_key: '{{ aliyun_acs_access_key }}'
+         #ecs_access_key: '{{ aliyun_acs_access_key }}'
+         ecs_secret_key: '{{ aliyun_acs_secret_access_key }}'
+         #secret_key: '{{ aliyun_acs_secret_access_key }}'
+         mode: '{{ modeDelete }}'
+         bucket_name: '{{ bucketName }}'  # Need to add bucket name of result_scn1
+         #name: '{{ bucketName }}'
+         region: '{{ region }}'
+       register: result_scn2
+     - debug: var=result_scn2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "'failed' not in result_scn1"
+            - "'failed' not in result_scn2"
+         msg: 'Test pass FAILED !!!
+               SUCCESS - EXPECTED
+               Playbook FAILED due to improper input values.
+               REASON: {{ result_scn2 }}'
+               

@@ -1,0 +1,49 @@
+#Ansible Module Name - ECS_GROUP
+#Test Case : Verify Security-Group is not deleted when groupid parameter is not provided
+#Ansible Playbook created by - Sachin J
+
+
+- name: Delete security group without groupid parameter
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+
+  vars_files:
+  
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml 
+    - ../../../vars/alicloud-creds.yml
+  
+  # Task 1:
+
+  tasks:
+  
+  
+   - block: 
+   
+   
+     - name: Scenario 1 - Delete security group without groupid parameter
+       ecs_group:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        #group_ids: '{{ SGIdInvalid }}'   Without group id parameter
+        state: '{{ deletestatus }}'
+        
+        
+       register: result1
+     - debug: var=result1
+     
+     
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+ 
+     always:
+     - assert:
+        that: 
+           - "'failed' in result1" 
+           - "'Security Group Id  is required to Delete from security group' in result1.msg" 
+           

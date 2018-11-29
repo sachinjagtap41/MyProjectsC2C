@@ -1,0 +1,341 @@
+############### General Parameters ##################
+############ Region ############
+
+regionOther: cn-beijing
+regionInvalid: hdsgdhg
+
+############ Zone ############
+
+zoneInvalid: in-india
+
+############ Status ############
+
+status: present
+statusQueryingVswitch: getinfo_vswitch
+statusQueryingVRouter: getinfo_vroute
+statusInvalid: shghshsg
+
+############ VpcID ############
+
+vpcIdInvalid: vpc-j6cedbq4046i3z1yoht67
+
+############ VswitchId ############
+
+vswithIdInvalid: vsw-j6cbzydfddf
+
+############ VrouterId ############
+
+vrouterIdInvalid: vrt-j6cdl3r0pu593pfucpqb8
+vrouterIdList: vrt-j6cdl3r0pu593pfucpqb8
+
+########### Delete Vswitch ############
+
+deleteVswitchInvalid: vsw-j6c2xdfdfdfv5mbt7z626v5u
+
+############ PageNumber ############
+
+pageNumberString: Two
+pageSizeString: Ten   
+pageNumberMoreThanSize: 54   
+
+
+############ Vswitch Name ############
+
+vswitchNameWithLessThan2Char:
+- cidr: 192.168.0.0/10
+  zone_id: ap-northeast-1a                                               
+  name: d
+  description: Cr
+
+vswitchNameWithMoreThan128Char:
+- cidr: 192.168.0.0/10
+  zone: ap-northeast-1a                                             
+  vswitch_name: NameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameName
+  description: Created using UAT Script
+
+vswithNameWithUnderscoreChar:
+- cidr: 192.168.30.0/25
+  zone_id: ap-northeast-1a                                           
+  name: Uat_c2c-ansible
+  description: Created using UAT Script
+
+vswithNameWith128CharOnly:
+- cidr: 192.168.20.0/23
+  zone_id: ap-northeast-1a                                           
+  name: NameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameName
+  description: Created using UAT Script
+
+############ Vswitch Description ############
+
+vswitchDescriptionWithMoreThan256Char:
+- cidr: 192.168.0.0/10
+  zone_id: ap-northeast-1a                                           
+  name: Uat_c2c-ansible
+  description: DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptiDescriptionDescript
+ 
+vswitchDescriptionWithLessThan2Char: 
+- cidr: 192.168.0.0/10
+  zone_id: ap-northeast-1a                                           
+  name: Uat_c2c-ansible
+  description: d
+
+vswithDescriptionWithHttpsChar:
+- cidr: 192.168.10.0/23
+  zone_id: ap-northeast-1a                                           
+  name: Uat_c2c-ansible
+  description: https://Description
+
+vswithDescription256CharOnly:
+- cidr: 192.168.20.0/27
+  zone_id: ap-northeast-1a                                           
+  name: Uat_c2c-ansible
+  description: DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDes  
+ 
+
+############ Custom Route  ############
+
+    
+customRouteInvalidCidrBlock: 
+  -  dest: 192.168.0.0/35                    # Invalid cidr block
+     next_hop_type: Instance
+     next_hop_id: i-j6c1s6x9zl5wd25dhfiq
+     route_table_id: vtb-6wekygaz5cl1rbieebcjj
+  
+customRouteInvalidNextHopType: 
+ -  dest: 192.168.0.0/22
+    next_hop_type: INSTANCETUNNEL             # Invalid next_hop_type                 
+    next_hop_id: i-j6c1s6x9zl5wd25dhfiq
+    route_table_id: vtb-6wekygaz5cl1rbieebcjj
+  
+customRouteInvalidInstaceId: 
+ -  dest: 192.168.0.0/22
+    next_hop_type: Instance
+    next_hop_id: i-j6c1s6x9zDFDFFwd25dhfiq      # Invalid next_hop_id
+    route_table_id: vtb-6wekygaz5cl1rbieebcjj 
+   
+############ Delete Custom Route  ############
+
+deleteCustomRouteWithoutRouteTableId:
+ # route_table_id: vtb-j6cg7qkm9iy4ehatxvoqf
+  dest: 192.168.0.0/22
+  next_hop_id: i-j6c1s6x9zl5wd25dhfiq   
+   
+deleteCustomRouteWithoutDestinationCIDRBlock:
+   route_table_id: vtb-j6cg7qkm9iy4ehatxvoqf
+  # dest: 192.168.0.0/22
+   next_hop_id: i-j6c1s6x9zl5wd25dhfiq   
+   
+deleteCustomRouteWithoutNextHopId: 
+   route_table_id: vtb-j6cg7qkm9iy4ehatxvoqf
+   dest: 192.168.0.0/22
+   #next_hop_id: i-j6c1s6x9zl5wd25dhfiq    
+    
+deleteCustomRouteWithInvalidNextHopId:
+   route_table_id: vtb-j6cg7qkm9iy4ehatxvoqf
+   dest: 192.168.0.0/22
+   next_hop_id: i-j6c1s6sdfdfdfdfdfwd25dhfiq  # Invalid next_hop_id
+   
+ 
+########### Create Vpc ###########
+
+vpcName: C2C_UAT_VPC
+
+description: Created using UAT script
+
+
+
+vswitch:
+  - cidr_block: 192.168.0.0/21
+    zone_id: ap-northeast-1a
+    vswitch_name: C2C_UAT_VSwitch
+    description: VSwitch created using UAT script
+    
+routeTables: 
+  - destination_cidrblock: 172.16.0.0/8
+    next_hop_type: Instance
+    next_hop_id: i-j6ciimhgd97y7a638ggk
+
+
+############## Wait Parameter ############
+    
+wait: yes
+waitTimeoutInvalid: hgsdgs
+waitTimeoutMoreThan300: 356
+waitTimeout: 300
+waitInvalid: sahhsj
+
+############### Parameters Validation - Create VPC #########
+
+####  cidr_block ###
+cidrInvalid: 166.172.90.99/8
+cidrInvalidSubnet: 192.168.0.0/1
+
+####  vpc_name ###
+vpcNameNos: 5544
+vpcNameSplChars: ^^^^))))
+vpcNameWithHttp: http://vgvgv
+vpcNameAlphaNos: sjhdjhs34
+vpcNameWith1Char: a
+vpcNameWithExact128Chars: namenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamename
+vpcNameWithMoreThan128Chars: namenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamename
+
+####  description ####
+descriptionInvalid: http://vgvgv
+descriptionNos: 5544
+descriptionSplChars: ^^^^))))
+descriptionAlphaNos: sgdhf4132
+descriptionWith1Char: a
+descriptionWithExact256Chars: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondes
+descriptionWithMoreThan256Chars: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription
+
+#### vswitches ###
+
+vSwitchesWithInvalidCidr:
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: VSwitch created using UAT script
+    
+vSwitchesWithBlankCidr: 
+  - cidr_block: 
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: VSwitch created using UAT script
+    
+vSwitchesWithBlankZone: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: 
+    vswitch_name: C2C_UAT_VSwitch
+    description: VSwitch created using UAT script
+    
+vSwitchesWithInvalidZone: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-d
+    vswitch_name: C2C_UAT_VSwitch
+    description: VSwitch created using UAT script
+    
+vSwitchesWithVSwitchNameOnly1Char: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-b
+    vswitch_name: a
+    description: VSwitch created using UAT script
+    
+vSwitchesWithBlankVSwitchName: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-c
+    vswitch_name: 
+    description: VSwitch created using UAT script
+    
+vSwitchesWithVSwitchNameExact128Char: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-c
+    vswitch_name: namenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamename
+    description: VSwitch created using UAT script
+    
+vSwitchesWithVSwitchNameMoreThan128Char: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-c
+    vswitch_name: namenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamename
+    description: VSwitch created using UAT script
+    
+vSwitchesWithInvalidDesc: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: http:\\gshgsh
+    
+vSwitchesWithDescOnly1Char: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: a
+    
+vSwitchesWithDescExact256Char: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondes
+
+vSwitchesWithDescMoreThan256Char: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription    
+
+vSwitchesWithAlias: 
+  - cidr_block: 172.16.0.0/8
+    zone_id: cn-hongkong-b
+    vswitch_name: C2C_UAT_VSwitch
+    description: VSwitch created using UAT script
+    
+vSwitchesWithBlankDesc: 
+  - cidr_block: 155.182.0.0./8
+    zone_id: cn-hongkong-c
+    vswitch_name: C2C_UAT_VSwitch
+    description: 
+    
+######## route_tables ######
+
+routeTablesInvalidCidr: 
+  - destination_cidrblock: 155.15.0.0/8
+    next_hop_type: Instance
+    next_hop_id: i-j6ciimhgd97y7a638ggk
+    
+routeTablesBlankCidr: 
+  - destination_cidrblock: 155.15.0.0/8
+    next_hop_type: Instance
+    next_hop_id: i-j6ciimhgd97y7a638ggk
+    
+routeTablesInvalidHopType: 
+  - destination_cidrblock: 155.15.0.0/8
+    next_hop_type: fgfghf
+    next_hop_id: i-j6ciimhgd97y7a638ggk
+    
+routeTablesBlankHopType: 
+  - destination_cidrblock: 155.15.0.0/8
+    next_hop_type: 
+    next_hop_id: i-j6ciimhgd97y7a638ggk
+    
+routeTablesInvalidInstanceId: 
+  - destination_cidrblock: 155.15.0.0/8
+    next_hop_type: Instance
+    next_hop_id: i-j6ciimhgdfsdggsfgffh
+    
+routeTablesBlankInstanceId: 
+  - destination_cidrblock: 155.15.0.0/8
+    next_hop_type: Instance
+    next_hop_id: 
+
+###########################################################################################################################################
+
+######## Delete VPC ###############
+#vpcIdInvalid: sdhshsfj
+#statusAbsent: Absent
+
+########## Request EIP ###########
+internetChargeType: PayByTraffic
+bandwidth: 1
+
+######### Request Eip Parameter Validation ##########
+
+####### Bandwidth ########
+bandwidthInvalid: sgh
+
+###### Internet Charge Type ####
+internetChrgTypeInvalid: hgghghg
+
+########## Modify EIP Parameter Validation #######
+
+### Allocation Id #######
+allocationIdInvalid: fgdfg
+
+########### Binding Eip ######
+instanceIdInvalid: fgdfgdfg
+statusJoin: join
+########### Unbinding EIP ######
+statusLeave: leave
+
+######### Release EIP ######
+statusAbsent: absent
+
+   

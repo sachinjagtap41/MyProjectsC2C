@@ -1,0 +1,42 @@
+# Ansible Module Name - ecs_ami
+# Playbook created by : Sachin J
+
+
+# Region parameter
+regionInvalid: cn-beijing
+
+
+# ECS Instance Id
+ecsInstanceIdInvalid: i-j6cdzr0kho16579dqw62 # Invalid Instance ID to create custom image from
+
+# SmapshotId
+snapshotIdInvalid: s-t4n0redfgfgkyz6t3mzhwxv # Snapshot ID to create custom Image from
+
+# Image Name
+imageName: uat-c2c-ansible
+
+
+# Image Version
+imageVersion: 4
+
+
+# Description
+description: created using UAT script
+   
+
+# Image Tags
+imagesTags:
+    - tag_key: ansible
+      tag_value: ansible_val
+    - tag_key: footmark
+      tag_value: footmark_val
+      
+imagedTagsInvalid:   
+    - tag_key: 
+      tag_value: ansible_val
+    - tag_key: 
+      tag_value: footmark_val
+
+
+# Image Id
+imageIdInvalid: m-j6c2tbw6nsauztj96x59 # Image ID used to test image deletion scenario

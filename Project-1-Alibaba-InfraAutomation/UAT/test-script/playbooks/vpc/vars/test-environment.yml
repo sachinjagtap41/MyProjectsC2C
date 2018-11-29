@@ -1,0 +1,100 @@
+####################  Test Environment ###############
+############# Region Parameter ##############
+
+region: ap-northeast-1
+
+############# zone ##############
+
+zone: ap-northeast-1a
+
+############# Vpc Id ##############
+
+vpcId: vpc-6wesle5g9yqw4jytbirel    # cn hongkong
+
+############# VswitchId ##############
+
+vswitchId: vsw-6weve3ps8m26jxzw7vg3k  # cn hongkong
+
+############# VrouterId ##############
+
+vrouterId: vtb-6wekygaz5cl1rbieebcjj   # cn hongkong
+
+############# Vswitches ##############
+
+cidrBlock: 192.168.0.0/16
+
+vswitches:
+- cidr: 192.168.88.0/25
+  az: ap-northeast-1a                                             
+  vswitch_name: Uat_c2c_ansible
+ #description: Created using UAT Script
+  
+vswitches2:
+- cidr: 192.168.80.0/28
+  az: ap-northeast-1a                                             
+  vswitch_name: Uat_c2c_ansible
+  #description: Created using UAT Script
+  
+############# Delete Vswitch ##############
+
+deleteVswitch: vsw-6weamllqza4m2ya2dxd2x
+
+deleteVswithFromTheListOneNotPresent:
+- vsw-6wee7pribdmgejt2i0drf
+- vsw-6wei3rnf6q84jgzl0z8p4
+
+                                  
+############# Create Custom Router ##############
+customRoute:
+ -  dest: 100.64.10.0/12
+    next_hop_type: Instance
+    next_hop_id: i-6webq3ykkis1bodb7a8p
+    route_table_id: vtb-6wekygaz5cl1rbieebcjj
+    
+createCustomRoute: 
+  -  dest: 100.64.0.0/12
+     next_hop_type: Instance
+     next_hop_id: i-6webq3ykkis1bodb7a8p
+     route_table_id: vtb-6wekygaz5cl1rbieebcjj
+
+############# Delete Custom Router ##############
+
+deleteCustomRoute: 
+  route_table_id: vtb-6wekygaz5cl1rbieebcjj
+  dest: 192.168.78.0/23
+  next_hop_id: i-6webq3ykkis1bodb7a8p 
+  
+
+deleteCreatedCustomRoute: 
+  route_table_id: vtb-6wekygaz5cl1rbieebcjj
+  dest:  100.64.0.0/12
+  next_hop_id: i-6webq3ykkis1bodb7a8p 
+  
+################### Delete Vpc  ###########
+
+vpcIdDel: vpc-j6c6d1sxs72e5ym8ouaik   # Changed 
+regionDiffForVpc: ap-southeast-1 
+regionDel: cn-hongkong
+vpcIdWhoseVSwitchResourceInUse: vpc-6wex360t51e8nry3260e2
+vpcIdWithStoppedState: vpc-j6cb7907t4gdlvmgusrbu
+
+######### Modify EIP ########
+
+allocationId: eip-6weuyrelh53nwmgc152sa
+
+####### Binding EIP #########
+
+instanceId: i-6wecbihu0cofah24fsje # VPC instance id
+instanceIdClassic: i-t4nefrrzhrojryi0gugh
+regionClassic: ap-southeast-1
+allocationIdClassicReg: eip-t4n4n2oxre4rmc8ly3iez
+instanceIdRegDiffThanEip: i-t4nh6e8j1e91jj6dskl4 # VPC instance id
+RegDiffForEIP: ap-southeast-1 
+instanceIdWithMoreThan1MbpsBandwidth: i-6webq3ykkis1fihh34iy
+instanceId1: i-6wefkxo74pvn87153oap # VPC instance id
+instanceId2: i-6wefkxo74pvn89067q9u  # VPC instance id
+
+####### Release EIP #######
+allocationIdForRel: eip-j6c0pxfwvf6695ld0z694
+
+allocationIdInUse: eip-j6cdr5c2s3tpcr08q6613

@@ -1,0 +1,456 @@
+#Ansible Module Name -- rds.py
+#Test Case : Create Rds instance with instance description parameter validation
+#Ansible Playbook created by - Sachin J
+---
+
+- name: Create RDS instance with instance description parameter validation
+  hosts: localhost
+  connection: local
+  vars_files:
+   - ../../../vars/alicloud-creds.yml
+   - ../../vars/test-environment.yml
+   - ../../vars/general-parameters.yml
+  
+  
+  tasks:
+  
+  # Task : 1
+   - block:
+     - name: Scenario 1 - Create an RDS instance with valid description parameter
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescription }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn1
+     - debug: var=result_scn1
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+      
+      
+  # Task : 2
+  
+   - block:
+     - name: Scenario 2 - Create an RDS instance with instance description as 2 char
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWith2Char }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn2
+     - debug: var=result_scn2
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+  # Task : 3     
+      
+   - block:
+     - name: Scenario 3 - Create an RDS instance with instance description parameter as 256 char
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWith256Char }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn3
+     - debug: var=result_scn3
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+    # Task : 4    
+       
+   - block:
+     - name: Scenario 4 - Create an RDS instance with instance description parameter more than 256 char
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWithMoreThan256char }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn4
+     - debug: var=result_scn4
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+ # Task : 5 
+       
+   - block: 
+     - name: Scenario 5 - Create an RDS instance with instance description parameter as underscore char
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWithUnderscore }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn5
+     - debug: var=result_scn5
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+ # Task : 6 
+       
+   - block:
+     - name: Scenario 6 - Create an RDS instance with instance description parameter as Hypen
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWithHypen }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn6
+     - debug: var=result_scn6
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+# # Task : 7
+#        
+#   - block: 
+#     - name: Scenario 7 - Create an RDS instance with instance description parameter as other special char
+#       rds: 
+#         acs_access_key: '{{ aliyun_acs_access_key }}'
+#         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+#         region: '{{ region }}'
+#         #zone: '{{ zone }}'
+#         command: '{{ command}}'
+#         db_engine: '{{ dbEngineMysql }}'
+#         engine_version: '{{ engineVersion }}'
+#         db_instance_storage: '{{ dbInstanceStorage }}'
+#         db_instance_class: '{{ dbInstanceClass }}'
+#         instance_net_type: '{{ instanceNetTypeInternet }}'
+#         instance_description: '{{ instanceDescriptionWithOtherSpecialchar }}'
+#         security_ip_list: '{{ securityIpList }}'
+#         pay_type: '{{ payType }}'
+#      
+#       register: result_scn7
+#     - debug: var=result_scn7
+#    
+#     rescue:
+#      - fail:
+#         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+#        when: no
+#
+#   - pause:
+#       minutes: 2
+       
+       
+# Task : 8
+        
+   - block: 
+     - name: Scenario 8 - Create an RDS instance with instance description parameter as less than 2 char
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWithLessThan2Char }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn8
+     - debug: var=result_scn8
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+# Task : 9
+        
+   - block: 
+     - name: Scenario 9 - Create an RDS instance with instance description parameter as alphanumeric
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWithAlphanumeric }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn9
+     - debug: var=result_scn9
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+# Task : 10   
+     
+   - block: 
+     - name: Scenario 10 - Create an RDS instance with instance description parameter as http
+       rds: 
+         acs_access_key: '{{ aliyun_acs_access_key }}'
+         acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+         region: '{{ region }}'
+         #zone: '{{ zone }}'
+         command: '{{ command}}'
+         db_engine: '{{ dbEngineMysql }}'
+         engine_version: '{{ engineVersion }}'
+         db_instance_storage: '{{ dbInstanceStorage }}'
+         db_instance_class: '{{ dbInstanceClass }}'
+         instance_net_type: '{{ instanceNetTypeInternet }}'
+         instance_description: '{{ instanceDescriptionWithhttp }}'
+         security_ip_list: '{{ securityIpList }}'
+         pay_type: '{{ payType }}'
+      
+       register: result_scn10
+     - debug: var=result_scn10
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+   - pause:
+       minutes: 2
+       
+       
+# Task : 11
+        
+   - block: 
+     - name: Scenario 11 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn1.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn11
+     - debug: var=result_scn11
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+# Task : 12
+ 
+   - block: 
+     - name: Scenario 12 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn2.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn12
+     - debug: var=result_scn12
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+ # Task : 13
+        
+   - block: 
+     - name: Scenario 13 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn3.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn13
+     - debug: var=result_scn13
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+ # Task : 14        
+   - block: 
+     - name: Scenario14 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn5.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn14
+     - debug: var=result_scn14
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+  # Task : 15
+           
+   - block: 
+     - name: Scenario 15 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn6.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn15
+     - debug: var=result_scn15
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+        
+  # Task : 16
+        
+   - block: 
+     - name: Scenario 16 - Release the created RDS instance
+       rds:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        command: '{{ commandDelete }}'
+        instance_id: '{{ result_scn9.result[0].DBInstanceId }}'
+        region: '{{ region }}'
+        
+       register: result_scn16
+     - debug: var=result_scn16
+    
+     rescue:
+      - fail:
+         msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+      
+     always: 
+      - assert: 
+         that: 
+          - "'failed' not in result_scn1" 
+          - "'failed' not in result_scn2" 
+          - "'failed' not in result_scn3" 
+          - "'failed' in result_scn4" 
+          - "'failed' not in result_scn5" 
+          - "'failed' not in result_scn6" 
+          #- "'failed' in result_scn7" 
+          - "'failed' in result_scn8" 
+          - "'failed' not in result_scn9" 
+          - "'failed' in result_scn10" 
+          - "'failed' not in result_scn11" 
+          - "'failed' not in result_scn12" 
+          - "'failed' not in result_scn13" 
+          - "'failed' not in result_scn14" 
+          - "'failed' not in result_scn15" 
+          - "'failed' not in result_scn16" 
+         msg: 'Test pass FAILED !!!'       
+           

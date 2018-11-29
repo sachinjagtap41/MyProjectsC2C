@@ -1,0 +1,38 @@
+#Ansible Module Name -- ecs_vpc.py
+#Test Case : Delete VPC with VSwitch resource in use
+#Ansible Playbook created by - Abha H
+---
+- name:  Delete VPC with VSwitch resource in use
+  hosts: localhost
+  connection: local
+  vars_files: 
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+  tasks:
+  # Task 1 -  Delete VPC with VSwitch resource in use
+   - block: 
+     - name:  Delete VPC with VSwitch resource in use
+       ecs_vpc: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusAbsent }}'
+        vpc_id: '{{ vpcIdWhoseVSwitchResourceInUse }}'
+       register: delete_vpc
+     - debug: var=delete_vpc
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+     always:
+      - assert:  
+         that:
+            - "delete_vpc.changed ==  false"
+            
+         msg: 'Test pass PASSED !!!
+               This is a NEGATIVE playbook !!!
+               FAILURE - EXPECTED
+               REASON: {{ delete_vpc}}'
+            

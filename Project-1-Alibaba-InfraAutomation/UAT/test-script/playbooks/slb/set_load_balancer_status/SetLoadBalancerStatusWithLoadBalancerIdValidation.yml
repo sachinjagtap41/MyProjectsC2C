@@ -1,0 +1,55 @@
+#Ansible Module Name -- ecs_slb_lb.py
+#Test Case : Validating Load Balancer Id
+#Ansible Playbook created by - Abha H
+---
+- name: Validating Load Balancer Id
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Validating Load Balancer Id
+   - block: 
+     - name: Validating Load Balancer Id
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusActive }}'
+        load_balancer_id: '{{ SLBIdInvalid }}'
+       register: set_slb_status_1
+     - debug: var=set_slb_status_1
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+
+    
+    # Task 2 - Validating Load Balancer Id
+   - block: 
+     - name: Validating Load Balancer Id
+       ecs_slb_lb:
+        acs_access_key: '{{ aliyun_acs_access_key }}'
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+        region: '{{ region }}'
+        status: '{{ statusActive }}'
+        load_balancer_id: 
+       register: set_slb_status_2
+     - debug: var=set_slb_status_2
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' in set_slb_status_1"
+            - "'LoadBalancerId does not exist.' in set_slb_status_1.msg[0]['Error Message']"
+
+            - "'failed' in set_slb_status_2"
+            - "'LoadBalancerId does not exist.' in set_slb_status_2.msg[0]['Error Message']"
+         msg: 'Test pass FAILED !!!'
+

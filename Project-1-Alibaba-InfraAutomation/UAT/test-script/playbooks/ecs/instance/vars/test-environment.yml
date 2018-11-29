@@ -1,0 +1,650 @@
+# Ansible Module Name - ecs
+# Ansible Playbook created by - Sachin J
+
+
+######  Create Instance  ######
+region: cn-beijing
+
+   
+# zone parameter 
+zone: cn-beijing-a          # Valid
+
+# Image id
+
+windowsImageId : win2012_64_datactr_r2_cn_40G_alibase_20160622.vhd
+imageId: ubuntu14064_40G_cloudinit_20160727.raw
+linuxImageId: ubuntu1404_64_40G_cloudinit_20160727.raw
+unsubscirbedImageId: m-62vo0p7h4
+  
+# Instance Type
+instanceType: ecs.s1.small
+
+# I/O optimized Instant Type
+ioOptimizedTrue: True # 1. ecs.n1.tiny  2. ecs.n1.small 3.ecs.n1.medium 4. ecs.n1.large
+ioOptimizedInvalid: ecs.n1.xtrasmall
+
+
+
+# Wait Parameter
+waitTrue : true
+waitFalse: false
+waitInvalid: yess
+
+# Wait timeout Parameter
+waitTimeOutValid: 50
+waitTimeOutInvalid: 325
+waitTimeOutMax: 300
+
+Period: 3
+
+
+# instance Ids
+instanceIds:
+  - i-2zee7z3d8q4hyzir2h27
+  - i-2zednjxdhrr4p7fne66k
+  
+# Security Groups
+sgGroupIds:
+  - sg-2zebs81xbap9oxu0lhjo
+  - sg-2ze6gkgq7x4xhmxjo1o8
+
+######## Allocate Public Ip ########
+allocatePublicIp: true
+allocatePublicIpFalse: false
+allocatePublicIpNull:
+allocatePublicIpInvalid: yes
+chargeTypePrepaid: Prepaid
+chargeTypePostpaid: Postpaid
+periodValid: 3
+periodInValid: 13
+autoRenewTrue: True
+autoRenewFalse: False
+autoRenewZero: 0
+autoRenewOne: 1
+
+######## Count parameter ########   
+count: 1
+count100: 100  # It is not feasible to test this Scenario,So we believe on API for this Scenario.
+countNegative: -5
+countInvalid: 102 # It is not feasible to test this Scenario,So we believe on API for this Scenario.
+
+
+
+######## Image id parameter ######## 
+imageIdInvalid: ck12356         # Invalid
+imageIdNull:                    # Null
+
+
+######## Instance Charge Type parameter ######## 
+instanceChargeTypePrepaid: Prepaid # This parameter could not be Tested, As it requires Prepaid Account
+instanceChargeTypePostpaid: PostPaid
+instanceChargeTypeInvalid: Paid
+
+
+    
+    
+######## Instance Type parameter ######## 
+instanceTypeInvalid: dcs.123.small
+instanceTypeNull:     # Null
+instanceTypeDefault:  # Default
+instanceTypeioOptimizedTrue: ecs.n1.small   
+instanceTypeNonioOptimizedTrue: ecs.t1.small
+
+######## Internet data parameter ######## 
+# Test-Case : 1
+internetDataDefault: 
+    
+# Test-Case : 2
+    
+internetDataPayByTrafficInvalidDefaultBandWidthOut:    
+    charge_type: PayByTraffic
+    max_bandwidth_in: 150
+      
+    # Test-Case : 3  
+    
+internetDataPayByTrafficDefaultMaxIn:      
+     charge_type: PayByTraffic
+     max_bandwidth_out: 50
+      
+    # Test-Case : 4  
+    
+internetDataPayByTrafficAllDefaultParameters:      
+     charge_type: PayByTraffic
+      
+    # Test-Case : 5  
+    
+internetDataPayByBandwidthDefaultMaxIn:      
+     charge_type: PayByBandwidth
+     max_bandwidth_out: 99
+      
+    # Test-Case : 6  
+    
+internetDataPayByBandwidhtDefaultMaxOut:      
+     charge_type: PayByBandwidth
+     max_bandwidth_in: 198
+
+
+
+######## Period parameter ######## 
+period: 3
+periodChargeTypePrepaid: Prepaid
+periodchargeTypePostpaid: Postpaid
+periodChargeTypeNull:                   # Null
+periodChargeTypeInvalid: Paid           # Invalid
+
+######## SecurityGroup parameter ######## 
+sgGroup: sg-2zeizs4x6adr3mwqyn8l       # Valid
+sgGroupInvalid: sa-12546kll               # Invalid
+sgGroupNull:                              # Null
+systemDisk:
+        disk_category: cloud
+        disk_size: 50
+      
+######## Io optimized ######## 
+instanceTypeGeneration1: ecs.t1.small
+instanceTypeGeneration2: ecs.n1.tiny
+ioOptimizedFalse: false                # None
+
+####### Volumes ########   
+diskCreationWithSnapshotId: 
+      -   disk_category: cloud_efficiency
+          #disk_size: 20
+          disk_name: volume1
+          disk_description: volume 1 description comes here
+          snapshot_id: d-62i536pnf
+
+disks:
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume1
+          disk_description: volume 1 description comes here
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume2
+          disk_description: volume 2 description comes here
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume3
+          disk_description: volume 3 description comes here
+     
+invalidDisks:
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume1
+          disk_description: volume 1 description comes here
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume2
+          disk_description: volume 2 description comes here
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume3
+          disk_description: volume 3 description comes here
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume4
+          disk_description: volume 4 description comes here 
+       -  disk_category: cloud_efficiency
+          disk_size: 20
+          disk_name: volume5
+          disk_description: volume 5 description comes here 
+                
+######## System Disk ########                  
+ # Cloud Parameters
+    
+systemDiskSizeLessThan40: 
+     disk_category: cloud
+     disk_size: 30
+     disk_name: DiskName
+     disk_description: Invalid System Disk Size
+systemDiskSizeMoreThan500: 
+     disk_category: cloud
+     disk_size: 550
+     disk_name: DiskName
+     disk_description: Invalid System Disk Size
+systemDiskSize: 
+     disk_category: cloud
+     disk_size: 50
+     disk_name: DiskName
+     disk_description: Valid System Disk Size
+systemDiskSizeNull: 
+     disk_category: cloud
+     disk_size: 
+     disk_name: DiskName
+     disk_description: Valid System Disk Size
+systemDiskSizeDefault: 
+     disk_name: DiskName
+     disk_description: Valid System Disk Size
+  
+######## Bind Eip ########           
+vswithId: vsw-2zewmmqum64hvlrididef
+vswithIdInvalid: vsw-jdsfsdfknrmopj4ypgdnq4
+bindEip: eip-2ze3yqnqze337obcad4dh                 # Insert the EIP to be added
+instanceTypebindEip: ecs.n1.small
+
+
+##########      Querying Instance status     ###########
+# statusPresent parameter :
+queryingInstanceStatus: getstatus
+queryingInstanceStatusInvalid: querying
+    
+# Page number parameter :
+pageNumberValid: 8
+pageNumberInvalid: -45   # Invalid.
+pageNumberAsString: pagenumberparameter   # Invalid
+    
+# Page size parameter :
+pageSizeValid: 6
+pageSizeMaximumValue: 50
+pageSizeInvalidValue: 51    # Invalid
+pageSizeAsString: pagesizeparameter   # Invalid
+  
+# Test-Cases
+    
+# Test Case 1 : query_instance_statusPresent_WithValidRegionAndInvalidZoneParameter.yml
+# Description: Verify playbook is generating errror with valid region and invalid zone parameter
+
+# Test Case 2 : query_instance_statusPresentWithDefaultPageSizeAndPageNumberParameter.yml
+# Description: Verify playbook is not generating error when default pagesize and pagenumber is provided
+
+# Test Case 3 : query_instance_statusPresentWithInvalidPageNumber.yml
+# Description: Verify playbook is generating error with invalid pagenumber parameter
+
+# Test Case 4 : query_instance_statusPresentWithInvalidPageSize.yml
+# Description: Verify playbook is generating error when invalid pagesize parameter is provided
+
+# Test Case 5 : query_instance_statusPresentWithregionInvalidAndValidZoneParameter.yml
+# Description: Verify playbook is generating error when invalid region and valid zoneid is provided
+
+# Test Case 6 : query_instance_statusPresentWithregionInvalidAndZoneParameter.yml
+# Description: Verify playbook is generating error when invalid region, zone is provided
+
+# Test Case 7 : query_instance_statusPresentWithMaximumPageSize.yml
+# Description: Verify playbook is not generating error with maximum page size
+
+# Test Case 8 : query_instance_statusPresentWithoutStateParameter.yml
+# Description: Verify playbook is generating error without state parameter
+
+# Test Case 9 : query_instance_statusPresentWithpageNumberAsString.yml
+# Description: Verify playbook is generating error with invalid pagenumber parameter as string
+
+# Test Case 10 : query_instance_statusPresentWithpageSizeAsString.yml
+# Description: Verify playbook is generating error with invalid pagesize parameter as string
+
+# Test Case 11 : query_instance_statusPresentWithRegionAsDefaultValue.yml
+# Description: Verify playbook is generating error when default value is provided
+
+# Test Case 12 : query_instance_statusPresentWithValidPageNumber.yml
+# Description: Verify playbook is not generating error with valid pagenumber parameter
+
+# Test Case 13 : query_instance_statusPresentWithValidPageSizeValue.yml
+# Description: Verify playbook is not generating error with valid pagesize parameter
+
+# Test Case 14 : query_instance_statusPresentWithValidRegionAndZoneParameter.yml
+# Description: Verify playbook is not generating error with valid region, zone parameter
+
+# Test Case 15 : query_instance_statusPresentWithZoneAsDefaultValue.yml
+# Description: Verify playbook is not generating error when default zone is provided
+
+
+
+
+
+
+######  Modify Instance Attribute  ######
+# id parameter 
+ecsInstanceId : i-2zeak4tued3wfuwqnsn3
+ecsInstanceId2: i-2zednjxdhrr4p7fne66k
+
+
+# State parameter
+
+stateInvalid: modifyattribute      # Invalid
+
+# Image id
+ecsImageId : ubuntu1404_64_40G_cloudinit_20160727.raw
+ecsImageIdInvalid: ubuntu14064_40G_cloudinit_20160727.raw
+    
+# Test cases for Description parameter
+# Test-Case : 1
+# Verify description parameter is not accepting less than 2 characters    
+descriptionLessThan2CharactersModify: 
+     -  id: '{{ ecsInstanceId }}'
+        description: v
+    
+    # Test-Case : 2
+# Verify description parameter accepts 256 characters only            
+description256CharactersOnlyModify: 
+     -  id: '{{ ecsInstanceId }}'
+        description: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomi
+        
+    # Test-Case : 3
+# Verify description parameter doest not accept more than 256 characters     
+descriptionMoreThan256CharactersModify: 
+     -  id: '{{ ecsInstanceId }}'
+        description: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiGenomi
+    
+    # Test-Case : 4
+# Verify description parameter is not accepting http at begining     
+descriptionHttpAtBeginingModify: 
+     -  id: '{{ ecsInstanceId }}'
+        description: http://DescriptionTested
+    
+      # Test-Case : 5
+# Verify description parameter is accepting default character     
+descriptionDefaultModify: 
+     -  id: '{{ ecsInstanceId }}'
+    
+     # Test-Case : 6
+# Verify description parameter is accepting null character     
+descriptionNullCharactersModify: 
+     -  id: '{{ ecsInstanceId }}'
+        description: 
+    
+     # Test-Case : 7
+# Verify description parameter is not modifying when state parameter is not provided     
+# Without state parameter    
+
+     # Test-Case : 8
+# Verify description parameter is not modifying when region parameter is not provided 
+# Without region parameter  
+ 
+     # Test-Case : 9
+# Verify description parameter is not modifying with invalid region parameter    
+# With invalid region parameter
+  
+     # Test-Case : 10
+# Verify description parameter is not modifying when attribute's id is invalid     
+invalidAttributeIdModify: 
+     -  id: '{{ ecsInstanceIdInvalid }}'
+        description: 
+  
+######  Modify host_name Parameter  ###### 
+# Test-Case : 1
+# Verifying host name parameter is created with less than 30 characters
+    
+host_nameLessThan30CharModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: hostname
+    
+    # Test-Case : 2
+# Verifying host name parameter is created with more than 30 characters    
+host_nameMoreThan30CharModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: host_namehost_namehost_namehost_namehost_name
+    
+    # Test-Case : 3
+# Verifying host name parameter is created with alpha-numeric characters    
+host_nameAlphanumericCharModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: hostname1234
+    
+    # Test-Case : 4
+# Verifying host name parameter is created with alpha-betic characters    
+host_nameAlphabeticModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: hostname
+    
+    # Test-Case : 5
+# Verifying host name parameter is accepting special characters _ or .    
+host_nameDotOrUnderscoreModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: ho123s.tna12_3me
+    
+    # Test-Case : 6
+# Verifying host name parameter is not accepting other special characters    
+host_nameOtherSpecialCharModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: hos_@-123ting()=
+    
+    # Test-Case : 7
+# Verifying host name parameter accepts default characters    
+host_nameDefaultModify: 
+     -  id: '{{ ecsInstanceId }}'
+    
+    # Test-Case : 8
+# Verifying host name parameter accepts null characters    
+host_nameNullModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: 
+    
+   # Test-Case : 9
+# Verifying host name parameter is not modified when attribute contains invalid id parameter    
+host_nameWithInvalidIdModify: 
+     -  id: '{{ ecsInstanceId }}'
+        host_name: host_name
+
+######  Modify InstanceName Parameter  ###### 
+# Test-Case : 1
+# Verifying name parameter is not accepting less than 2 characters    
+instanceNameLessThan2CharModify:
+   - id: '{{ ecsInstanceId }}'
+     name: s
+    
+    # Test-Case : 2
+# Verifying name parameter is accepting 128 characters only    
+instanceName128CharOnlyModify:
+   - id: '{{ ecsInstanceId }}'
+     name: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomi
+      
+    # Test-Case : 3
+# Verifying name parameter is not accepting more than 128 characters    
+instanceNameMoreThan128CharModify:
+   - id: '{{ ecsInstanceId }}'
+     name: ALIBABAScloudcomputingunitAliyunandAmericantechgiantIntelyesterdaysignedamemorandumofunderstandingtocollaboratewithBeijingGenomiGenomi
+      
+    # Test-Case : 4
+# Verifying name parameter is not accepting default characters    
+instanceNameDefaultModify:
+    - id: '{{ ecsInstanceId }}'
+    
+    # Test-Case : 5
+# Verifying name parameter is accepting special characters    
+instanceNameSpecialCharModify:
+    - id: '{{ ecsInstanceId }}'
+      name: Descri-ption.Parameter_
+      
+    # Test-Case : 6
+# Verifying name parameter is not accepting other special characters   
+instanceNameOtherSpecialCharModify:
+    - id: '{{ ecsInstanceId }}'
+      name: Description@p(arameter)
+      
+    # Test-Case : 7
+#  Verifying name parameter is not accepting http at begining    
+instanceNameHttpAtBeginingModify:
+    - id: '{{ ecsInstanceId }}'
+      name: http://Description.para-met_er
+      
+    # Test-Case : 8
+# Verifying name parameter is accepting alphanumeric characetrs    
+instanceNameAlphanumericModify:
+    - id: '{{ ecsInstanceId }}'
+      name: Nameparameter1234
+      
+    # Test-Case : 9
+# Verifying name parameter is accepting alphabetic characetrs    
+instanceNameAlphabeticModify:
+    - id: '{{ ecsInstanceId }}'
+      name: Nameparameter
+      
+    # Test-Case : 10
+# Verifying name parameter is accepting null characetrs    
+instanceNameNullCharModify:
+    - id: '{{ ecsInstanceId }}'
+      name: 
+
+######  Modify Password Parameter  ###### 
+
+  # Test-Case : 1
+# Verifying password field is not accepting less than 6 characters    
+passwordLessThan6Modify:
+    - id: '{{ ecsInstanceId }}'
+      password: pa
+      
+  # Test-Case : 2
+# Verifying password field is not accepting special characters    
+passwordSpecialCharModify:
+    - id: '{{ ecsInstanceId }}'
+      password: User()name@123$
+      
+      # Test-Case : 3
+# Verifying password field is not accepting null characters      
+password30CharOnlyModify:
+    - id: '{{ ecsInstanceId }}'
+      password: Displaynameoftheinstancewhichi
+      
+      # Test-Case : 4
+# Verifying password field is accepting alphanumeric characters only      
+passwordMoreThan30Modify:
+    - id: '{{ ecsInstanceId }}'
+      password: Displaynameoftheinstancewhichisastringof2to
+      
+      # Test-Case : 5
+# Verifying password field is accepting alphabetic characters only      
+passwordNullCharModify:
+    - id: '{{ ecsInstanceId }}'
+      password: 
+      
+      # Test-Case : 6
+# Verifying password field is not accepting more than 30 characters      
+passwordAlphaNumericModify:
+    - id: '{{ ecsInstanceId }}'
+      password: Username123
+      
+      # Test-Case : 7
+# Verifying password field is accepting 30 characters only      
+passwordAlphabeticOnlyModify:
+    - id: '{{ ecsInstanceId }}'
+      password: Username
+      
+      # Test-Case : 8
+# Verifying password field is not accepting default characters      
+passwordDefaultCharModify:
+    - id: '{{ ecsInstanceId }}'
+
+
+###### Modify attributes of multiple instances ######
+
+modifyAttributeMultipleInstances:
+
+    -  id: '{{ ecsInstanceId }}'   
+       name: Uat_c2c_ansible 
+       description: Modified using Uat script
+       password: user12!@
+       host_name: UATUSR01
+
+    -  id: '{{ ecsInstanceId2 }}' 
+       name: Uat_c2c_ansible 
+       description: Modified using Uat script
+       password: user12!@
+       host_name: UATUSR02
+
+
+
+
+
+
+
+##########      Join ecs instance to the security group     ###########
+
+# Available VPC Instances to select
+ecsVpcInstanceId: i-2zei1gcwkks4svy3bgiy
+
+# Available VPC Security Groups to select
+ecsVpcSgGroupId: sg-2zeanrkmpiq67jqtnxvc
+
+
+# Not I/O Optimized Instant Type
+nonIoOptimizedInstanceType: ecs.t1.small # 1. ecs.s1.small  2. ecs.s1.medium 3. ecs.s1.large  
+
+# ECS Instance : State: Create Instance
+state: present
+
+# ECS Instance : State: Delete instance
+statusabsent: absent
+
+#ECS Instance waitTimeOut
+waitTimeOut: 300
+
+# Security Group : State: remove
+sgInvalid: remove
+
+# Security Group Actions
+sgJoin: join
+sgActionLeave: leave
+
+###########     ecs_add_sec_group_to_istance       ################
+   
+# Test Case 1 : addSecGroupToExistingInstance.yml
+# Description : Add a VALID Security Group To Existing VALID ECS Instance
+
+addSgGroupId: sg-2ze6gkgq7x4xhmxjo1o8
+
+# Test Case 2 : addInvalidSecGroupToExistingInstance.yml
+# Description : Add an INVALID Security Group To Existing VALID ECS Instance
+
+addSgGroupIdInvalid: sg-t4ndfbfsbsdsbdkbsbkBkbscszcbjs # Inavlid
+
+# Test Case 3 : addSecGroupToInvalidInstance.yml
+# Description : Add a Security Group To INVALID ECS Instance
+
+addInvalidWindowsId: i-t4nidwomthjfhgjweofhf #Invalid
+
+# Test Case 4 : addInvalidSecGroupToInvalidInstance.yml
+# Description : Add a INVALID Security Group To INVALID ECS Instance
+
+# Test Case 5 : SgGroupMissing.yml
+# Description : Verify the behaviour when the user missed out to add Security Group Parameter 
+SgGroupMissing: 
+
+# Test Case 6 : missingParameter_InstanceId.yml
+# Description : Verify the behaviour when the user missed out to add Security Group Parameter to ECS Instance 
+sgGroupMissingForWindowsId: 
+
+# InstanceSecurityGroupLimitExceeded.yml
+
+#Test Case 4 : Create a New ECS Instance and Add Defined Security Group 
+
+#Test Case : Verify that Valid User is able to add 10 instances to the Security Group
+ecsInstances:
+  - i-j6c6j115h8aowaaol2ye
+  - i-j6c6377q7u5t1j0vicgg
+  
+  
+
+##########    Remove ecs instance from the security group    ###########
+
+# I/O optimized Instant Type
+ioOptimizedInstanceType: ecs.n1.small # 1. ecs.n1.tiny  2. ecs.n1.small 3.ecs.n1.medium 4. ecs.n1.large
+
+# Security Group
+sgGroupId: sg-2zebs81xbap9oxu0lhjo
+addSgGroupecsInstanceIdInvalid: sg-62nv4gfxg
+sgName: Uat_c2c_sg
+sgDescription: Created using Uat script
+ 
+rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 8080
+        to_port: 8080
+        cidr_ip: 0.0.0.0/0
+   
+rules_egress:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+
+###########     ecs_remove_sec_group_to_istance       ################
+   
+#Invalid_sgGroupId
+
+removeInvalidSgGroup: sg-t4ndfbfsbsdsbdkbsbkBkbscszcbjs # Inavlid
+removeWindowsInstanceId: i-t4nidwomthjfhgjweofhf #Invalid
+
+

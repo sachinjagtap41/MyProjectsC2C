@@ -1,0 +1,48 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Bind Eip parameter
+# Playbook created by : Sachin Jagtap
+
+
+- name: Bind Eip to an VPC instance
+  hosts: localhost
+  connection: local
+ 
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml
+         
+   
+  tasks:
+  - block:
+    - name: Validating Bind Eip parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceTypeBindEip }}'
+        vswitch_id: '{{ VswithForBindEip }}'                # Vswith of the Created VPC       
+        bind_eip: '{{ BindEip }}'                           # Give Allocation Ip
+        internet_data: '{{ InternetDataBindEip }}'          # Internet data = PayByTraffic
+        io_optimized: '{{ IoOptimizedVswithAndBindEip }}'   # IoOptimized = True
+        allocate_public_ip: '{{ AllocatePublicIpFalse }}'   # Allocate Public Ip = False
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+        
+    rescue: 
+    - debug: msg=" Expected - Success"
+            
+        
+        
+        
+        
+        
+        
+        
+        
+       

@@ -1,0 +1,53 @@
+regionInvalid: cn-nagpur
+securityGrpVPC: vpc-j6cwxpxv81x83v87ceb8j
+
+
+## VPC ID
+invalidSGVPC: fhh5038570470697804680
+
+
+# For Chinese Character, yml is giving Unicode character Issue
+SGName1: Alicloud326498720470
+SGName2: XIAOMI
+SGName3: JOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNi
+SGName4: Aliyun.Alibaba
+SGName5: Aliyun_Alibaba
+SGName6: Aliyun-Alibaba
+SGName7: Al
+SGName8: http://www.ggogle.com
+SGName9: HFKHOH&%*&^@(*#&*()$&()*FOHohf
+SGName10: K
+SGName11: 645408JOJFhlaefk
+SGName12: 
+
+
+# Rules Authorized Security Group Names
+internetInRuleSGName: NameSecurityGroupWithInternetInboundRules
+internetOutRuleSGName: NameSecurityGroupWithInternetOutboundRules
+intranetInRuleSGName: NameSecurityGroupWithIntranetInboundRules 
+intranetOutRuleSGName: NameSGNameWithIntranetOutBoundRules
+internetInAndOutRuleSGName: NameSGNameWithBothInternetInboundOutboundRules
+intranetInAndOutRuleSGName: NameSGNameWithBothIntranetInboundOutboundRules
+
+
+# Security Group Description
+SGDescription: Created using Uat script
+SGDescriptionInvalid: http://www.ggogle.com
+SGDescriptionInvalid1: J
+SGDescriptionInvalid2: JOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJOgeshNiwalkarJJJ
+
+
+
+deletestatusInvalid: delete      # Invalid 
+
+
+
+# Invalid GroupId Parameter
+SGIdInvalid: sg-j6cbydfsfsfld4dfgkjdfklgjflg2mhf0w
+ 
+ 
+# Available State for Security Groups
+querystatusInvalid: querying      # Invalid 
+
+
+VPCIdInvalid: vpc-j6cs6ch21j6nfdfsd1f7x7

@@ -1,0 +1,139 @@
+# Ansible Module Name - ECS_GROUP
+# Interface : ECS_CreateInstance
+# Playbook Contains Test-Cases for Ids parameter
+# Playbook created by : Sachin Jagtap
+
+
+- name: Validate ids parameter
+  hosts: localhost
+  connection: local
+  
+  vars_files:
+  
+    - vars/test-environment.yml
+    - vars/alicloud-creds.yml 
+    
+      
+  tasks:
+  
+  # Task : 1
+  
+  - block: 
+    - name: Validating - Valid Ids Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        ids: '{{ idsValid }}'            # Valid
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"
+  
+  # Task : 2
+  
+  - block: 
+    - name: Validating - Invalid Ids Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        ids: '{{ idsInvalid }}'      # Invalid
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected - '{{ idsInvalid }}' is not a valid parameter "
+ 
+ # Task : 3
+ 
+  - block: 
+    - name: Validating - Instance Is Created When Ids Parameter Is Null
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        ids: '{{ idsNull }}'        # Ids Null
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"
+ 
+ # Task : 4
+ 
+  - block: 
+    - name: Validating - Instance Is Created Without Ids Parameter
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        #ids: '{{ idsValid }}'  Without ids parameter
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Expected - Success"
+  
+  # Task :5
+  
+  - block: 
+    - name: Validating - Instance Is Not Created With Same Ids Parameter Again
+      ecs:
+        acs_access_key_id: '{{ Shuwei_acs_access_key_id }}'
+        acs_secret_access_key: '{{ Shuwei_acs_secret_access_key }}'
+        region: '{{ RegionValid }}'
+        zone_id: '{{ ZoneValid }}'
+        image_id: '{{ ImageIdValid }}'
+        instance_type: '{{ InstanceType }}'
+        instance_name: '{{ InstanceName }}'
+        description: '{{ Description }}'
+        host_name: '{{ HostName }}'
+        password: '{{ Password }}'
+        ids: '{{ idsValid }}'   # Same ids parameter
+        state: '{{ StateValid }}'
+        
+      register: result
+    - debug: var=result
+    
+    rescue: 
+    - debug: msg="Failure Expected - An instance with this -> '{{ idsValid }}'  id is already created"
+    
+    

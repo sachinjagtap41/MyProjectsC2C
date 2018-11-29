@@ -1,0 +1,99 @@
+#Ansible Module Name -- ecs_slb_vsg.py
+#Test Case : Add Backend Servers to Vserver Group
+#Ansible Playbook created by - Sachin J
+
+---
+- name: Validating add backend servers to vserver group
+  hosts: localhost
+  connection: local
+  vars_files:
+    - ../vars/test-environment.yml
+    - ../vars/general-parameters.yml
+    - ../../vars/alicloud-creds.yml
+     
+  tasks:
+  - block:
+    # Task : 1
+    - name: Scenario 1 - Add backend servers to the vserver group with valid vservergroupid
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+      register: result1  
+    - debug: var=result1
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+
+    
+  - block: 
+    # Task : 2
+    - name: Scenario 2 - Add backend servers to the vserver group with invalid vservergroupid
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupInvalid }}'
+        backend_servers: '{{ backendServersForVserverGrp }}'
+        status: '{{ status }}'
+        
+      register: result2  
+    - debug: var=result2   
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+    
+  - block: 
+    # Task : 3
+    - name: Scenario 3 - Add backend servers to the vserver group when one of the servers is not present
+      ecs_slb_vsg: 
+        acs_access_key: '{{ aliyun_acs_access_key }}'            
+        acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'  
+        region: '{{ region }}'
+        vserver_group_id: '{{ vserverGroupId }}'
+        backend_servers: '{{ backendServerServerIdWithOneServerNotPresent }}'
+        status: '{{ status }}'
+        
+      register: result3  
+    - debug: var=result3
+    
+    
+    rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+   
+    always:
+      - assert:  
+         that:
+            - "'failed' not in result1"
+            
+            - "'failed' in result2"
+                        
+            - "'failed' in result3"
+            
+           
+         msg: 'Test pass FAILED !!!'
+         
+  post_tasks: 
+    - name: Remove added backend servers
+      ecs_slb_vsg: 
+       acs_access_key: '{{ aliyun_acs_access_key }}'
+       acs_secret_access_key: '{{ aliyun_acs_secret_access_key }}'
+       region: '{{ region }}'
+       vserver_group_id: '{{ vserverGroupId }}'
+       purge_backend_servers: '{{ backendServersForVserverGrp }}'       
+      
+      when:
+        - "'failed' not in result1"       
+ 

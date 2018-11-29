@@ -1,0 +1,34 @@
+#Ansible Module Name -- Serverload Balancer
+#Test Case : Set Server Load Balancer Name with alias
+#Ansible Playbook created by - Abha H
+---
+- name: Set Server Load Balancer Name with alias
+  hosts: localhost
+  connection: local
+  vars_files:
+     - ../../vars/alicloud-creds.yml
+     - ../vars/general-parameters.yml
+     - ../vars/test-environment.yml
+   
+  tasks:
+  # Task 1 - Set Server Load Balancer Name with alias
+   - block: 
+     - name: Set Server Load Balancer Name with alias
+       ecs_slb_lb:
+        access_key: '{{ aliyun_acs_access_key }}'
+        secret_key: '{{ aliyun_acs_secret_access_key }}'
+        acs_region: '{{ region }}'
+        state: '{{ status }}'
+        ecs_slb: '{{ SLBId }}'
+        name: '{{ SLBName }}'
+       register: set_slb_name_result
+     - debug: var=set_slb_name_result
+     rescue:
+      - fail:
+          msg: "The fail block is added just to handle exception. This block won't be executed ever."
+        when: no
+     always:
+      - assert:
+         that:
+            - "'failed' not in set_slb_name_result"
+         msg: 'Test pass FAILED !!!'
